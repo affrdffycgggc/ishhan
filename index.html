@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>متجر الشحن</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root { --primary: #00d4aa; --bg: #050505; --card: #12121e; --border: #ffffff0d; --neon-pubg: #f2a900; --neon-ff: #ff4500; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Cairo', sans-serif; background: var(--bg); color: #fff; min-height: 100vh; overflow-x: hidden; padding-bottom: 70px; }
+        
+        /* Background Effects */
+        #bg-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; transition: 1s; z-index: -2; filter: brightness(0.3) saturate(1.2); }
+        .bg-home { background-image: url('https://media.tenor.com/pPFqRuVTu1UAAAAC/gaming-neon.gif'); }
+        .bg-pubg { background-image: url('https://media.tenor.com/1vMEdv7Y1X0AAAAd/pubg-mobile.gif'); }
+        .bg-ff { background-image: url('https://media.tenor.com/0t4FrMv9ZXMAAAAd/free-fire.gif'); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        /* Glass Effect */
+        .glass { background: rgba(12, 12, 20, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border); }
+        
+        /* Header */
+        header { position: sticky; top: 0; z-index: 50; padding: 15px; text-align: center; border-bottom: 1px solid #333; background: rgba(5,5,15,0.9); }
+        .logo { font-family: 'Orbitron'; font-size: 1.3rem; background: linear-gradient(135deg, var(--primary), #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* Pages */
+        .page { display: none; padding: 20px; animation: fadeIn 0.3s; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Grids & Cards */
+        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+        .card { padding: 25px 15px; border-radius: 16px; text-align: center; cursor: pointer; transition: 0.3s; border: 1px solid #333; }
+        .card:hover { transform: translateY(-3px); border-color: var(--primary); }
+        .card i { font-size: 2.5rem; margin-bottom: 10px; }
+        .card h3 { font-size: 1.1rem; }
+        
+        /* Forms & Inputs */
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; margin-bottom: 8px; color: #aaa; font-size: 0.9rem; }
+        .cyber-input { width: 100%; padding: 15px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid #333; color: #fff; font-family: 'Cairo'; font-size: 1rem; transition: 0.3s; }
+        .cyber-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 15px rgba(0,212,170,0.2); }
+        select.cyber-input { appearance: none; }
+        
+        /* Buttons */
+        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--primary), #00b894); color: #000; font-family: 'Cairo'; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn:hover { box-shadow: 0 0 20px var(--primary); transform: scale(1.02); }
+        .btn-danger { background: linear-gradient(135deg, #ff4757, #ff6b81); color: #fff; }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-small { padding: 10px; font-size: 0.9rem; }
+        
+        /* Package Selection */
+        .pkg-card { padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; cursor: pointer; border: 1px solid #333; transition: 0.3s; }
+        .pkg-card:hover, .pkg-card.selected { border-color: var(--primary); background: rgba(0, 212, 170, 0.1); box-shadow: 0 0 10px rgba(0,212,170,0.2); }
+        .pkg-price { font-family: 'Orbitron'; color: var(--primary); font-weight: 700; }
+        
+        /* Bottom Navigation */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(10,10,15,0.95); backdrop-filter: blur(10px); border-top: 1px solid #333; display: flex; justify-content: space-around; z-index: 100; padding: 10px 0; }
+        .nav-item { color: #666; text-align: center; cursor: pointer; transition: 0.3s; font-size: 0.8rem; font-weight: 700; }
+        .nav-item i { font-size: 1.3rem; display: block; margin-bottom: 3px; }
+        .nav-item.active, .nav-item:hover { color: var(--primary); }
+        
+        /* Alert Modal */
+        #alert-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 999; display: none; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: var(--card); padding: 30px; border-radius: 20px; max-width: 400px; width: 100%; text-align: center; border: 1px solid var(--primary); }
+        .modal-icon { font-size: 3rem; margin-bottom: 15px; }
+        .modal-msg { margin-bottom: 20px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+    <div id="bg-layer" class="bg-home"></div>
+    <div id="particles-js"></div>
+
+    <header>
+        <div class="logo">VOLT STORE</div>
+    </header>
+
+    <!-- الصفحة الرئيسية -->
+    <div id="page-home" class="page active">
+        <h2 style="text-align:center; margin-bottom:5px; font-family:'Orbitron';">مرحباً بك 🕹️</h2>
+        <p style="text-align:center; color:#aaa; margin-bottom:20px;">اختر ما تريد من القائمة</p>
+        <div class="grid2">
+            <div class="card glass" onclick="showPage('shop'); selectGame('pubg')"><i class="fas fa-gamepad" style="color:var(--neon-pubg)"></i><h3>شحن ببجي</h3></div>
+            <div class="card glass" onclick="showPage('shop'); selectGame('freefire')"><i class="fas fa-fire" style="color:var(--neon-ff)"></i><h3>شحن فري فاير</h3></div>
+            <div class="card glass" onclick="showPage('redeem')"><i class="fas fa-gift" style="color:#7c3aed"></i><h3>كود الهدية</h3></div>
+            <div class="card glass" onclick="showPage('referral')"><i class="fas fa-users" style="color:#00b894"></i><h3>الإحالات</h3></div>
+            <div class="card glass" onclick="showPage('contact')"><i class="fas fa-headset" style="color:#0984e3"></i><h3>تواصل مع الداعم</h3></div>
+            <div class="card glass" onclick="showAlert('🎁 الهدايا', 'ترقب أكواد الهدايا في قناة البوت!')"><i class="fas fa-box-open" style="color:#fdcb6e"></i><h3>هدايا</h3></div>
+        </div>
+    </div>
+
+    <!-- صفحة المتجر -->
+    <div id="page-shop" class="page">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <button class="btn btn-outline btn-small" onclick="showPage('home')"><i class="fas fa-arrow-right"></i> رجوع</button>
+            <h2 id="shop-title" style="font-family:'Orbitron'; font-size:1.2rem;"></h2>
+        </div>
+        <div id="packages-list"></div>
+        
+        <div id="checkout-form" style="display:none; margin-top:25px; padding:20px; border-radius:16px;" class="glass">
+            <h3 style="margin-bottom:15px; text-align:center;">إتمام الطلب</h3>
+            <div class="input-group"><label>آيدي اللاعب (Player ID)</label><input type="text" id="player-id" class="cyber-input" placeholder="أدخل الآيدي هنا..."></div>
+            <div class="input-group"><label>طريقة الدفع</label><select id="pay-method" class="cyber-input"></select></div>
+            <button class="btn" onclick="submitOrder()"><i class="fas fa-paper-plane"></i> إرسال الطلب</button>
+        </div>
+    </div>
+
+    <!-- صفحة أكواد الهدية -->
+    <div id="page-redeem" class="page">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <button class="btn btn-outline btn-small" onclick="showPage('home')"><i class="fas fa-arrow-right"></i> رجوع</button>
+            <h2 style="font-family:'Orbitron'; font-size:1.2rem;">🎟️ كود الهدية</h2>
+        </div>
+        <div class="glass" style="padding:20px; border-radius:16px;">
+            <div class="input-group"><label>أدخل الكود</label><input type="text" id="redeem-code" class="cyber-input" placeholder="مثال: GIFT-XXXX-XXXX"></div>
+            <div class="input-group"><label>آيدي اللاعب لاستلام الهدية</label><input type="text" id="redeem-player-id" class="cyber-input" placeholder="أدخل الآيدي هنا..."></div>
+            <button class="btn" onclick="redeemCode()"><i class="fas fa-check-circle"></i> استلام الهدية</button>
+        </div>
+    </div>
+
+    <!-- صفحة الإحالات -->
+    <div id="page-referral" class="page">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <button class="btn btn-outline btn-small" onclick="showPage('home')"><i class="fas fa-arrow-right"></i> رجوع</button>
+            <h2 style="font-family:'Orbitron'; font-size:1.2rem;">🔗 نظام الإحالات</h2>
+        </div>
+        <div class="glass" style="padding:20px; border-radius:16px; text-align:center;">
+            <p style="margin-bottom:15px; color:#aaa;">أدخل آيدي التليجرام الخاص بك لعرض رابط الإحالة ومعلوماتك</p>
+            <div class="input-group"><input type="number" id="ref-tg-id" class="cyber-input" placeholder="آيدي تليجرامك (أرقام فقط)"></div>
+            <button class="btn" onclick="checkReferral()" style="margin-bottom:15px;">عرض معلومات الإحالة</button>
+            
+            <div id="ref-info" style="display:none;">
+                <div style="background:rgba(0,212,170,0.1); padding:15px; border-radius:12px; margin-bottom:15px;">
+                    <p style="font-weight:700; margin-bottom:5px;">رابط الدعوة الخاص بك:</p>
+                    <p id="ref-link" style="color:var(--primary); word-break:break-all; font-size:0.9rem;"></p>
+                    <button class="btn btn-outline btn-small" style="margin-top:10px;" onclick="copyRef()">نسخ الرابط</button>
+                </div>
+                <p id="ref-stats" style="margin-bottom:15px; color:#aaa;"></p>
+                
+                <div id="claim-ref-section" style="display:none;">
+                    <div class="input-group"><label>آيدي اللاعب لاستلام الهدية</label><input type="text" id="ref-player-id" class="cyber-input" placeholder="أدخل الآيدي هنا..."></div>
+                    <button class="btn" onclick="claimReferral()"><i class="fas fa-gift"></i> استلام هدية الإحالة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة التواصل -->
+    <div id="page-contact" class="page">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <button class="btn btn-outline btn-small" onclick="showPage('home')"><i class="fas fa-arrow-right"></i> رجوع</button>
+            <h2 style="font-family:'Orbitron'; font-size:1.2rem;">📞 تواصل معنا</h2>
+        </div>
+        <div class="glass" style="padding:20px; border-radius:16px;">
+            <div class="input-group"><label>رسالتك</label><textarea id="contact-msg" class="cyber-input" rows="5" placeholder="اكتب رسالتك أو استفسارك هنا..." style="resize:none;"></textarea></div>
+            <button class="btn" onclick="sendContact()"><i class="fas fa-paper-plane"></i> إرسال الرسالة</button>
+        </div>
+    </div>
+
+    <!-- نافذة التنبيهات -->
+    <div id="alert-modal">
+        <div class="modal-content glass">
+            <div class="modal-icon" id="modal-icon">🎉</div>
+            <div class="modal-msg" id="modal-msg">تم بنجاح</div>
+            <button class="btn" onclick="closeAlert()">حسناً</button>
+        </div>
+    </div>
+
+    <!-- القائمة السفلية -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="showPage('home')"><i class="fas fa-home"></i>الرئيسية</div>
+        <div class="nav-item" onclick="showPage('shop')"><i class="fas fa-store"></i>المتجر</div>
+        <div class="nav-item" onclick="showPage('redeem')"><i class="fas fa-gift"></i>أكواد</div>
+        <div class="nav-item" onclick="showPage('referral')"><i class="fas fa-link"></i>إحالات</div>
+        <div class="nav-item" onclick="showPage('contact')"><i class="fas fa-headset"></i>دعم</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // ⚠️ ضع رابط البوت الخاص بك على JustRunMy هنا
+        const API_URL = "https://your-bot-name.justrunmy.com/api"; 
+
+        let currentGame = '';
+        let selectedPlanId = '';
+        let selectedPlanName = '';
+        let selectedPrice = 0;
+
+        // Particles Init
+        particlesJS('particles-js', { particles: { number: { value: 40 }, color: { value: "#00d4aa" }, shape: { type: "circle" }, opacity: { value: 0.3 }, size: { value: 2 }, line_linked: { enable: true, distance: 150, color: "#00d4aa", opacity: 0.15 }, move: { enable: true, speed: 1.5 } } });
+
+        // Navigation System
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+            document.getElementById(`page-${pageId}`).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            const bg = document.getElementById('bg-layer');
+            bg.className = 'bg-home';
+            if(pageId === 'shop' && currentGame === 'pubg') bg.className = 'bg-pubg';
+            if(pageId === 'shop' && currentGame === 'freefire') bg.className = 'bg-ff';
+            
+            if(pageId === 'shop') loadPaymentMethods();
+        }
+
+        // Alert Modal
+        function showAlert(title, msg, icon='🎉') {
+            document.getElementById('modal-icon').innerText = icon;
+            document.getElementById('modal-msg').innerText = msg;
+            document.getElementById('alert-modal').style.display = 'flex';
+        }
+        function closeAlert() { document.getElementById('alert-modal').style.display = 'none'; }
+
+        // Shop Functions
+        async function selectGame(game) {
+            currentGame = game;
+            document.getElementById('shop-title').innerText = game === 'pubg' ? 'PUBG MOBILE' : 'FREE FIRE';
+            document.getElementById('shop-title').style.color = game === 'pubg' ? 'var(--neon-pubg)' : 'var(--neon-ff)';
+            document.getElementById('packages-list').innerHTML = '<div style="text-align:center; padding:30px; color:#aaa;">جاري تحميل الحزم...</div>';
+            document.getElementById('checkout-form').style.display = 'none';
+            
+            try {
+                const res = await fetch(`${API_URL}/products?game=${game}`);
+                const packages = await res.json();
+                let html = '';
+                packages.forEach(pkg => {
+                    html += `<div class="pkg-card glass" onclick="selectPlan(this, '${pkg.plan_id}', '${pkg.name}', ${pkg.price})">
+                        <span style="font-weight:700;">${pkg.name}</span>
+                        <span class="pkg-price">${pkg.price.toLocaleString()} ل.س</span>
+                    </div>`;
+                });
+                document.getElementById('packages-list').innerHTML = html || '<p style="text-align:center; color:#aaa;">لا توجد حزم متاحة</p>';
+            } catch (e) {
+                document.getElementById('packages-list').innerHTML = '<p style="text-align:center; color:#ff4757;">⚠️ خطأ في الاتصال بالخادم</p>';
+            }
+        }
+
+        function selectPlan(element, planId, planName, price) {
+            document.querySelectorAll('.pkg-card').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedPlanId = planId; selectedPlanName = planName; selectedPrice = price;
+            document.getElementById('checkout-form').style.display = 'block';
+        }
+
+        async function loadPaymentMethods() {
+            try {
+                const res = await fetch(`${API_URL}/get_payment_methods`);
+                const methods = await res.json();
+                const select = document.getElementById('pay-method');
+                select.innerHTML = '';
+                methods.forEach(m => {
+                    select.innerHTML += `<option value="${m.name} (${m.details})">${m.name} (${m.details})</option>`;
+                });
+            } catch(e) {}
+        }
+
+        async function submitOrder() {
+            const playerId = document.getElementById('player-id').value;
+            const payMethod = document.getElementById('pay-method').value;
+            if (!selectedPlanId || !playerId) return showAlert('تنبيه', 'يرجى اختيار الحزمة وإدخال الآيدي أولاً', '⚠️');
+            
+            try {
+                const res = await fetch(`${API_URL}/submit_order`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ plan_id: selectedPlanId, plan_name: selectedPlanName, player_id: playerId, pay_method: payMethod, price: selectedPrice })
+                });
+                const data = await res.json();
+                if(data.status === 'success') {
+                    showAlert('نجاح', 'تم استلام طلبك بنجاح! سيتم الشحن بعد موافقة الداعم.', '✅');
+                    document.getElementById('checkout-form').style.display = 'none';
+                    document.querySelectorAll('.pkg-card').forEach(el => el.classList.remove('selected'));
+                }
+            } catch(e) { showAlert('خطأ', 'فشل الاتصال بالخادم', '❌'); }
+        }
+
+        // Redeem Code Function
+        async function redeemCode() {
+            const code = document.getElementById('redeem-code').value;
+            const playerId = document.getElementById('redeem-player-id').value;
+            if (!code || !playerId) return showAlert('تنبيه', 'أدخل الكود والآيدي', '⚠️');
+            
+            try {
+                const res = await fetch(`${API_URL}/redeem_code`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code: code, player_id: playerId })
+                });
+                const data = await res.json();
+                if(data.status === 'success') showAlert('نجاح', data.message, '🎉');
+                else showAlert('فشل', data.message, '❌');
+            } catch(e) { showAlert('خطأ', 'فشل الاتصال', '❌'); }
+        }
+
+        // Referral Functions
+        async function checkReferral() {
+            const userId = document.getElementById('ref-tg-id').value;
+            if (!userId) return showAlert('تنبيه', 'أدخل آيدي التليجرام الخاص بك', '⚠️');
+            
+            try {
+                const res = await fetch(`${API_URL}/check_referral`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId })
+                });
+                const data = await res.json();
+                if(data.status === 'success') {
+                    document.getElementById('ref-info').style.display = 'block';
+                    document.getElementById('ref-link').innerText = `https://t.me/${BOT_USERNAME}?start=${userId}`; // You can hardcode bot username
+                    document.getElementById('ref-stats').innerText = `لقد قمت بدعوة: ${data.count} شخص | الهدايا المستلمة: ${data.claimed} | متبقي ${data.needed} دعوة للهدية التالية`;
+                    
+                    if(data.needed <= 0) document.getElementById('claim-ref-section').style.display = 'block';
+                    else document.getElementById('claim-ref-section').style.display = 'none';
+                } else {
+                    showAlert('خطأ', data.message, '❌');
+                }
+            } catch(e) { showAlert('خطأ', 'فشل الاتصال', '❌'); }
+        }
+
+        async function claimReferral() {
+            const userId = document.getElementById('ref-tg-id').value;
+            const playerId = document.getElementById('ref-player-id').value;
+            if (!playerId) return showAlert('تنبيه', 'أدخل آيدي اللاعب', '⚠️');
+
+            try {
+                const res = await fetch(`${API_URL}/claim_referral`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId, player_id: playerId })
+                });
+                const data = await res.json();
+                if(data.status === 'success') showAlert('نجاح', data.message, '🎉');
+                else showAlert('فشل', data.message, '❌');
+            } catch(e) { showAlert('خطأ', 'فشل الاتصال', '❌'); }
+        }
+
+        function copyRef() {
+    const refLink = document.getElementById('ref-link').innerText;
+    navigator.clipboard.writeText(refLink).then(() => showAlert('نسخ', 'تم نسخ رابط الإحالة!', '📋'));
+}
+
+        // Contact Function
+        async function sendContact() {
+            const msg = document.getElementById('contact-msg').value;
+            if (!msg) return showAlert('تنبيه', 'اكتب رسالتك أولاً', '⚠️');
+
+            try {
+                const res = await fetch(`${API_URL}/contact`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: msg })
+                });
+                const data = await res.json();
+                if(data.status === 'success') {
+                    showAlert('تم', data.message, '✅');
+                    document.getElementById('contact-msg').value = '';
+                }
+            } catch(e) { showAlert('خطأ', 'فشل الاتصال', '❌'); }
+        }
+    </script>
+</body>
+</html>
