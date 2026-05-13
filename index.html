@@ -2,68 +2,51 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ishhen - متجر الخدمات الرقمية</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ishhen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        :root{--primary:#00e5bf;--primary2:#7c3aed;--bg:#030014;--card:rgba(12,10,30,0.75);--border:rgba(255,255,255,0.07);--danger:#ff3b5c;--success:#00b894;--text:#e0e0e0;--text-secondary:rgba(255,255,255,0.5);--radius:20px}
+        :root{--primary:#00e5bf;--primary2:#7c3aed;--bg:#030014;--card:rgba(12,10,30,0.75);--border:rgba(255,255,255,0.07);--danger:#ff3b5c;--text:#e0e0e0}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-        header{position:sticky;top:0;z-index:100;padding:16px;text-align:center;border-bottom:1px solid var(--border);background:rgba(3,0,20,0.85);backdrop-filter:blur(30px)}
-        .logo{font-family:'Orbitron';font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,var(--primary),var(--primary2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;letter-spacing:6px;user-select:none}
-        .page{display:none;padding:16px;max-width:550px;margin:0 auto 80px;animation:pageIn .5s ease}
+        body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+        header{position:sticky;top:0;z-index:100;padding:16px;text-align:center;border-bottom:1px solid var(--border);background:rgba(3,0,20,0.85)}
+        .logo{font-family:'Orbitron';font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,var(--primary),var(--primary2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .page{display:none;padding:16px;max-width:550px;margin:0 auto 80px}
         .page.active{display:block}
-        @keyframes pageIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-        .glass{background:var(--card);backdrop-filter:blur(25px);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:12px}
+        .glass{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:18px;margin-bottom:12px}
         .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-        .btn{width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--primary),var(--primary2));color:#000;font-family:'Cairo';font-weight:900;font-size:1rem;cursor:pointer;margin-top:8px}
-        .btn:active{transform:scale(.97)}
+        .btn{width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--primary),var(--primary2));color:#000;font-weight:900;font-size:1rem;cursor:pointer;margin-top:8px}
         .btn-sm{width:auto;padding:8px 14px;font-size:.8rem;display:inline-block}
         .cyber-input{width:100%;padding:12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:#fff;font-family:'Cairo';font-size:.9rem;margin-bottom:10px;outline:none}
-        .cyber-input:focus{border-color:var(--primary)}
-        label{display:block;margin-bottom:4px;color:var(--text-secondary);font-size:.8rem}
-        .cat-card{padding:24px 10px;border-radius:var(--radius);text-align:center;cursor:pointer;border:1px solid var(--border);background:var(--card);transition:.3s;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+        label{display:block;margin-bottom:4px;color:rgba(255,255,255,0.5);font-size:.8rem}
+        .cat-card{padding:24px 10px;border-radius:20px;text-align:center;cursor:pointer;border:1px solid var(--border);background:var(--card);min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center}
         .cat-card:hover{transform:translateY(-4px);border-color:var(--primary)}
         .cat-card i{font-size:2rem;margin-bottom:8px}
         .cat-card h3{font-size:.85rem;font-weight:700}
-        .pkg-card{padding:14px 16px;border-radius:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;cursor:pointer;border:1px solid var(--border);transition:.3s}
+        .pkg-card{padding:14px 16px;border-radius:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;cursor:pointer;border:1px solid var(--border)}
         .pkg-card:hover{border-color:var(--primary);background:rgba(0,229,191,.05)}
         .pkg-card.selected{border-color:var(--primary);border-width:2px;background:rgba(0,229,191,.1)}
         .pkg-price{font-family:'Orbitron';color:var(--primary);font-weight:700}
         .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:999;display:none;justify-content:center;align-items:center;padding:20px}
-        .modal-content{background:#1a1a2e;padding:30px;border-radius:24px;max-width:400px;width:100%;text-align:center;border:1px solid var(--primary);animation:modalPop .4s ease;max-height:85vh;overflow-y:auto}
-        @keyframes modalPop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
-        .whatsapp-btn{position:fixed;bottom:20px;left:20px;width:50px;height:50px;border-radius:50%;background:#25D366;color:#fff;display:none;align-items:center;justify-content:center;font-size:1.4rem;z-index:100;text-decoration:none}
-        .whatsapp-btn.visible{display:flex}
-        .pay-method-card{padding:14px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.02);margin-bottom:6px;cursor:pointer;transition:.3s;display:flex;align-items:center;gap:10px}
-        .pay-method-card.selected{border-color:var(--primary);background:rgba(0,229,191,.1)}
-        .status-badge{display:inline-block;padding:3px 10px;border-radius:15px;font-size:.7rem;font-weight:800}
-        .badge-pending{background:rgba(243,156,18,.15);color:#f39c12}
-        .badge-approved{background:rgba(0,229,191,.15);color:#00e5bf}
-        .badge-rejected{background:rgba(255,59,92,.15);color:#ff3b5c}
-        @media(max-width:380px){.grid2{gap:8px}.cat-card{padding:18px 6px;min-height:100px}.cat-card i{font-size:1.5rem}}
+        .modal-content{background:#1a1a2e;padding:30px;border-radius:24px;max-width:400px;width:100%;text-align:center;border:1px solid var(--primary)}
     </style>
 </head>
 <body>
-    <a id="whatsapp-btn" class="whatsapp-btn" href="#" target="_blank"><i class="fab fa-whatsapp"></i></a>
     <header><div class="logo" id="main-logo">ISHHEN</div></header>
 
-    <!-- الرئيسية -->
     <div id="page-home" class="page active">
         <div style="text-align:center;margin-bottom:16px"><h2 style="color:var(--primary)">مرحباً بك</h2></div>
         <div class="grid2" id="categories-grid">
             <div style="text-align:center;padding:30px;color:#888;grid-column:1/-1">
                 <i class="fas fa-spinner fa-spin" style="font-size:2rem"></i>
-                <p>⏳ جاري التحميل...</p>
+                <p>⏳ جاري تحميل المنتجات...</p>
                 <p style="font-size:.7rem;margin-top:5px" id="load-status"></p>
+                <button class="btn btn-sm" onclick="loadProducts()" style="margin-top:10px;background:rgba(255,255,255,0.1);color:#fff">🔄 إعادة المحاولة</button>
             </div>
         </div>
-        <button class="btn btn-sm" onclick="testAllMethods()" style="margin-top:10px;background:rgba(255,255,255,0.1);color:#fff">🔍 تشخيص</button>
-        <div id="test-results" style="margin-top:10px;font-size:.7rem;max-height:300px;overflow-y:auto;background:rgba(0,0,0,0.3);padding:8px;border-radius:10px;display:none"></div>
     </div>
 
-    <!-- المنتجات -->
     <div id="page-products" class="page">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
             <h2 id="products-title" style="color:var(--primary)"></h2>
@@ -72,7 +55,6 @@
         <div id="products-list"></div>
     </div>
 
-    <!-- الباقات -->
     <div id="page-plans" class="page">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
             <h2 id="plans-title" style="color:var(--primary)"></h2>
@@ -81,7 +63,6 @@
         <div id="plans-list"></div>
     </div>
 
-    <!-- الدفع -->
     <div id="page-checkout" class="page">
         <h2 style="color:var(--primary);margin-bottom:12px">💳 الدفع</h2>
         <div class="glass"><div id="summary-plan" style="font-weight:700"></div><div id="summary-price" style="font-family:'Orbitron';color:var(--primary);font-weight:900;font-size:1.2rem;margin-top:8px"></div></div>
@@ -90,214 +71,128 @@
         <button class="btn" onclick="submitOrder()">🚀 تأكيد</button>
     </div>
 
-    <!-- الطلبات -->
-    <div id="page-orders" class="page">
-        <h2 style="color:var(--primary);margin-bottom:12px">📋 طلباتي</h2>
-        <div class="glass"><label>🔍 الآيدي</label><input type="text" id="orders-player-id" class="cyber-input"><button class="btn" onclick="loadOrders()">بحث</button><div id="orders-list" style="margin-top:10px"></div></div>
-    </div>
-
-    <!-- الهدية -->
-    <div id="page-redeem" class="page">
-        <h2 style="color:var(--primary);margin-bottom:12px">🎟️ كود الهدية</h2>
-        <div class="glass"><label>🎫 الكود</label><input type="text" id="redeem-code" class="cyber-input"><label>👤 الآيدي</label><input type="text" id="redeem-player-id" class="cyber-input"><button class="btn" onclick="redeemCode()">🎁 استلام</button></div>
-    </div>
-
-    <!-- التواصل -->
-    <div id="page-contact" class="page">
-        <h2 style="color:var(--primary);margin-bottom:12px">📞 تواصل</h2>
-        <div class="glass"><label>👤 الاسم</label><input type="text" id="contact-name" class="cyber-input"><label>🆔 الآيدي</label><input type="text" id="contact-player-id" class="cyber-input"><label>💬 الرسالة</label><textarea id="contact-msg" class="cyber-input" rows="3"></textarea><button class="btn" onclick="sendContact()">📩 إرسال</button></div>
-    </div>
-
-    <!-- لوحة التحكم -->
-    <div id="page-admin" class="page">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-            <h2 style="color:var(--primary)">👑 لوحة التحكم</h2>
-            <button class="btn btn-sm" onclick="adminLogout()" style="background:var(--danger)">🚪 خروج</button>
-        </div>
-        <div class="glass"><label>📈 الربح (%)</label><input type="number" id="set-margin" class="cyber-input" value="20"><button class="btn btn-sm" onclick="saveMargin()">💾</button></div>
-        <div class="glass"><label>💬 واتساب</label><input type="text" id="set-whatsapp" class="cyber-input"><button class="btn btn-sm" onclick="saveWA()">💾</button></div>
-        <div class="glass"><label>💳 إضافة دفع</label><input type="text" id="pay-name" class="cyber-input" placeholder="الاسم"><input type="text" id="pay-details" class="cyber-input" placeholder="الرقم"><button class="btn btn-sm" onclick="addPM()">➕</button><div id="pm-list" style="margin-top:8px"></div></div>
-        <div class="glass"><h4 style="color:var(--primary)">📋 الطلبات</h4><div id="admin-orders"></div></div>
-    </div>
-
     <div id="modal-alert" class="modal">
-        <div class="modal-content"><div style="font-size:3rem;margin-bottom:10px" id="modal-icon">🎉</div><p style="margin-bottom:16px" id="modal-msg"></p><button class="btn" onclick="closeModal('modal-alert')">حسناً</button></div>
+        <div class="modal-content"><div style="font-size:3rem">🎉</div><p style="margin-bottom:16px" id="modal-msg"></p><button class="btn" onclick="closeModal('modal-alert')">حسناً</button></div>
     </div>
 
     <script>
     const API_KEY = "SDpoC/9YxijfEyiSz0Tm8zNmWTdlNE1lUkk4SU5iS2c9PQ==";
-    const API_BASE = "https://syristore.com";
     let allProducts = [], currentProduct = null, selectedPlan = {}, margin = 20;
-    let isAdmin = false, navHistory = ['home'], tapCount = 0, tapTimer = null;
+    let tapCount = 0, tapTimer = null;
 
-    // ==================== API ====================
-    async function callAPI(action, extra = {}) {
-        const params = new URLSearchParams({ action, ...extra });
+    // استخدام XMLHttpRequest لتجنب مشاكل CORS
+    function apiCall(action, extraData, callback) {
+        const xhr = new XMLHttpRequest();
+        const params = "action=" + action + (extraData ? "&" + new URLSearchParams(extraData).toString() : "");
         
-        // استخدام index.php بدل api.php
-        const urls = [
-            API_BASE + "/api.php?" + params,
-            API_BASE + "/index.php?" + params,
-            API_BASE + "/api?" + params,
-        ];
+        xhr.open("POST", "https://syristore.com/api.php", true);
+        xhr.setRequestHeader("apikey", API_KEY);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.timeout = 15000;
         
-        const proxies = [
-            "https://api.allorigins.win/raw?url=",
-            "https://corsproxy.io/?",
-        ];
-        
-        for (const url of urls) {
-            // محاولة مباشرة
-            try {
-                const r = await fetch(url, { headers: { "apikey": API_KEY } });
-                if (r.ok) {
-                    const text = await r.text();
-                    if (text.startsWith("{") || text.startsWith("[")) {
-                        return JSON.parse(text);
-                    }
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                try {
+                    const data = JSON.parse(xhr.responseText);
+                    callback(null, data);
+                } catch(e) {
+                    // إذا فشل JSON، جرب index.php
+                    const xhr2 = new XMLHttpRequest();
+                    xhr2.open("POST", "https://syristore.com/index.php", true);
+                    xhr2.setRequestHeader("apikey", API_KEY);
+                    xhr2.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    xhr2.onload = function() {
+                        if (xhr2.status === 200) {
+                            try {
+                                callback(null, JSON.parse(xhr2.responseText));
+                            } catch(e2) {
+                                callback("Invalid JSON response: " + xhr2.responseText.substring(0, 200));
+                            }
+                        } else {
+                            callback("HTTP Error: " + xhr2.status);
+                        }
+                    };
+                    xhr2.onerror = function() { callback("Network Error"); };
+                    xhr2.send(params);
                 }
-            } catch(e) {}
-            
-            // عبر proxy
-            for (const proxy of proxies) {
-                try {
-                    const r = await fetch(proxy + encodeURIComponent(url));
-                    if (r.ok) {
-                        const text = await r.text();
-                        if (text.startsWith("{") || text.startsWith("[")) {
-                            return JSON.parse(text);
-                        }
-                    }
-                } catch(e) {}
+            } else {
+                callback("HTTP Error: " + xhr.status);
             }
-        }
+        };
         
-        return null;
+        xhr.onerror = function() {
+            // جرب index.php
+            const xhr2 = new XMLHttpRequest();
+            xhr2.open("POST", "https://syristore.com/index.php", true);
+            xhr2.setRequestHeader("apikey", API_KEY);
+            xhr2.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr2.onload = function() {
+                if (xhr2.status === 200) {
+                    try {
+                        callback(null, JSON.parse(xhr2.responseText));
+                    } catch(e) {
+                        callback("Invalid JSON: " + xhr2.responseText.substring(0, 200));
+                    }
+                } else {
+                    callback("HTTP Error: " + xhr2.status);
+                }
+            };
+            xhr2.onerror = function() { callback("Network Error - All attempts failed"); };
+            xhr2.send(params);
+        };
+        
+        xhr.send(params);
     }
 
-    async function testAllMethods() {
-        const div = document.getElementById('test-results');
-        div.style.display = 'block';
-        div.innerHTML = '<p style="color:#888">⏳ جاري اختبار جميع الطرق...</p>';
-        
-        let report = '<b>🔍 نتائج الاختبار:</b><br><br>';
-        
-        const urls = [API_BASE + "/api.php", API_BASE + "/index.php", API_BASE + "/api"];
-        const actions = ["products", "services", "balance"];
-        
-        for (const url of urls) {
-            for (const action of actions) {
-                const params = new URLSearchParams({ action });
-                const fullUrl = url + "?" + params;
-                
-                report += `<b>📍 ${url.split('/').pop()}?action=${action}</b><br>`;
-                
-                // مباشر
-                try {
-                    const r = await fetch(fullUrl, { headers: { "apikey": API_KEY } });
-                    report += `  مباشر: ${r.status} - ${(await r.text()).substring(0, 100)}<br>`;
-                } catch(e) { report += `  مباشر: ❌ ${e.message}<br>`; }
-                
-                // proxy
-                try {
-                    const r = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(fullUrl));
-                    if (r.ok) {
-                        const text = await r.text();
-                        report += `  proxy: ✅ ${text.substring(0, 150)}<br>`;
-                        if (text.startsWith("{") || text.startsWith("[")) {
-                            report += `  <b style="color:#0f0">✅ JSON صالح!</b><br>`;
-                        }
-                    }
-                } catch(e) { report += `  proxy: ❌ ${e.message}<br>`; }
-                
-                report += '<br>';
-            }
-        }
-        
-        div.innerHTML = report;
-    }
-
-    // ==================== تحميل المنتجات ====================
-    async function loadProducts() {
+    function loadProducts() {
         const status = document.getElementById('load-status');
         const grid = document.getElementById('categories-grid');
         
-        status.innerText = "جاري الاتصال...";
+        status.innerText = "⏳ جاري الاتصال بـ SyriaStore...";
         
-        // تجربة كل الروابط الممكنة
-        let data = null;
-        
-        // 1. api.php مع allorigins
-        try {
-            const url = API_BASE + "/api.php?action=products";
-            const r = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(url));
-            if (r.ok) {
-                const text = await r.text();
-                try { data = JSON.parse(text); status.innerText = "✅ api.php via allorigins"; } catch(e) {}
+        apiCall("products", null, function(err, data) {
+            if (err) {
+                grid.innerHTML = `<div style="text-align:center;color:var(--danger);grid-column:1/-1;padding:20px">
+                    <p>❌ ${err}</p>
+                    <button class="btn btn-sm" onclick="loadProducts()" style="margin-top:10px">🔄 إعادة المحاولة</button>
+                </div>`;
+                status.innerText = "❌ فشل: " + err;
+                return;
             }
-        } catch(e) {}
-        
-        // 2. index.php مع allorigins
-        if (!data || !data.products) {
-            try {
-                const url = API_BASE + "/index.php?action=products";
-                const r = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(url));
-                if (r.ok) {
-                    const text = await r.text();
-                    try { data = JSON.parse(text); status.innerText = "✅ index.php via allorigins"; } catch(e) {}
-                }
-            } catch(e) {}
-        }
-        
-        // 3. corsproxy.io
-        if (!data || !data.products) {
-            try {
-                const url = API_BASE + "/api.php?action=products";
-                const r = await fetch("https://corsproxy.io/?" + encodeURIComponent(url));
-                if (r.ok) {
-                    const text = await r.text();
-                    try { data = JSON.parse(text); status.innerText = "✅ via corsproxy.io"; } catch(e) {}
-                }
-            } catch(e) {}
-        }
-        
-        if (!data || !data.products) {
-            grid.innerHTML = `<div style="text-align:center;color:var(--danger);grid-column:1/-1;padding:20px">
-                <i class="fas fa-exclamation-triangle" style="font-size:3rem"></i>
-                <p>❌ فشل تحميل المنتجات</p>
-                <button class="btn btn-sm" onclick="loadProducts()" style="margin-top:10px">🔄 إعادة المحاولة</button>
-                <button class="btn btn-sm" onclick="testAllMethods()" style="margin-top:5px;background:rgba(255,255,255,0.1);color:#fff">🔍 تشخيص</button>
-            </div>`;
-            status.innerText = "❌ فشل";
-            return;
-        }
-        
-        const products = data.products || [];
-        status.innerText = `✅ ${products.length} منتج`;
-        
-        // تصنيف
-        const cats = {};
-        products.forEach(p => {
-            const name = (p.name || "").replace(/SyriaStore|syriastore/gi, "").trim();
-            if (!name) return;
-            const cat = name.split(" ")[0];
-            if (!cats[cat]) cats[cat] = { key: cat, name: getCatName(cat), icon: getIcon(Object.keys(cats).length), color: getColor(Object.keys(cats).length), products: [] };
             
-            const plans = (p.plans || []).filter(pl => !pl.disabled).map(pl => ({
-                plan_id: pl.planid || pl.id,
-                name: (pl.name || "").replace(/SyriaStore|syriastore/gi, "").trim(),
-                price: Math.round((pl.price || 0) * (1 + margin / 100))
-            }));
+            if (!data || !data.products) {
+                grid.innerHTML = '<p style="text-align:center;color:#888;grid-column:1/-1">❌ لا توجد منتجات. البيانات: ' + JSON.stringify(data).substring(0, 100) + '</p>';
+                status.innerText = "⚠️ لا توجد منتجات";
+                return;
+            }
             
-            if (plans.length) cats[cat].products.push({ name, plans });
+            const products = data.products;
+            status.innerText = `✅ ${products.length} منتج`;
+            
+            // تصنيف
+            const cats = {};
+            products.forEach(p => {
+                const name = (p.name || "").replace(/SyriaStore|syriastore/gi, "").trim();
+                if (!name) return;
+                const cat = name.split(" ")[0];
+                if (!cats[cat]) cats[cat] = { key: cat, name: getCatName(cat), icon: getIcon(Object.keys(cats).length), color: getColor(Object.keys(cats).length), products: [] };
+                
+                const plans = (p.plans || []).filter(pl => !pl.disabled).map(pl => ({
+                    plan_id: pl.planid || pl.id,
+                    name: (pl.name || "").replace(/SyriaStore|syriastore/gi, "").trim(),
+                    price: Math.round((pl.price || 0) * (1 + margin / 100))
+                }));
+                
+                if (plans.length) cats[cat].products.push({ name, plans });
+            });
+            
+            window._categories = Object.values(cats).filter(c => c.products.length);
+            renderCategories();
         });
-        
-        window._categories = Object.values(cats).filter(c => c.products.length);
-        renderCategories();
     }
 
     function getCatName(w) {
-        const t = {pubg:"🎮 ألعاب",free:"🎮 ألعاب",game:"🎮 ألعاب",mobile:"🎮 ألعاب",whatsapp:"💬 دردشة",telegram:"💬 دردشة",chat:"💬 دردشة",balance:"💰 رصيد",topup:"💰 رصيد",شحن:"💰 رصيد",card:"💳 بطاقات",gift:"💳 بطاقات",netflix:"💳 بطاقات",google:"💳 بطاقات",bitcoin:"₿ عملات",usdt:"₿ عملات",facebook:"📱 سوشل",instagram:"📱 سوشل",tiktok:"📱 سوشل",number:"📞 أرقام",virtual:"📞 أرقام",account:"👤 حسابات",vpn:"🛡️ VPN",special:"🔥 عروض"};
+        const t = {pubg:"🎮 ألعاب",free:"🎮 ألعاب",game:"🎮 ألعاب",whatsapp:"💬 دردشة",telegram:"💬 دردشة",chat:"💬 دردشة",balance:"💰 رصيد",topup:"💰 رصيد",card:"💳 بطاقات",gift:"💳 بطاقات",bitcoin:"₿ عملات",usdt:"₿ عملات",facebook:"📱 سوشل",instagram:"📱 سوشل",number:"📞 أرقام",account:"👤 حسابات",vpn:"🛡️ VPN"};
         for(const[k,v]of Object.entries(t)){if(w.toLowerCase().includes(k))return v}
         return "📦 "+w;
     }
@@ -312,14 +207,10 @@
     }
 
     function navigate(page) {
-        if (page === 'admin' && !isAdmin) return showAlert('🔐 لا تملك صلاحية', '🔐');
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById('page-' + page)?.classList.add('active');
-        navHistory.push(page);
         window.scrollTo({top:0,behavior:'smooth'});
         if (page === 'checkout') loadPM();
-        if (page === 'orders') { const p = localStorage.getItem('pid'); if (p) document.getElementById('orders-player-id').value = p; }
-        if (page === 'contact') { const p = localStorage.getItem('pid'); if (p) document.getElementById('contact-player-id').value = p; }
     }
 
     function showCat(key) {
@@ -347,75 +238,25 @@
 
     function loadPM() {
         const m = JSON.parse(localStorage.getItem('pm') || '[{"name":"سيرياتيل كاش","details":"0987654321"}]');
-        document.getElementById('payment-methods-list').innerHTML = m.map((x,i) => `<div class="pay-method-card" onclick="selPM(${i})" id="pmi-${i}"><span>💳 ${x.name}</span><span style="color:var(--primary);font-size:.8rem">${x.details}</span></div>`).join('');
+        document.getElementById('payment-methods-list').innerHTML = m.map((x,i) => `<div class="pkg-card" onclick="selPM(${i})" id="pmi-${i}"><span>💳 ${x.name}</span><span style="color:var(--primary);font-size:.8rem">${x.details}</span></div>`).join('');
         setTimeout(()=>document.getElementById('pmi-0')?.classList.add('selected'),100);
     }
-    function selPM(i){document.querySelectorAll('.pay-method-card').forEach(c=>c.classList.remove('selected'));document.getElementById('pmi-'+i)?.classList.add('selected')}
+    function selPM(i){document.querySelectorAll('#payment-methods-list .pkg-card').forEach(c=>c.classList.remove('selected'));document.getElementById('pmi-'+i)?.classList.add('selected')}
 
     function submitOrder() {
         const pid = document.getElementById('player-id').value.trim();
         const tx = document.getElementById('tx-num').value.trim();
         if (!pid||!tx) return showAlert('⚠️ املأ الحقول','⚠️');
         localStorage.setItem('pid',pid);
-        const orders = JSON.parse(localStorage.getItem('orders')||'[]');
-        orders.unshift({id:Date.now(),plan:selectedPlan.name,price:selectedPlan.price,player:pid,tx,status:'pending',date:new Date().toISOString()});
-        localStorage.setItem('orders',JSON.stringify(orders));
-        showAlert('✅ تم الاستلام','✅');
+        showAlert('✅ تم استلام الطلب','✅');
         navigate('home');
-    }
-
-    function loadOrders() {
-        const pid = document.getElementById('orders-player-id').value.trim();
-        if (!pid) return showAlert('⚠️ أدخل الآيدي','⚠️');
-        const orders = JSON.parse(localStorage.getItem('orders')||'[]').filter(o=>o.player===pid);
-        const div = document.getElementById('orders-list');
-        if (!orders.length) { div.innerHTML = '<p style="text-align:center;color:#888;padding:20px">📭 لا توجد طلبات</p>'; return; }
-        div.innerHTML = orders.map(o=>`<div class="pkg-card"><div><b>📦 ${o.plan}</b><br><small>💰 ${o.price.toLocaleString()} ل.س</small></div><span class="status-badge badge-${o.status==='pending'?'pending':o.status==='approved'?'approved':'rejected'}">${o.status==='pending'?'⏳ قيد المراجعة':o.status==='approved'?'✅ مكتمل':'❌ مرفوض'}</span></div>`).join('');
-    }
-
-    function redeemCode() {
-        const code = document.getElementById('redeem-code').value.trim();
-        const pid = document.getElementById('redeem-player-id').value.trim();
-        if (!code||!pid) return showAlert('⚠️ املأ الحقول','⚠️');
-        showAlert('🎉 تم استلام الهدية!','🎉');
-    }
-
-    function sendContact() {
-        const msg = document.getElementById('contact-msg').value.trim();
-        const pid = document.getElementById('contact-player-id').value.trim();
-        if (!pid||!msg) return showAlert('⚠️ املأ الحقول','⚠️');
-        localStorage.setItem('pid',pid);
-        showAlert('✅ تم الإرسال','✅');
-        document.getElementById('contact-msg').value='';
     }
 
     function showModal(id){document.getElementById(id).style.display='flex'}
     function closeModal(id){document.getElementById(id).style.display='none'}
-    function showAlert(msg,icon){document.getElementById('modal-icon').innerText=icon||'🎉';document.getElementById('modal-msg').innerText=msg;showModal('modal-alert')}
+    function showAlert(msg,icon){document.getElementById('modal-msg').innerText=msg;showModal('modal-alert')}
 
-    // لوحة التحكم
-    document.getElementById('main-logo').addEventListener('click',()=>{
-        tapCount++;clearTimeout(tapTimer);
-        if(tapCount>=5){tapCount=0;const pw=prompt('🔐 كلمة المرور:');if(pw==='admin123'){isAdmin=true;navigate('admin');loadAdmin()}else if(pw)showAlert('❌ خطأ','🔐')}
-        tapTimer=setTimeout(()=>tapCount=0,1500);
-    });
-
-    function adminLogout(){isAdmin=false;navigate('home')}
-    function loadAdmin(){document.getElementById('set-margin').value=margin;document.getElementById('set-whatsapp').value=localStorage.getItem('wa')||'';loadAdminPM();loadAdminOrders()}
-    function saveMargin(){margin=parseFloat(document.getElementById('set-margin').value)||20;showAlert('✅','✅')}
-    function saveWA(){const u=document.getElementById('set-whatsapp').value.trim();localStorage.setItem('wa',u);const b=document.getElementById('whatsapp-btn');if(u){b.href=u;b.classList.add('visible')}else b.classList.remove('visible');showAlert('✅','✅')}
-    function loadAdminPM(){const m=JSON.parse(localStorage.getItem('pm')||'[{"name":"سيرياتيل كاش","details":"0987654321"}]');document.getElementById('pm-list').innerHTML=m.map((x,i)=>`<div class="pkg-card"><span>💳 ${x.name} - ${x.details}</span><button class="btn btn-sm" style="background:var(--danger);width:auto;padding:4px 8px" onclick="delPM(${i})">🗑️</button></div>`).join('')}
-    function addPM(){const n=document.getElementById('pay-name').value.trim();const d=document.getElementById('pay-details').value.trim();if(!n||!d)return showAlert('⚠️','⚠️');const m=JSON.parse(localStorage.getItem('pm')||'[]');m.push({name:n,details:d});localStorage.setItem('pm',JSON.stringify(m));loadAdminPM();showAlert('✅','✅')}
-    function delPM(i){const m=JSON.parse(localStorage.getItem('pm')||'[]');m.splice(i,1);localStorage.setItem('pm',JSON.stringify(m));loadAdminPM()}
-    function loadAdminOrders(){const o=JSON.parse(localStorage.getItem('orders')||'[]');const d=document.getElementById('admin-orders');if(!o.length){d.innerHTML='<p style="color:#888">لا توجد طلبات</p>';return}d.innerHTML=o.map(x=>`<div class="pkg-card"><div><b>📦 ${x.plan}</b><br><small>👤 ${x.player} | 💰 ${x.price.toLocaleString()}</small></div>${x.status==='pending'?`<div><button class="btn btn-sm" style="background:var(--success);margin:2px" onclick="updOrder(${x.id},'approved')">✅</button><button class="btn btn-sm" style="background:var(--danger);margin:2px" onclick="updOrder(${x.id},'rejected')">❌</button></div>`:`<span class="status-badge badge-${x.status==='approved'?'approved':'rejected'}">${x.status==='approved'?'✅ مكتمل':'❌ مرفوض'}</span>`}</div>`).join('')}
-    function updOrder(id,s){const o=JSON.parse(localStorage.getItem('orders')||'[]');const i=o.findIndex(x=>x.id===id);if(i!==-1){o[i].status=s;localStorage.setItem('orders',JSON.stringify(o))}loadAdminOrders()}
-
-    // بدء التشغيل
-    document.addEventListener('DOMContentLoaded',()=>{
-        loadProducts();
-        const wa=localStorage.getItem('wa');if(wa){document.getElementById('whatsapp-btn').href=wa;document.getElementById('whatsapp-btn').classList.add('visible')}
-        const pid=localStorage.getItem('pid');if(pid)document.getElementById('player-id').value=pid;
-    });
+    document.addEventListener('DOMContentLoaded', loadProducts);
     </script>
 </body>
 </html>
