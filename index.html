@@ -3,358 +3,765 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>متجر الشحن</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <title>Ishhen - متجر الخدمات الرقمية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;600;700;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        :root { --primary: #00d4aa; --bg: #050505; --card: #12121e; --border: #ffffff0d; --neon-pubg: #f2a900; --neon-ff: #ff4500; }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Cairo', sans-serif; background: var(--bg); color: #fff; min-height: 100vh; overflow-x: hidden; padding-bottom: 70px; }
-        
-        /* Background Effects */
-        #bg-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; transition: 1s; z-index: -2; filter: brightness(0.3) saturate(1.2); }
-        .bg-home { background-image: url('https://media.tenor.com/pPFqRuVTu1UAAAAC/gaming-neon.gif'); }
-        .bg-pubg { background-image: url('https://media.tenor.com/1vMEdv7Y1X0AAAAd/pubg-mobile.gif'); }
-        .bg-ff { background-image: url('https://media.tenor.com/0t4FrMv9ZXMAAAAd/free-fire.gif'); }
-        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
-        
-        /* Glass Effect */
-        .glass { background: rgba(12, 12, 20, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border); }
-        
-        /* Header */
-        header { position: sticky; top: 0; z-index: 50; padding: 15px; text-align: center; border-bottom: 1px solid #333; background: rgba(5,5,15,0.9); }
-        .logo { font-family: 'Orbitron'; font-size: 1.3rem; background: linear-gradient(135deg, var(--primary), #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        /* Pages */
-        .page { display: none; padding: 20px; animation: fadeIn 0.3s; }
+        :root {
+            --primary: #00e5bf;
+            --primary2: #7c3aed;
+            --bg: #030014;
+            --card: rgba(12, 10, 30, 0.75);
+            --border: rgba(255, 255, 255, 0.07);
+            --danger: #ff3b5c;
+            --warning: #f39c12;
+            --success: #00b894;
+            --text: #e0e0e0;
+            --text-secondary: rgba(255, 255, 255, 0.5);
+            --radius: 20px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        #cosmos {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -3; overflow: hidden; pointer-events: none;
+        }
+        .nebula {
+            position: absolute; border-radius: 50%;
+            filter: blur(100px); opacity: 0.25;
+            animation: drift 25s ease-in-out infinite;
+        }
+        .nebula-1 { width: 500px; height: 500px; background: radial-gradient(circle, #7c3aed, transparent); top: -15%; right: -10%; }
+        .nebula-2 { width: 400px; height: 400px; background: radial-gradient(circle, #00e5bf, transparent); bottom: 5%; left: -8%; animation-delay: -8s; }
+        .nebula-3 { width: 300px; height: 300px; background: radial-gradient(circle, #ff3b5c, transparent); top: 50%; right: 40%; animation-delay: -15s; opacity: 0.15; }
+        @keyframes drift {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(40px, -50px) scale(1.1); }
+            50% { transform: translate(-30px, 40px) scale(0.95); }
+            75% { transform: translate(50px, 30px) scale(1.05); }
+        }
+
+        #category-bg {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -2; background-size: cover; background-position: center;
+            opacity: 0; transition: opacity 0.8s ease; pointer-events: none;
+        }
+        #category-bg.active { opacity: 1; }
+        #category-bg::after {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(180deg, rgba(3,0,20,0.3) 0%, rgba(3,0,20,0.6) 50%, rgba(3,0,20,0.95) 100%);
+        }
+
+        #particles-canvas {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; z-index: -1; pointer-events: none;
+        }
+
+        header {
+            position: sticky; top: 0; z-index: 100;
+            padding: 16px 20px; display: flex; justify-content: center; align-items: center;
+            border-bottom: 1px solid var(--border);
+            background: rgba(3, 0, 20, 0.85); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+        }
+        .header-back {
+            position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+            width: 40px; height: 40px; border-radius: 12px;
+            background: rgba(0, 229, 191, 0.1); border: 1px solid rgba(0, 229, 191, 0.25);
+            color: var(--primary); font-size: 1rem; cursor: pointer;
+            display: none; align-items: center; justify-content: center; transition: all 0.3s;
+        }
+        .header-back.visible { display: flex; }
+        .header-back:active { transform: translateY(-50%) scale(0.9); }
+
+        .logo {
+            font-family: 'Orbitron'; font-size: clamp(1.6rem, 5vw, 2.2rem); font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--primary2), var(--primary));
+            background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: logoShine 3s ease infinite; letter-spacing: 6px; cursor: pointer; transition: all 0.3s;
+            user-select: none;
+        }
+        @keyframes logoShine {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .page {
+            display: none; padding: 20px 16px 80px; max-width: 550px; margin: 0 auto;
+            animation: pageIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* Grids & Cards */
-        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
-        .card { padding: 25px 15px; border-radius: 16px; text-align: center; cursor: pointer; transition: 0.3s; border: 1px solid #333; }
-        .card:hover { transform: translateY(-3px); border-color: var(--primary); }
-        .card i { font-size: 2.5rem; margin-bottom: 10px; }
-        .card h3 { font-size: 1.1rem; }
-        
-        /* Forms & Inputs */
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; margin-bottom: 8px; color: #aaa; font-size: 0.9rem; }
-        .cyber-input { width: 100%; padding: 15px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid #333; color: #fff; font-family: 'Cairo'; font-size: 1rem; transition: 0.3s; }
-        .cyber-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 15px rgba(0,212,170,0.2); }
-        select.cyber-input { appearance: none; }
-        
-        /* Buttons */
-        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--primary), #00b894); color: #000; font-family: 'Cairo'; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .btn:hover { box-shadow: 0 0 20px var(--primary); transform: scale(1.02); }
-        .btn-danger { background: linear-gradient(135deg, #ff4757, #ff6b81); color: #fff; }
-        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
-        .btn-small { padding: 10px; font-size: 0.9rem; }
-        
-        /* Package Selection */
-        .pkg-card { padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; cursor: pointer; border: 1px solid #333; transition: 0.3s; }
-        .pkg-card:hover, .pkg-card.selected { border-color: var(--primary); background: rgba(0, 212, 170, 0.1); box-shadow: 0 0 10px rgba(0,212,170,0.2); }
+        @keyframes pageIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .glass {
+            background: var(--card); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 20px; margin-bottom: 14px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3), 0 0 40px rgba(0,229,191,0.15);
+        }
+
+        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+
+        .btn {
+            width: 100%; padding: 15px; border-radius: 16px; border: none;
+            background: linear-gradient(135deg, var(--primary), #00c9a7, var(--primary2));
+            background-size: 200% 200%; color: #000; font-family: 'Cairo';
+            font-weight: 900; font-size: 1rem; cursor: pointer; margin-top: 10px;
+            transition: all 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px;
+            box-shadow: 0 8px 30px rgba(0, 229, 191, 0.25);
+            animation: btnShine 4s ease infinite;
+        }
+        @keyframes btnShine {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn-sm { width: auto; padding: 8px 16px; font-size: 0.8rem; animation: none; }
+
+        .input-group { margin-bottom: 16px; }
+        .input-group label { display: block; margin-bottom: 6px; color: var(--text-secondary); font-size: 0.82rem; font-weight: 600; }
+        .cyber-input {
+            width: 100%; padding: 14px 16px; border-radius: 14px;
+            background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+            color: #fff; font-family: 'Cairo'; font-size: 0.92rem;
+            transition: all 0.3s; outline: none;
+        }
+        .cyber-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,229,191,0.1), 0 0 30px rgba(0,229,191,0.08); background: rgba(0,0,0,0.2); }
+        .cyber-input::placeholder { color: rgba(255,255,255,0.2); }
+        textarea.cyber-input { resize: none; min-height: 100px; }
+        select.cyber-input { appearance: none; cursor: pointer; }
+
+        .cat-card {
+            position: relative; padding: 28px 12px; border-radius: var(--radius);
+            text-align: center; cursor: pointer; border: 1px solid var(--border);
+            background: var(--card); backdrop-filter: blur(20px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            min-height: 140px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; overflow: hidden;
+        }
+        .cat-card::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(180deg, transparent 0%, rgba(3,0,20,0.7) 100%);
+            z-index: 1; pointer-events: none; transition: all 0.4s;
+        }
+        .cat-card:hover { transform: translateY(-8px); border-color: rgba(0,229,191,0.4); box-shadow: 0 20px 60px rgba(0,229,191,0.15); }
+        .cat-card i { font-size: clamp(2rem, 6vw, 2.8rem); margin-bottom: 12px; position: relative; z-index: 2; filter: drop-shadow(0 0 20px currentColor); animation: iconFloat 4s ease-in-out infinite; }
+        .cat-card h3 { font-size: clamp(0.8rem, 2.6vw, 0.95rem); position: relative; z-index: 2; font-weight: 800; }
+        @keyframes iconFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+        .pkg-card {
+            padding: 16px 18px; border-radius: 16px; display: flex;
+            justify-content: space-between; align-items: center; margin-bottom: 10px;
+            cursor: pointer; border: 1px solid var(--border);
+            background: rgba(255,255,255,0.02); transition: all 0.3s;
+        }
+        .pkg-card:hover, .pkg-card.selected { border-color: var(--primary); background: rgba(0,229,191,0.06); }
         .pkg-price { font-family: 'Orbitron'; color: var(--primary); font-weight: 700; }
-        
-        /* Bottom Navigation */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(10,10,15,0.95); backdrop-filter: blur(10px); border-top: 1px solid #333; display: flex; justify-content: space-around; z-index: 100; padding: 10px 0; }
-        .nav-item { color: #666; text-align: center; cursor: pointer; transition: 0.3s; font-size: 0.8rem; font-weight: 700; }
-        .nav-item i { font-size: 1.3rem; display: block; margin-bottom: 3px; }
-        .nav-item.active, .nav-item:hover { color: var(--primary); }
-        
-        /* Alert Modal */
-        #alert-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 999; display: none; justify-content: center; align-items: center; padding: 20px; }
-        .modal-content { background: var(--card); padding: 30px; border-radius: 20px; max-width: 400px; width: 100%; text-align: center; border: 1px solid var(--primary); }
-        .modal-icon { font-size: 3rem; margin-bottom: 15px; }
-        .modal-msg { margin-bottom: 20px; line-height: 1.6; }
+
+        .checkout-summary { padding: 20px; border-radius: var(--radius); margin-bottom: 16px; border: 1px solid rgba(0,229,191,0.2); background: linear-gradient(135deg, rgba(0,229,191,0.03), rgba(124,58,237,0.03)); }
+        .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 0.9rem; }
+        .summary-label { color: var(--text-secondary); }
+        .summary-value { font-weight: 700; }
+        .total-row { padding-top: 12px; margin-top: 6px; border-top: 2px solid rgba(0,229,191,0.3) !important; }
+        .total-row .summary-value { color: var(--primary); font-family: 'Orbitron'; font-size: 1.2rem; }
+
+        .steps { display: flex; justify-content: center; gap: 10px; margin-bottom: 18px; }
+        .step-dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.08); transition: 0.3s; }
+        .step-dot.active { background: var(--primary); box-shadow: 0 0 15px var(--primary); }
+        .step-dot.done { background: #00c9a7; }
+
+        .pay-method-card {
+            padding: 16px; border-radius: 16px; border: 1px solid var(--border);
+            background: rgba(255,255,255,0.02); margin-bottom: 8px; cursor: pointer;
+            transition: all 0.3s; display: flex; align-items: center; gap: 14px;
+        }
+        .pay-method-card.selected { border-color: var(--primary); background: rgba(0,229,191,0.06); }
+        .pay-method-card .pm-icon {
+            width: 44px; height: 44px; border-radius: 14px;
+            background: linear-gradient(135deg, rgba(0,229,191,0.1), rgba(124,58,237,0.1));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; color: var(--primary); flex-shrink: 0;
+        }
+        .pay-method-card .pm-name { flex: 1; font-weight: 700; }
+
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 999; display: none;
+            justify-content: center; align-items: center; padding: 20px;
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+        }
+        .modal-content {
+            background: linear-gradient(145deg, rgba(15,12,35,0.98), rgba(8,5,20,0.98));
+            padding: 35px 28px; border-radius: 28px; max-width: 420px; width: 100%;
+            text-align: center; border: 1px solid rgba(0,229,191,0.3);
+            box-shadow: 0 0 60px rgba(0,229,191,0.1); animation: modalPop 0.4s cubic-bezier(0.16,1,0.3,1);
+            max-height: 85vh; overflow-y: auto;
+        }
+        @keyframes modalPop {
+            0% { transform: scale(0.7) translateY(40px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .admin-tabs { display: flex; gap: 6px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 6px; }
+        .admin-tab {
+            padding: 10px 18px; border-radius: 25px; background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border); cursor: pointer; font-size: 0.82rem;
+            white-space: nowrap; font-weight: 700; transition: all 0.3s;
+        }
+        .admin-tab.active { background: var(--primary); color: #000; border-color: var(--primary); }
+        .admin-tab-content { display: none; }
+        .admin-tab-content.active { display: block; }
+
+        .stat-card { background: rgba(255,255,255,0.03); border-radius: 18px; padding: 18px; text-align: center; border: 1px solid var(--border); }
+        .stat-value { font-family: 'Orbitron'; font-size: 1.8rem; font-weight: 900; color: var(--primary); }
+        .stat-label { font-size: 0.75rem; color: var(--text-secondary); margin-top: 6px; }
+
+        .whatsapp-btn {
+            position: fixed; bottom: 24px; left: 24px;
+            width: 56px; height: 56px; border-radius: 50%;
+            background: #25D366; color: #fff; display: none;
+            align-items: center; justify-content: center; font-size: 1.6rem;
+            box-shadow: 0 4px 20px rgba(37,211,102,0.4); z-index: 100;
+            text-decoration: none; animation: waFloat 3s ease-in-out infinite;
+        }
+        .whatsapp-btn.visible { display: flex; }
+        @keyframes waFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+        .moving-ad {
+            margin-bottom: 10px; border-radius: 14px; overflow: hidden;
+            border: 1px solid rgba(0,229,191,0.2);
+            background: linear-gradient(135deg, rgba(0,229,191,0.06), rgba(124,58,237,0.06));
+            height: 44px; display: flex; align-items: center; direction: ltr;
+        }
+        .moving-ad-text { white-space: nowrap; animation: marquee 20s linear infinite; font-weight: 800; font-size: 0.9rem; padding-left: 100%; }
+        @keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-200%); } }
+
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 800; }
+        .badge-pending { background: rgba(243,156,18,0.15); color: #f39c12; }
+        .badge-approved { background: rgba(0,229,191,0.15); color: #00e5bf; }
+        .badge-rejected { background: rgba(255,59,92,0.15); color: #ff3b5c; }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,229,191,0.3); border-radius: 10px; }
+
+        @media (max-width: 380px) {
+            .grid2 { gap: 8px; }
+            .cat-card { padding: 20px 8px; min-height: 110px; }
+            .cat-card i { font-size: 1.6rem; }
+            .page { padding: 14px 10px 70px; }
+        }
     </style>
 </head>
 <body>
-
-    <div id="bg-layer" class="bg-home"></div>
-    <div id="particles-js"></div>
+    <div id="cosmos"><div class="nebula nebula-1"></div><div class="nebula nebula-2"></div><div class="nebula nebula-3"></div></div>
+    <div id="category-bg"></div>
+    <canvas id="particles-canvas"></canvas>
+    <a id="whatsapp-btn" class="whatsapp-btn" href="#" target="_blank"><i class="fab fa-whatsapp"></i></a>
 
     <header>
-        <div class="logo">VOLT STORE</div>
+        <button class="header-back" id="header-back-btn" onclick="goBack()"><i class="fas fa-arrow-right"></i></button>
+        <div class="logo" id="main-logo">ISHHEN</div>
     </header>
 
     <!-- الصفحة الرئيسية -->
     <div id="page-home" class="page active">
-        <h2 style="text-align:center; margin-bottom:5px; font-family:'Orbitron';">مرحباً بك 🕹️</h2>
-        <p style="text-align:center; color:#aaa; margin-bottom:20px;">اختر ما تريد من القائمة</p>
-        <div class="grid2">
-            <div class="card glass" onclick="showPage('shop'); selectGame('pubg')"><i class="fas fa-gamepad" style="color:var(--neon-pubg)"></i><h3>شحن ببجي</h3></div>
-            <div class="card glass" onclick="showPage('shop'); selectGame('freefire')"><i class="fas fa-fire" style="color:var(--neon-ff)"></i><h3>شحن فري فاير</h3></div>
-            <div class="card glass" onclick="showPage('redeem')"><i class="fas fa-gift" style="color:#7c3aed"></i><h3>كود الهدية</h3></div>
-            <div class="card glass" onclick="showPage('referral')"><i class="fas fa-users" style="color:#00b894"></i><h3>الإحالات</h3></div>
-            <div class="card glass" onclick="showPage('contact')"><i class="fas fa-headset" style="color:#0984e3"></i><h3>تواصل مع الداعم</h3></div>
-            <div class="card glass" onclick="showAlert('🎁 الهدايا', 'ترقب أكواد الهدايا في قناة البوت!')"><i class="fas fa-box-open" style="color:#fdcb6e"></i><h3>هدايا</h3></div>
+        <div style="text-align:center;margin-bottom:20px">
+            <h2 style="font-family:'Orbitron';font-size:clamp(1rem,4vw,1.3rem);font-weight:700;background:linear-gradient(90deg,var(--primary),#fff,var(--primary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px">مرحباً بك في عالم الخدمات الرقمية</h2>
+            <p style="color:var(--text-secondary);font-size:0.85rem">اختر الخدمة التي تريدها</p>
+        </div>
+        <div id="home-ads"></div>
+        <div class="grid2" id="categories-grid"></div>
+    </div>
+
+    <!-- صفحة المنتجات -->
+    <div id="page-products" class="page">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <h2 id="products-title" style="font-family:'Orbitron';color:var(--primary);font-size:1.2rem"></h2>
+        </div>
+        <div id="products-list"></div>
+    </div>
+
+    <!-- صفحة الباقات -->
+    <div id="page-plans" class="page">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <h2 id="plans-title" style="font-family:'Orbitron';color:var(--primary);font-size:1.2rem"></h2>
+        </div>
+        <div id="plans-list"></div>
+    </div>
+
+    <!-- صفحة الدفع -->
+    <div id="page-checkout" class="page">
+        <h2 style="font-family:'Orbitron';color:var(--primary);font-size:1.1rem;margin-bottom:16px">💳 إتمام الدفع</h2>
+        <div class="steps"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div></div>
+        <div class="checkout-summary glass">
+            <div class="summary-row"><span class="summary-label">🎯 الباقة</span><span class="summary-value" id="summary-plan">-</span></div>
+            <div class="summary-row"><span class="summary-label">📦 المنتج</span><span class="summary-value" id="summary-product">-</span></div>
+            <div class="summary-row total-row"><span class="summary-label">💰 المبلغ</span><span class="summary-value" id="summary-price">-</span></div>
+        </div>
+        <div class="glass">
+            <div class="input-group"><label>👤 الآيدي أو الحساب</label><input type="text" id="player-id" class="cyber-input" placeholder="أدخل الآيدي أو رقم الحساب..."></div>
+            <div class="input-group"><label>🧾 رقم عملية الدفع</label><input type="text" id="tx-num" class="cyber-input" placeholder="أدخل رقم عملية التحويل..."></div>
+        </div>
+        <div class="glass"><label style="font-weight:700;color:var(--primary);margin-bottom:10px;display:block">💳 اختر طريقة الدفع</label><div id="payment-methods-list"></div></div>
+        <button class="btn" onclick="submitOrder()"><i class="fas fa-bolt"></i> تأكيد وإرسال الطلب</button>
+    </div>
+
+    <!-- صفحة الطلبات -->
+    <div id="page-orders" class="page">
+        <h2 style="font-family:'Orbitron';color:var(--primary);font-size:1.1rem;margin-bottom:16px">📋 طلباتي</h2>
+        <div class="glass">
+            <div class="input-group"><label>🔍 آيدي الحساب</label><input type="text" id="orders-player-id" class="cyber-input" placeholder="أدخل الآيدي للبحث..."></div>
+            <button class="btn" onclick="loadOrders()"><i class="fas fa-search"></i> بحث</button>
+            <div id="orders-list" style="margin-top:14px"></div>
         </div>
     </div>
 
-    <!-- صفحة المتجر -->
-    <div id="page-shop" class="page">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <button class="btn btn-outline btn-small" onclick="showPage('home')"><i class="fas fa-arrow-right"></i> رجوع</button>
-            <h2 id="shop-title" style="font-family:'Orbitron'; font-size:1.2rem;"></h2>
-        </div>
-        <div id="packages-list"></div>
-        
-        <div id="checkout-form" style="display:none; margin-top:25px; padding:20px; border-radius:16px;" class="glass">
-            <h3 style="margin-bottom:15px; text-align:center;">إتمام الطلب</h3>
-            <div class="input-group"><label>آيدي اللاعب (Player ID)</label><input type="text" id="player-id" class="cyber-input" placeholder="أدخل الآيدي هنا..."></div>
-            <div class="input-group"><label>طريقة الدفع</label><select id="pay-method" class="cyber-input"></select></div>
-            <button class="btn" onclick="submitOrder()"><i class="fas fa-paper-plane"></i> إرسال الطلب</button>
-        </div>
-    </div>
-
-    <!-- صفحة أكواد الهدية -->
+    <!-- صفحة كود الهدية -->
     <div id="page-redeem" class="page">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <button class="btn btn-outline btn-small" onclick="showPage('home')"><i class="fas fa-arrow-right"></i> رجوع</button>
-            <h2 style="font-family:'Orbitron'; font-size:1.2rem;">🎟️ كود الهدية</h2>
-        </div>
-        <div class="glass" style="padding:20px; border-radius:16px;">
-            <div class="input-group"><label>أدخل الكود</label><input type="text" id="redeem-code" class="cyber-input" placeholder="مثال: GIFT-XXXX-XXXX"></div>
-            <div class="input-group"><label>آيدي اللاعب لاستلام الهدية</label><input type="text" id="redeem-player-id" class="cyber-input" placeholder="أدخل الآيدي هنا..."></div>
-            <button class="btn" onclick="redeemCode()"><i class="fas fa-check-circle"></i> استلام الهدية</button>
-        </div>
-    </div>
-
-    <!-- صفحة الإحالات -->
-    <div id="page-referral" class="page">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <button class="btn btn-outline btn-small" onclick="showPage('home')"><i class="fas fa-arrow-right"></i> رجوع</button>
-            <h2 style="font-family:'Orbitron'; font-size:1.2rem;">🔗 نظام الإحالات</h2>
-        </div>
-        <div class="glass" style="padding:20px; border-radius:16px; text-align:center;">
-            <p style="margin-bottom:15px; color:#aaa;">أدخل آيدي التليجرام الخاص بك لعرض رابط الإحالة ومعلوماتك</p>
-            <div class="input-group"><input type="number" id="ref-tg-id" class="cyber-input" placeholder="آيدي تليجرامك (أرقام فقط)"></div>
-            <button class="btn" onclick="checkReferral()" style="margin-bottom:15px;">عرض معلومات الإحالة</button>
-            
-            <div id="ref-info" style="display:none;">
-                <div style="background:rgba(0,212,170,0.1); padding:15px; border-radius:12px; margin-bottom:15px;">
-                    <p style="font-weight:700; margin-bottom:5px;">رابط الدعوة الخاص بك:</p>
-                    <p id="ref-link" style="color:var(--primary); word-break:break-all; font-size:0.9rem;"></p>
-                    <button class="btn btn-outline btn-small" style="margin-top:10px;" onclick="copyRef()">نسخ الرابط</button>
-                </div>
-                <p id="ref-stats" style="margin-bottom:15px; color:#aaa;"></p>
-                
-                <div id="claim-ref-section" style="display:none;">
-                    <div class="input-group"><label>آيدي اللاعب لاستلام الهدية</label><input type="text" id="ref-player-id" class="cyber-input" placeholder="أدخل الآيدي هنا..."></div>
-                    <button class="btn" onclick="claimReferral()"><i class="fas fa-gift"></i> استلام هدية الإحالة</button>
-                </div>
-            </div>
+        <h2 style="font-family:'Orbitron';color:var(--primary);font-size:1.1rem;margin-bottom:16px">🎟️ كود الهدية</h2>
+        <div class="glass">
+            <div class="input-group"><label>🎫 الكود</label><input type="text" id="redeem-code" class="cyber-input" placeholder="GIFT-XXXX-XXXX"></div>
+            <div class="input-group"><label>👤 آيدي الحساب</label><input type="text" id="redeem-player-id" class="cyber-input" placeholder="أدخل الآيدي..."></div>
+            <button class="btn" onclick="redeemCode()"><i class="fas fa-gift"></i> استلام الهدية</button>
         </div>
     </div>
 
     <!-- صفحة التواصل -->
     <div id="page-contact" class="page">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <button class="btn btn-outline btn-small" onclick="showPage('home')"><i class="fas fa-arrow-right"></i> رجوع</button>
-            <h2 style="font-family:'Orbitron'; font-size:1.2rem;">📞 تواصل معنا</h2>
+        <h2 style="font-family:'Orbitron';color:var(--primary);font-size:1.1rem;margin-bottom:16px">📞 تواصل معنا</h2>
+        <div class="glass">
+            <div class="input-group"><label>👤 اسمك</label><input type="text" id="contact-name" class="cyber-input" placeholder="أدخل اسمك..."></div>
+            <div class="input-group"><label>🆔 آيدي الحساب</label><input type="text" id="contact-player-id" class="cyber-input" placeholder="أدخل الآيدي..."></div>
+            <div class="input-group"><label>💬 رسالتك</label><textarea id="contact-msg" class="cyber-input" rows="4" placeholder="اكتب رسالتك هنا..."></textarea></div>
+            <button class="btn" onclick="sendContact()"><i class="fas fa-paper-plane"></i> إرسال</button>
         </div>
-        <div class="glass" style="padding:20px; border-radius:16px;">
-            <div class="input-group"><label>رسالتك</label><textarea id="contact-msg" class="cyber-input" rows="5" placeholder="اكتب رسالتك أو استفسارك هنا..." style="resize:none;"></textarea></div>
-            <button class="btn" onclick="sendContact()"><i class="fas fa-paper-plane"></i> إرسال الرسالة</button>
+    </div>
+
+    <!-- لوحة التحكم -->
+    <div id="page-admin" class="page">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <h2 style="font-family:'Orbitron';color:var(--primary);font-size:1.2rem">👑 لوحة التحكم</h2>
+            <button class="btn btn-sm" onclick="adminLogout()" style="margin:0;background:var(--danger)">🚪 خروج</button>
+        </div>
+        <div class="admin-tabs" id="admin-tabs">
+            <div class="admin-tab active" onclick="switchAdminTab('dashboard')">📊 الرئيسية</div>
+            <div class="admin-tab" onclick="switchAdminTab('orders')">📋 الطلبات</div>
+            <div class="admin-tab" onclick="switchAdminTab('settings')">⚙️ الإعدادات</div>
+            <div class="admin-tab" onclick="switchAdminTab('payments')">💳 الدفع</div>
+            <div class="admin-tab" onclick="switchAdminTab('gifts')">🎁 الهدايا</div>
+            <div class="admin-tab" onclick="switchAdminTab('diagnose')">🔍 تشخيص</div>
+        </div>
+
+        <div id="tab-dashboard" class="admin-tab-content active">
+            <div class="grid2" style="margin-bottom:16px">
+                <div class="stat-card"><div class="stat-value" id="stat-products">-</div><div class="stat-label">منتج</div></div>
+                <div class="stat-card"><div class="stat-value" id="stat-orders">-</div><div class="stat-label">طلب</div></div>
+                <div class="stat-card"><div class="stat-value" id="stat-balance">-</div><div class="stat-label">ل.س</div></div>
+                <div class="stat-card"><div class="stat-value" id="stat-users">-</div><div class="stat-label">مستخدم</div></div>
+            </div>
+            <div class="glass">
+                <button class="btn btn-sm" onclick="refreshCache()" style="margin:4px">🔄 تحديث المنتجات</button>
+                <button class="btn btn-sm" onclick="toggleBot()" style="margin:4px">⏸️ إيقاف البوت</button>
+                <button class="btn btn-sm" onclick="toggleWebsite()" style="margin:4px">⏸️ إيقاف الموقع</button>
+            </div>
+        </div>
+
+        <div id="tab-orders" class="admin-tab-content"><div id="admin-orders-list"></div></div>
+
+        <div id="tab-settings" class="admin-tab-content">
+            <div class="glass"><div class="input-group"><label>📈 نسبة الربح (%)</label><input type="number" id="set-margin" class="cyber-input"></div><button class="btn btn-sm" onclick="saveSetting('profit_margin','set-margin')">💾 حفظ</button></div>
+            <div class="glass"><div class="input-group"><label>🎉 نسبة الخصم (%)</label><input type="number" id="set-discount" class="cyber-input"></div><button class="btn btn-sm" onclick="saveSetting('discount','set-discount')">💾 حفظ</button></div>
+            <div class="glass"><div class="input-group"><label>💬 رابط واتساب</label><input type="text" id="set-whatsapp" class="cyber-input" placeholder="https://wa.me/963xxxxxxxxx"></div><button class="btn btn-sm" onclick="saveSetting('whatsapp_url','set-whatsapp')">💾 حفظ</button></div>
+        </div>
+
+        <div id="tab-payments" class="admin-tab-content">
+            <div class="glass">
+                <h3 style="color:var(--primary);margin-bottom:10px">➕ إضافة طريقة دفع</h3>
+                <div class="input-group"><label>الاسم</label><input type="text" id="new-pay-name" class="cyber-input" placeholder="مثال: سيرياتيل كاش"></div>
+                <div class="input-group"><label>الرقم</label><input type="text" id="new-pay-details" class="cyber-input" placeholder="مثال: 099xxxxxxxx"></div>
+                <button class="btn btn-sm" onclick="addPayment()">➕ إضافة</button>
+            </div>
+            <div id="admin-payments-list"></div>
+        </div>
+
+        <div id="tab-gifts" class="admin-tab-content">
+            <div class="glass">
+                <h3 style="color:var(--primary);margin-bottom:10px">🎁 توليد كود هدية</h3>
+                <div class="input-group"><label>اختر الباقة</label><select id="gift-plan-select" class="cyber-input"></select></div>
+                <div class="input-group"><label>عدد المستفيدين</label><input type="number" id="gift-max-uses" class="cyber-input" value="1" min="1"></div>
+                <button class="btn btn-sm" onclick="generateGiftCode()">🎟️ توليد</button>
+            </div>
+            <div id="gift-result" style="display:none;margin-top:12px" class="glass">
+                <h3 style="color:var(--success)">✅ تم التوليد!</h3>
+                <p style="font-family:'Orbitron';font-size:1.4rem;margin:12px 0;letter-spacing:2px" id="gift-code-display"></p>
+                <button class="btn btn-sm" onclick="copyGiftCode()">📋 نسخ</button>
+            </div>
+        </div>
+
+        <div id="tab-diagnose" class="admin-tab-content">
+            <button class="btn btn-sm" onclick="diagnoseAPI()" style="margin:4px">🔍 تشخيص شامل</button>
+            <button class="btn btn-sm" onclick="discoverCategories()" style="margin:4px">📋 اكتشاف الفئات</button>
+            <div id="diagnose-result" style="margin-top:12px;font-size:0.78rem;max-height:400px;overflow-y:auto"></div>
         </div>
     </div>
 
     <!-- نافذة التنبيهات -->
-    <div id="alert-modal">
-        <div class="modal-content glass">
-            <div class="modal-icon" id="modal-icon">🎉</div>
-            <div class="modal-msg" id="modal-msg">تم بنجاح</div>
-            <button class="btn" onclick="closeAlert()">حسناً</button>
+    <div id="modal-alert" class="modal">
+        <div class="modal-content">
+            <div style="font-size:3rem;margin-bottom:12px" id="modal-icon">🎉</div>
+            <p style="margin-bottom:20px;font-size:1rem;line-height:1.6" id="modal-msg"></p>
+            <button class="btn" onclick="closeModal('modal-alert')">حسناً</button>
         </div>
     </div>
 
-    <!-- القائمة السفلية -->
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="showPage('home')"><i class="fas fa-home"></i>الرئيسية</div>
-        <div class="nav-item" onclick="showPage('shop')"><i class="fas fa-store"></i>المتجر</div>
-        <div class="nav-item" onclick="showPage('redeem')"><i class="fas fa-gift"></i>أكواد</div>
-        <div class="nav-item" onclick="showPage('referral')"><i class="fas fa-link"></i>إحالات</div>
-        <div class="nav-item" onclick="showPage('contact')"><i class="fas fa-headset"></i>دعم</div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        // ⚠️ ضع رابط البوت الخاص بك على JustRunMy هنا
-        const API_URL = "https://ishhan-bot-83e.e.jrnm.app"; 
+    var API = window.location.origin;
+    var allCategories = [], allProducts = [], currentProduct = null;
+    var selectedPlan = {}, paymentMethods = [];
+    var isAdmin = false, navHistory = ['home'];
+    var categoryBgs = {}, generatedGiftCode = '';
+    var logoTapCount = 0, logoTapTimer = null;
 
-        let currentGame = '';
-        let selectedPlanId = '';
-        let selectedPlanName = '';
-        let selectedPrice = 0;
-
-        // Particles Init
-        particlesJS('particles-js', { particles: { number: { value: 40 }, color: { value: "#00d4aa" }, shape: { type: "circle" }, opacity: { value: 0.3 }, size: { value: 2 }, line_linked: { enable: true, distance: 150, color: "#00d4aa", opacity: 0.15 }, move: { enable: true, speed: 1.5 } } });
-
-        // Navigation System
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-            document.getElementById(`page-${pageId}`).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            
-            const bg = document.getElementById('bg-layer');
-            bg.className = 'bg-home';
-            if(pageId === 'shop' && currentGame === 'pubg') bg.className = 'bg-pubg';
-            if(pageId === 'shop' && currentGame === 'freefire') bg.className = 'bg-ff';
-            
-            if(pageId === 'shop') loadPaymentMethods();
-        }
-
-        // Alert Modal
-        function showAlert(title, msg, icon='🎉') {
-            document.getElementById('modal-icon').innerText = icon;
-            document.getElementById('modal-msg').innerText = msg;
-            document.getElementById('alert-modal').style.display = 'flex';
-        }
-        function closeAlert() { document.getElementById('alert-modal').style.display = 'none'; }
-
-        // Shop Functions
-        async function selectGame(game) {
-            currentGame = game;
-            document.getElementById('shop-title').innerText = game === 'pubg' ? 'PUBG MOBILE' : 'FREE FIRE';
-            document.getElementById('shop-title').style.color = game === 'pubg' ? 'var(--neon-pubg)' : 'var(--neon-ff)';
-            document.getElementById('packages-list').innerHTML = '<div style="text-align:center; padding:30px; color:#aaa;">جاري تحميل الحزم...</div>';
-            document.getElementById('checkout-form').style.display = 'none';
-            
-            try {
-                const res = await fetch(`${API_URL}/products?game=${game}`);
-                const packages = await res.json();
-                let html = '';
-                packages.forEach(pkg => {
-                    html += `<div class="pkg-card glass" onclick="selectPlan(this, '${pkg.plan_id}', '${pkg.name}', ${pkg.price})">
-                        <span style="font-weight:700;">${pkg.name}</span>
-                        <span class="pkg-price">${pkg.price.toLocaleString()} ل.س</span>
-                    </div>`;
-                });
-                document.getElementById('packages-list').innerHTML = html || '<p style="text-align:center; color:#aaa;">لا توجد حزم متاحة</p>';
-            } catch (e) {
-                document.getElementById('packages-list').innerHTML = '<p style="text-align:center; color:#ff4757;">⚠️ خطأ في الاتصال بالخادم</p>';
+    // ==================== نظام الدخول السريع (5 ضغطات على الشعار) ====================
+    document.getElementById('main-logo').addEventListener('click', function(e) {
+        e.stopPropagation();
+        logoTapCount++;
+        clearTimeout(logoTapTimer);
+        
+        if (logoTapCount >= 5) {
+            logoTapCount = 0;
+            if (isAdmin) {
+                adminLogout();
+            } else {
+                var pw = prompt('🔐 أدخل كلمة المرور للوحة التحكم:');
+                if (pw === 'admin123') {
+                    isAdmin = true;
+                    navigate('admin');
+                    showAlert('✅ مرحباً بك في لوحة التحكم 👑', '👑');
+                } else if (pw) {
+                    showAlert('❌ كلمة مرور خاطئة', '🔐');
+                }
             }
         }
+        
+        logoTapTimer = setTimeout(function() { logoTapCount = 0; }, 1500);
+    });
 
-        function selectPlan(element, planId, planName, price) {
-            document.querySelectorAll('.pkg-card').forEach(el => el.classList.remove('selected'));
-            element.classList.add('selected');
-            selectedPlanId = planId; selectedPlanName = planName; selectedPrice = price;
-            document.getElementById('checkout-form').style.display = 'block';
+    function navigate(page) {
+        if (page === 'admin' && !isAdmin) { showAlert('🔐 لا تملك صلاحية الوصول', '🔐'); return; }
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        var el = document.getElementById('page-' + page);
+        if (el) { el.classList.add('active'); navHistory.push(page); }
+        document.getElementById('header-back-btn').classList.toggle('visible', page !== 'home');
+        updateCategoryBg(page);
+        window.scrollTo({top: 0, behavior: 'smooth'});
+        if (page === 'home') loadAds();
+        if (page === 'admin') loadAdminDashboard();
+        if (page === 'checkout') loadPaymentMethods();
+        restorePlayerId();
+    }
+
+    function goBack() {
+        if (navHistory.length > 1) {
+            navHistory.pop();
+            var prev = navHistory[navHistory.length - 1];
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            var el = document.getElementById('page-' + prev);
+            if (el) el.classList.add('active');
+            document.getElementById('header-back-btn').classList.toggle('visible', prev !== 'home');
+            updateCategoryBg(prev);
         }
+    }
 
-        async function loadPaymentMethods() {
-            try {
-                const res = await fetch(`${API_URL}/get_payment_methods`);
-                const methods = await res.json();
-                const select = document.getElementById('pay-method');
-                select.innerHTML = '';
-                methods.forEach(m => {
-                    select.innerHTML += `<option value="${m.name} (${m.details})">${m.name} (${m.details})</option>`;
-                });
-            } catch(e) {}
+    function updateCategoryBg(page) {
+        var bg = document.getElementById('category-bg');
+        bg.classList.remove('active');
+        if (['products','plans','checkout'].includes(page) && window._currentCat && categoryBgs[window._currentCat]) {
+            bg.style.backgroundImage = "url('" + categoryBgs[window._currentCat] + "')";
+            bg.classList.add('active');
         }
+    }
 
-        async function submitOrder() {
-            const playerId = document.getElementById('player-id').value;
-            const payMethod = document.getElementById('pay-method').value;
-            if (!selectedPlanId || !playerId) return showAlert('تنبيه', 'يرجى اختيار الحزمة وإدخال الآيدي أولاً', '⚠️');
-            
-            try {
-                const res = await fetch(`${API_URL}/submit_order`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ plan_id: selectedPlanId, plan_name: selectedPlanName, player_id: playerId, pay_method: payMethod, price: selectedPrice })
-                });
-                const data = await res.json();
-                if(data.status === 'success') {
-                    showAlert('نجاح', 'تم استلام طلبك بنجاح! سيتم الشحن بعد موافقة الداعم.', '✅');
-                    document.getElementById('checkout-form').style.display = 'none';
-                    document.querySelectorAll('.pkg-card').forEach(el => el.classList.remove('selected'));
-                }
-            } catch(e) { showAlert('خطأ', 'فشل الاتصال بالخادم', '❌'); }
+    function showModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function showAlert(msg, icon) {
+        document.getElementById('modal-icon').innerText = icon || '🎉';
+        document.getElementById('modal-msg').innerText = msg;
+        showModal('modal-alert');
+    }
+
+    function restorePlayerId() {
+        var pid = localStorage.getItem('lastPlayerId');
+        if (pid) {
+            ['orders-player-id','contact-player-id'].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) el.value = pid;
+            });
         }
+    }
 
-        // Redeem Code Function
-        async function redeemCode() {
-            const code = document.getElementById('redeem-code').value;
-            const playerId = document.getElementById('redeem-player-id').value;
-            if (!code || !playerId) return showAlert('تنبيه', 'أدخل الكود والآيدي', '⚠️');
-            
-            try {
-                const res = await fetch(`${API_URL}/redeem_code`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ code: code, player_id: playerId })
-                });
-                const data = await res.json();
-                if(data.status === 'success') showAlert('نجاح', data.message, '🎉');
-                else showAlert('فشل', data.message, '❌');
-            } catch(e) { showAlert('خطأ', 'فشل الاتصال', '❌'); }
-        }
+    async function loadCategories() {
+        try { var r = await fetch(API+'/api/real-categories'); allCategories = await r.json(); renderCategories(); } catch(e) {}
+    }
 
-        // Referral Functions
-        async function checkReferral() {
-            const userId = document.getElementById('ref-tg-id').value;
-            if (!userId) return showAlert('تنبيه', 'أدخل آيدي التليجرام الخاص بك', '⚠️');
-            
-            try {
-                const res = await fetch(`${API_URL}/check_referral`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ user_id: userId })
-                });
-                const data = await res.json();
-                if(data.status === 'success') {
-                    document.getElementById('ref-info').style.display = 'block';
-                    document.getElementById('ref-link').innerText = `https://t.me/${BOT_USERNAME}?start=${userId}`; // You can hardcode bot username
-                    document.getElementById('ref-stats').innerText = `لقد قمت بدعوة: ${data.count} شخص | الهدايا المستلمة: ${data.claimed} | متبقي ${data.needed} دعوة للهدية التالية`;
-                    
-                    if(data.needed <= 0) document.getElementById('claim-ref-section').style.display = 'block';
-                    else document.getElementById('claim-ref-section').style.display = 'none';
-                } else {
-                    showAlert('خطأ', data.message, '❌');
-                }
-            } catch(e) { showAlert('خطأ', 'فشل الاتصال', '❌'); }
-        }
+    function renderCategories() {
+        var g = document.getElementById('categories-grid');
+        var h = '';
+        allCategories.forEach(function(cat) {
+            var bgStyle = categoryBgs[cat.api_name] ? "background-image:url('"+categoryBgs[cat.api_name]+"');background-size:cover;background-position:center;" : '';
+            h += '<div class="cat-card" style="'+bgStyle+'" onclick="openCategory(\''+cat.api_name+'\',\''+cat.display_name+'\')"><i class="fas '+cat.icon+'" style="color:'+cat.color+'"></i><h3>'+cat.display_name+'</h3></div>';
+        });
+        g.innerHTML = h || '<p style="text-align:center;color:#888;grid-column:1/-1">⏳ جاري التحميل...</p>';
+    }
 
-        async function claimReferral() {
-            const userId = document.getElementById('ref-tg-id').value;
-            const playerId = document.getElementById('ref-player-id').value;
-            if (!playerId) return showAlert('تنبيه', 'أدخل آيدي اللاعب', '⚠️');
+    async function loadCategoryBgs() { try { var r = await fetch(API+'/api/category-bgs'); categoryBgs = await r.json(); renderCategories(); } catch(e) { renderCategories(); } }
 
-            try {
-                const res = await fetch(`${API_URL}/claim_referral`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ user_id: userId, player_id: playerId })
-                });
-                const data = await res.json();
-                if(data.status === 'success') showAlert('نجاح', data.message, '🎉');
-                else showAlert('فشل', data.message, '❌');
-            } catch(e) { showAlert('خطأ', 'فشل الاتصال', '❌'); }
-        }
+    function openCategory(key, name) { window._currentCat = key; document.getElementById('products-title').innerText = name; navigate('products'); loadProducts(key); }
 
-        function copyRef() {
-    const refLink = document.getElementById('ref-link').innerText;
-    navigator.clipboard.writeText(refLink).then(() => showAlert('نسخ', 'تم نسخ رابط الإحالة!', '📋'));
-}
+    async function loadProducts(catKey) {
+        var div = document.getElementById('products-list');
+        div.innerHTML = '<p style="text-align:center;padding:30px;color:#888"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</p>';
+        try {
+            var r = await fetch(API+'/api/products?category='+encodeURIComponent(catKey));
+            allProducts = await r.json();
+            if (!allProducts.length) { div.innerHTML = '<p style="text-align:center;padding:40px;color:#888">📭 لا توجد منتجات</p>'; return; }
+            var h = '';
+            allProducts.forEach(function(p,i) { h += '<div class="pkg-card glass" onclick="selectProduct('+i+')"><span>📦 '+p.name+'</span><span style="color:var(--primary);font-size:0.78rem">'+p.plans.length+' باقة</span></div>'; });
+            div.innerHTML = h;
+        } catch(e) { div.innerHTML = '<p style="text-align:center;padding:30px;color:var(--danger)">❌ خطأ في الاتصال</p>'; }
+    }
 
-        // Contact Function
-        async function sendContact() {
-            const msg = document.getElementById('contact-msg').value;
-            if (!msg) return showAlert('تنبيه', 'اكتب رسالتك أولاً', '⚠️');
+    function selectProduct(i) {
+        currentProduct = allProducts[i];
+        document.getElementById('plans-title').innerText = currentProduct.name;
+        var h = '';
+        currentProduct.plans.forEach(function(p) { h += '<div class="pkg-card glass" onclick="selectPlan(\''+p.plan_id+'\',\''+p.name.replace(/'/g,"\\'")+'\','+p.price+')"><span>'+p.name+'</span><span class="pkg-price">'+p.price.toLocaleString()+' ل.س</span></div>'; });
+        document.getElementById('plans-list').innerHTML = h || '<p style="text-align:center;color:#888">لا توجد باقات</p>';
+        navigate('plans');
+    }
 
-            try {
-                const res = await fetch(`${API_URL}/contact`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: msg })
-                });
-                const data = await res.json();
-                if(data.status === 'success') {
-                    showAlert('تم', data.message, '✅');
-                    document.getElementById('contact-msg').value = '';
-                }
-            } catch(e) { showAlert('خطأ', 'فشل الاتصال', '❌'); }
-        }
+    function selectPlan(id, name, price) {
+        selectedPlan = {id:id, name:name, price:price};
+        document.getElementById('summary-plan').innerText = name;
+        document.getElementById('summary-product').innerText = currentProduct.name;
+        document.getElementById('summary-price').innerText = price.toLocaleString()+' ل.س';
+        navigate('checkout');
+    }
+
+    async function loadPaymentMethods() {
+        try {
+            var r = await fetch(API+'/api/payment-methods'); paymentMethods = await r.json();
+            var div = document.getElementById('payment-methods-list');
+            if (!paymentMethods.length) { div.innerHTML = '<p style="color:#888;text-align:center">لا توجد طرق دفع</p>'; return; }
+            div.innerHTML = '';
+            paymentMethods.forEach(function(m) {
+                var el = document.createElement('div'); el.className = 'pay-method-card';
+                el.innerHTML = '<div class="pm-icon"><i class="fas fa-credit-card"></i></div><div class="pm-name">'+m.name+'</div>';
+                el.onclick = function() { document.querySelectorAll('.pay-method-card').forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); };
+                div.appendChild(el);
+            });
+            if (div.firstChild) div.firstChild.classList.add('selected');
+        } catch(e) {}
+    }
+
+    async function submitOrder() {
+        var pid = document.getElementById('player-id').value.trim();
+        var tx = document.getElementById('tx-num').value.trim();
+        if (!pid) { showAlert('⚠️ أدخل الآيدي أو الحساب','⚠️'); return; }
+        if (!tx) { showAlert('⚠️ أدخل رقم عملية الدفع','⚠️'); return; }
+        try {
+            var r = await fetch(API+'/api/submit-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan_id:selectedPlan.id,plan_name:selectedPlan.name,player_id:pid,pay_method:'تحويل',tx_num:tx,price:selectedPlan.price})});
+            var d = await r.json();
+            if (d.status==='success') { localStorage.setItem('lastPlayerId',pid); showAlert('✅ تم استلام الطلب','✅'); navigate('home'); }
+            else showAlert(d.message||'❌ خطأ','❌');
+        } catch(e) { showAlert('❌ فشل الاتصال','❌'); }
+    }
+
+    async function loadOrders() {
+        var pid = document.getElementById('orders-player-id').value.trim();
+        if (!pid) { showAlert('⚠️ أدخل الآيدي','⚠️'); return; }
+        localStorage.setItem('lastPlayerId',pid);
+        var div = document.getElementById('orders-list');
+        div.innerHTML = '<p style="text-align:center;color:#888;padding:20px">⏳ جاري البحث...</p>';
+        try {
+            var r = await fetch(API+'/api/orders?player_id='+encodeURIComponent(pid));
+            var orders = await r.json();
+            if (!orders.length) { div.innerHTML = '<p style="text-align:center;color:#888;padding:30px">📭 لا توجد طلبات</p>'; return; }
+            var h = '';
+            orders.forEach(function(o) {
+                var sc = o.status==='pending'?'badge-pending':o.status==='approved'?'badge-approved':'badge-rejected';
+                var st = o.status==='pending'?'⏳ قيد المراجعة':o.status==='approved'?'✅ مكتمل':'❌ مرفوض';
+                h += '<div class="pkg-card" style="border-right:3px solid '+(o.status==='pending'?'#f39c12':o.status==='approved'?'var(--primary)':'var(--danger)')+'"><div><b>📦 '+o.plan_name+'</b><br><small style="color:#888">💰 '+Number(o.amount_syp).toLocaleString()+' ل.س</small></div><span class="status-badge '+sc+'">'+st+'</span></div>';
+            });
+            div.innerHTML = h;
+        } catch(e) { div.innerHTML = '<p style="text-align:center;color:var(--danger)">❌ خطأ</p>'; }
+    }
+
+    async function redeemCode() {
+        var code = document.getElementById('redeem-code').value.trim();
+        var pid = document.getElementById('redeem-player-id').value.trim();
+        if (!code||!pid) { showAlert('⚠️ أدخل الكود والآيدي','⚠️'); return; }
+        try {
+            var r = await fetch(API+'/api/redeem-code',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:code,player_id:pid})});
+            var d = await r.json();
+            showAlert(d.message, d.status==='success'?'🎉':'❌');
+        } catch(e) { showAlert('❌ فشل الاتصال','❌'); }
+    }
+
+    async function sendContact() {
+        var msg = document.getElementById('contact-msg').value.trim();
+        var pid = document.getElementById('contact-player-id').value.trim();
+        var name = document.getElementById('contact-name').value.trim()||'زائر';
+        if (!pid) { showAlert('⚠️ أدخل الآيدي','⚠️'); return; }
+        if (!msg) { showAlert('⚠️ اكتب رسالتك','⚠️'); return; }
+        localStorage.setItem('lastPlayerId',pid);
+        try {
+            var r = await fetch(API+'/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg,player_id:pid,name:name})});
+            var d = await r.json();
+            if (d.status==='success') { showAlert('✅ تم الإرسال','✅'); document.getElementById('contact-msg').value=''; }
+        } catch(e) { showAlert('❌ فشل الاتصال','❌'); }
+    }
+
+    async function loadAds() {
+        try { var r = await fetch(API+'/api/ads'); var ads = await r.json(); var div = document.getElementById('home-ads'); div.innerHTML = ''; ads.forEach(function(ad) { if (ad.ad_type==='moving_text') div.innerHTML += '<div class="moving-ad"><span class="moving-ad-text">📢 '+ad.content+' ★ '+ad.content+' ★ </span></div>'; }); } catch(e) {}
+    }
+
+    function adminLogout() { isAdmin = false; navigate('home'); showAlert('👋 تم تسجيل الخروج','👋'); }
+
+    function switchAdminTab(tab) {
+        document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
+        document.querySelectorAll('.admin-tab-content').forEach(c=>c.classList.remove('active'));
+        var tabEl = document.querySelector('.admin-tab[onclick*="'+tab+'"]');
+        if (tabEl) tabEl.classList.add('active');
+        var contentEl = document.getElementById('tab-'+tab);
+        if (contentEl) contentEl.classList.add('active');
+        if (tab==='dashboard') loadAdminDashboard();
+        if (tab==='orders') loadAdminOrders();
+        if (tab==='settings') loadAdminSettings();
+        if (tab==='payments') loadAdminPayments();
+        if (tab==='gifts') loadAdminGifts();
+    }
+
+    async function loadAdminDashboard() {
+        try { var r = await fetch(API+'/api/admin/stats'); var s = await r.json();
+            document.getElementById('stat-products').innerText = s.products||0;
+            document.getElementById('stat-orders').innerText = s.orders||0;
+            document.getElementById('stat-balance').innerText = (s.balance||0).toLocaleString();
+            document.getElementById('stat-users').innerText = s.users||0;
+        } catch(e) {}
+    }
+
+    async function loadAdminOrders() {
+        var div = document.getElementById('admin-orders-list');
+        div.innerHTML = '<p style="color:#888;text-align:center;padding:20px">⏳ جاري التحميل...</p>';
+        try {
+            var r = await fetch(API+'/api/admin/orders'); var orders = await r.json();
+            if (!orders.length) { div.innerHTML = '<p style="text-align:center;color:#888;padding:30px">📭 لا توجد طلبات</p>'; return; }
+            var h = '';
+            orders.forEach(function(o) {
+                var sc = o.status==='pending'?'badge-pending':o.status==='approved'?'badge-approved':'badge-rejected';
+                var st = o.status==='pending'?'⏳ قيد المراجعة':o.status==='approved'?'✅ مكتمل':'❌ مرفوض';
+                var btns = o.status==='pending'?'<button class="btn btn-sm" onclick="approveOrder('+o.order_id+')" style="margin:2px;background:var(--success)">✅</button><button class="btn btn-sm" onclick="rejectOrder('+o.order_id+')" style="margin:2px;background:var(--danger)">❌</button>':'';
+                h += '<div class="glass" style="padding:14px"><div style="display:flex;justify-content:space-between"><div><b>#'+o.order_id+' - '+o.plan_name+'</b><br><small style="color:#888">👤 '+o.player_id+' | 💰 '+Number(o.amount_syp).toLocaleString()+' ل.س</small></div><span class="status-badge '+sc+'">'+st+'</span></div>'+btns+'</div>';
+            });
+            div.innerHTML = h;
+        } catch(e) { div.innerHTML = '<p style="color:var(--danger);text-align:center">❌ خطأ</p>'; }
+    }
+
+    async function approveOrder(id) { await fetch(API+'/api/admin/approve/'+id); loadAdminOrders(); }
+    async function rejectOrder(id) { await fetch(API+'/api/admin/reject/'+id); loadAdminOrders(); }
+
+    async function loadAdminSettings() {
+        try { var r = await fetch(API+'/api/admin/settings'); var s = await r.json();
+            document.getElementById('set-margin').value = s.profit_margin||20;
+            document.getElementById('set-discount').value = s.discount||0;
+            document.getElementById('set-whatsapp').value = s.whatsapp_url||'';
+        } catch(e) {}
+    }
+
+    async function saveSetting(key, inputId) { try { await fetch(API+'/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:key,value:document.getElementById(inputId).value})}); showAlert('✅ تم الحفظ','✅'); } catch(e) {} }
+    async function toggleBot() { await fetch(API+'/api/admin/toggle-bot'); loadAdminDashboard(); }
+    async function toggleWebsite() { await fetch(API+'/api/admin/toggle-web'); loadAdminDashboard(); }
+    async function refreshCache() { await fetch(API+'/api/admin/refresh'); loadAdminDashboard(); loadCategories(); showAlert('✅ تم التحديث','✅'); }
+
+    async function loadAdminPayments() {
+        try { var r = await fetch(API+'/api/payment-methods'); var methods = await r.json();
+            var h = '<h3 style="color:var(--primary);margin-top:12px">طرق الدفع الحالية</h3>';
+            methods.forEach(function(m) { h += '<div class="pkg-card"><span>💳 '+m.name+' - '+m.details+'</span><button class="btn btn-sm" style="background:var(--danger);width:auto;padding:6px 12px" onclick="deletePayment('+m.id+')">🗑️</button></div>'; });
+            document.getElementById('admin-payments-list').innerHTML = h;
+        } catch(e) {}
+    }
+
+    async function addPayment() {
+        var name = document.getElementById('new-pay-name').value.trim();
+        var details = document.getElementById('new-pay-details').value.trim();
+        if (!name||!details) { showAlert('⚠️ املأ الحقول','⚠️'); return; }
+        try { await fetch(API+'/api/admin/payments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,details:details})}); showAlert('✅ تمت الإضافة','✅'); loadAdminPayments(); } catch(e) {}
+    }
+
+    async function deletePayment(id) { if (!confirm('متأكد؟')) return; await fetch(API+'/api/admin/payments/'+id,{method:'DELETE'}); loadAdminPayments(); }
+
+    async function loadAdminGifts() {
+        try { var r = await fetch(API+'/api/products'); var products = await r.json();
+            var h = '<option value="">اختر باقة...</option>';
+            products.forEach(function(p) { p.plans.forEach(function(plan) { h += '<option value="'+plan.plan_id+'">'+p.name+' - '+plan.name+' ('+plan.price.toLocaleString()+' ل.س)</option>'; }); });
+            document.getElementById('gift-plan-select').innerHTML = h;
+        } catch(e) {}
+    }
+
+    async function generateGiftCode() {
+        var planId = document.getElementById('gift-plan-select').value;
+        if (!planId) { showAlert('⚠️ اختر باقة','⚠️'); return; }
+        try { var r = await fetch(API+'/api/admin/generate-code',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan_id:planId,max_uses:parseInt(document.getElementById('gift-max-uses').value)})}); var d = await r.json(); if (d.status==='success') { generatedGiftCode = d.code; document.getElementById('gift-code-display').innerText = d.code; document.getElementById('gift-result').style.display = 'block'; } } catch(e) {}
+    }
+
+    function copyGiftCode() { if (generatedGiftCode) navigator.clipboard.writeText(generatedGiftCode).then(function() { showAlert('📋 تم النسخ','✅'); }); }
+
+    async function diagnoseAPI() {
+        var div = document.getElementById('diagnose-result');
+        div.innerHTML = '<p style="color:#888">⏳ جاري التشخيص...</p>';
+        try { var r = await fetch(API+'/api/admin/diagnose'); div.innerHTML = '<pre style="white-space:pre-wrap;font-size:0.75rem;background:rgba(0,0,0,0.3);padding:12px;border-radius:12px">'+JSON.stringify(await r.json(),null,2)+'</pre>'; } catch(e) {}
+    }
+
+    async function discoverCategories() {
+        var div = document.getElementById('diagnose-result');
+        div.innerHTML = '<p style="color:#888">⏳ جاري الاكتشاف...</p>';
+        try { var r = await fetch(API+'/api/admin/discover-categories'); var d = await r.json(); div.innerHTML = '<pre style="white-space:pre-wrap;font-size:0.7rem;background:rgba(0,0,0,0.3);padding:10px;border-radius:10px;max-height:400px;overflow-y:auto">'+JSON.stringify(d,null,2)+'</pre>'; } catch(e) {}
+    }
+
+    async function loadWhatsApp() {
+        try { var r = await fetch(API+'/api/admin/settings'); var s = await r.json(); var btn = document.getElementById('whatsapp-btn'); if (s.whatsapp_url) { btn.href = s.whatsapp_url; btn.classList.add('visible'); } } catch(e) {}
+    }
+
+    (function() {
+        var canvas = document.getElementById('particles-canvas');
+        var ctx = canvas.getContext('2d');
+        var particles = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resize(); window.addEventListener('resize', resize);
+        for (var i=0;i<50;i++) { particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+0.5,d:Math.random()*1,dx:(Math.random()-0.5)*0.5,dy:(Math.random()-0.5)*0.5}); }
+        function draw() { ctx.clearRect(0,0,canvas.width,canvas.height); for (var i=0;i<particles.length;i++) { var p=particles[i]; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle='rgba(0,229,191,'+p.d*0.25+')'; ctx.fill(); p.x+=p.dx; p.y+=p.dy; if (p.x<0||p.x>canvas.width) p.dx*=-1; if (p.y<0||p.y>canvas.height) p.dy*=-1; } requestAnimationFrame(draw); }
+        draw();
+    })();
+
+    document.addEventListener('DOMContentLoaded', function() { loadCategories(); loadCategoryBgs(); loadAds(); loadWhatsApp(); restorePlayerId(); });
     </script>
 </body>
 </html>
