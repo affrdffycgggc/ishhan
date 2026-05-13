@@ -2,85 +2,61 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ishhen - متجر الخدمات الرقمية</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        :root {
-            --primary: #00e5bf; --primary2: #7c3aed; --bg: #030014;
-            --card: rgba(12,10,30,0.75); --border: rgba(255,255,255,0.07);
-            --danger: #ff3b5c; --success: #00b894;
-            --text: #e0e0e0; --text-secondary: rgba(255,255,255,0.5); --radius: 20px;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
-        #cosmos { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3; overflow: hidden; pointer-events: none; }
-        .nebula { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.25; animation: drift 25s ease-in-out infinite; }
-        .nebula-1 { width: 500px; height: 500px; background: radial-gradient(circle, #7c3aed, transparent); top: -15%; right: -10%; }
-        .nebula-2 { width: 400px; height: 400px; background: radial-gradient(circle, #00e5bf, transparent); bottom: 5%; left: -8%; animation-delay: -8s; }
-        @keyframes drift { 0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(40px,-50px)scale(1.1)}50%{transform:translate(-30px,40px)scale(.95)}75%{transform:translate(50px,30px)scale(1.05)} }
-        
-        header { position: sticky; top: 0; z-index: 100; padding: 16px 20px; text-align: center; border-bottom: 1px solid var(--border); background: rgba(3,0,20,0.85); backdrop-filter: blur(30px); }
-        .logo { font-family: 'Orbitron'; font-size: 1.8rem; font-weight: 900; background: linear-gradient(135deg,var(--primary),var(--primary2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; cursor: pointer; letter-spacing: 6px; user-select: none; }
-        
-        .page { display: none; padding: 16px; max-width: 550px; margin: 0 auto 80px; animation: pageIn .5s ease; }
-        .page.active { display: block; }
-        @keyframes pageIn { from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)} }
-        
-        .glass { background: var(--card); backdrop-filter: blur(25px); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 12px; }
-        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
-        
-        .btn { width: 100%; padding: 14px; border-radius: 14px; border: none; background: linear-gradient(135deg,var(--primary),var(--primary2)); color: #000; font-family: 'Cairo'; font-weight: 900; font-size: 1rem; cursor: pointer; margin-top: 8px; transition: .3s; }
-        .btn:active { transform: scale(.97); }
-        .btn-sm { width: auto; padding: 8px 14px; font-size: .8rem; display: inline-block; }
-        
-        .cyber-input { width: 100%; padding: 12px; border-radius: 12px; background: rgba(255,255,255,.04); border: 1px solid var(--border); color: #fff; font-family: 'Cairo'; font-size: .9rem; margin-bottom: 10px; outline: none; }
-        .cyber-input:focus { border-color: var(--primary); }
-        label { display: block; margin-bottom: 4px; color: var(--text-secondary); font-size: .8rem; }
-        
-        .cat-card { padding: 24px 10px; border-radius: var(--radius); text-align: center; cursor: pointer; border: 1px solid var(--border); background: var(--card); transition: .3s; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .cat-card:hover { transform: translateY(-4px); border-color: var(--primary); }
-        .cat-card i { font-size: 2rem; margin-bottom: 8px; }
-        .cat-card h3 { font-size: .85rem; font-weight: 700; }
-        
-        .pkg-card { padding: 14px 16px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; cursor: pointer; border: 1px solid var(--border); transition: .3s; }
-        .pkg-card:hover { border-color: var(--primary); background: rgba(0,229,191,.05); }
-        .pkg-card.selected { border-color: var(--primary); border-width: 2px; background: rgba(0,229,191,.1); }
-        .pkg-price { font-family: 'Orbitron'; color: var(--primary); font-weight: 700; }
-        
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,.9); z-index: 999; display: none; justify-content: center; align-items: center; padding: 20px; }
-        .modal-content { background: #1a1a2e; padding: 30px; border-radius: 24px; max-width: 380px; width: 100%; text-align: center; border: 1px solid var(--primary); animation: modalPop .4s ease; }
-        @keyframes modalPop { from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1} }
-        
-        .whatsapp-btn { position: fixed; bottom: 20px; left: 20px; width: 50px; height: 50px; border-radius: 50%; background: #25D366; color: #fff; display: none; align-items: center; justify-content: center; font-size: 1.4rem; z-index: 100; text-decoration: none; animation: waFloat 3s ease-in-out infinite; }
-        .whatsapp-btn.visible { display: flex; }
-        @keyframes waFloat { 0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)} }
-        
-        .loading-spinner { text-align: center; padding: 30px; color: #888; }
-        .loading-spinner i { font-size: 2rem; animation: spin 1s linear infinite; }
-        @keyframes spin { 0%{transform:rotate(0)}100%{transform:rotate(360deg)} }
-
-        @media(max-width:380px){.grid2{gap:8px}.cat-card{padding:18px 6px;min-height:100px}.cat-card i{font-size:1.5rem}.cat-card h3{font-size:.75rem}}
+        :root{--primary:#00e5bf;--primary2:#7c3aed;--bg:#030014;--card:rgba(12,10,30,0.75);--border:rgba(255,255,255,0.07);--danger:#ff3b5c;--success:#00b894;--text:#e0e0e0;--text-secondary:rgba(255,255,255,0.5)}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+        header{position:sticky;top:0;z-index:100;padding:16px;text-align:center;border-bottom:1px solid var(--border);background:rgba(3,0,20,0.85);backdrop-filter:blur(30px)}
+        .logo{font-family:'Orbitron';font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,var(--primary),var(--primary2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;letter-spacing:6px}
+        .page{display:none;padding:16px;max-width:550px;margin:0 auto 80px;animation:pageIn .5s ease}
+        .page.active{display:block}
+        @keyframes pageIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+        .glass{background:var(--card);backdrop-filter:blur(25px);border:1px solid var(--border);border-radius:20px;padding:18px;margin-bottom:12px}
+        .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+        .btn{width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--primary),var(--primary2));color:#000;font-family:'Cairo';font-weight:900;font-size:1rem;cursor:pointer;margin-top:8px}
+        .btn:active{transform:scale(.97)}
+        .btn-sm{width:auto;padding:8px 14px;font-size:.8rem;display:inline-block}
+        .cyber-input{width:100%;padding:12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:#fff;font-family:'Cairo';font-size:.9rem;margin-bottom:10px;outline:none}
+        .cyber-input:focus{border-color:var(--primary)}
+        label{display:block;margin-bottom:4px;color:var(--text-secondary);font-size:.8rem}
+        .cat-card{padding:24px 10px;border-radius:20px;text-align:center;cursor:pointer;border:1px solid var(--border);background:var(--card);transition:.3s;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+        .cat-card:hover{transform:translateY(-4px);border-color:var(--primary)}
+        .cat-card i{font-size:2rem;margin-bottom:8px}
+        .cat-card h3{font-size:.85rem;font-weight:700}
+        .pkg-card{padding:14px 16px;border-radius:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;cursor:pointer;border:1px solid var(--border);transition:.3s}
+        .pkg-card:hover{border-color:var(--primary);background:rgba(0,229,191,.05)}
+        .pkg-card.selected{border-color:var(--primary);border-width:2px;background:rgba(0,229,191,.1)}
+        .pkg-price{font-family:'Orbitron';color:var(--primary);font-weight:700}
+        .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:999;display:none;justify-content:center;align-items:center;padding:20px}
+        .modal-content{background:#1a1a2e;padding:30px;border-radius:24px;max-width:400px;width:100%;text-align:center;border:1px solid var(--primary);animation:modalPop .4s ease;max-height:85vh;overflow-y:auto}
+        @keyframes modalPop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+        .whatsapp-btn{position:fixed;bottom:20px;left:20px;width:50px;height:50px;border-radius:50%;background:#25D366;color:#fff;display:none;align-items:center;justify-content:center;font-size:1.4rem;z-index:100;text-decoration:none;animation:waFloat 3s ease-in-out infinite}
+        .whatsapp-btn.visible{display:flex}
+        @keyframes waFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+        .loading-spinner{text-align:center;padding:30px;color:#888}
+        .loading-spinner i{font-size:2rem;animation:spin 1s linear infinite}
+        @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
     </style>
 </head>
 <body>
-    <div id="cosmos"><div class="nebula nebula-1"></div><div class="nebula nebula-2"></div></div>
     <a id="whatsapp-btn" class="whatsapp-btn" href="#" target="_blank"><i class="fab fa-whatsapp"></i></a>
+    <header><div class="logo" id="main-logo">ISHHEN</div></header>
 
-    <header><div class="logo" id="main-logo" onclick="handleLogoClick()">ISHHEN</div></header>
-
-    <!-- الصفحة الرئيسية -->
     <div id="page-home" class="page active">
         <div style="text-align:center;margin-bottom:16px">
             <h2 style="font-family:'Orbitron';background:linear-gradient(90deg,var(--primary),#fff,var(--primary));-webkit-background-clip:text;-webkit-text-fill-color:transparent">مرحباً بك</h2>
         </div>
         <div class="grid2" id="categories-grid">
-            <div class="loading-spinner" style="grid-column:1/-1"><i class="fas fa-spinner"></i><p>جاري التحميل...</p></div>
+            <div class="loading-spinner" style="grid-column:1/-1"><i class="fas fa-spinner"></i><p>جاري تحميل المنتجات...</p></div>
         </div>
+        <!-- قسم التشخيص -->
+        <div id="debug-info" style="margin-top:16px;font-size:.75rem;color:#888;text-align:center"></div>
     </div>
 
-    <!-- صفحة المنتجات -->
     <div id="page-products" class="page">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
             <h2 id="products-title" style="color:var(--primary)"></h2>
@@ -89,7 +65,6 @@
         <div id="products-list"></div>
     </div>
 
-    <!-- صفحة الباقات -->
     <div id="page-plans" class="page">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
             <h2 id="plans-title" style="color:var(--primary)"></h2>
@@ -98,7 +73,6 @@
         <div id="plans-list"></div>
     </div>
 
-    <!-- صفحة الدفع -->
     <div id="page-checkout" class="page">
         <h2 style="color:var(--primary);margin-bottom:12px">💳 الدفع</h2>
         <div class="glass">
@@ -118,7 +92,6 @@
         <button class="btn" onclick="submitOrder()">🚀 تأكيد الطلب</button>
     </div>
 
-    <!-- نافذة التنبيهات -->
     <div id="modal-alert" class="modal">
         <div class="modal-content">
             <div style="font-size:3rem;margin-bottom:10px" id="modal-icon">🎉</div>
@@ -127,257 +100,180 @@
         </div>
     </div>
 
-    <!-- نافذة لوحة التحكم -->
     <div id="modal-admin" class="modal">
-        <div class="modal-content" style="max-width:500px;max-height:80vh;overflow-y:auto;text-align:right">
+        <div class="modal-content" style="max-width:500px;text-align:right">
             <h3 style="color:var(--primary);text-align:center;margin-bottom:16px">👑 لوحة التحكم</h3>
-            
-            <div class="glass">
-                <h4 style="color:var(--primary);margin-bottom:8px">📈 نسبة الربح (%)</h4>
-                <input type="number" id="admin-margin" class="cyber-input" value="20">
-                <button class="btn btn-sm" onclick="updateMargin()">💾 حفظ</button>
-            </div>
-            
-            <div class="glass">
-                <h4 style="color:var(--primary);margin-bottom:8px">💬 رابط واتساب</h4>
-                <input type="text" id="admin-whatsapp" class="cyber-input" placeholder="https://wa.me/963xxxxxxxxx">
-                <button class="btn btn-sm" onclick="updateWhatsApp()">💾 حفظ</button>
-            </div>
-            
-            <div class="glass">
-                <h4 style="color:var(--primary);margin-bottom:8px">💳 إضافة طريقة دفع</h4>
-                <input type="text" id="admin-pay-name" class="cyber-input" placeholder="اسم الطريقة">
-                <input type="text" id="admin-pay-details" class="cyber-input" placeholder="الرقم">
-                <button class="btn btn-sm" onclick="addPayment()">➕ إضافة</button>
-                <div id="admin-payments-list" style="margin-top:10px"></div>
-            </div>
-            
-            <div class="glass">
-                <h4 style="color:var(--primary);margin-bottom:8px">🔍 اختبار الاتصال</h4>
-                <button class="btn btn-sm" onclick="testConnection()">اختبار</button>
-                <div id="test-result" style="margin-top:8px;font-size:.75rem;max-height:200px;overflow-y:auto"></div>
-            </div>
-            
-            <button class="btn btn-sm" onclick="closeModal('modal-admin')" style="background:var(--danger);margin-top:10px;width:100%">إغلاق</button>
+            <div class="glass"><label>📈 نسبة الربح (%)</label><input type="number" id="admin-margin" class="cyber-input" value="20"><button class="btn btn-sm" onclick="saveMargin()">💾 حفظ</button></div>
+            <div class="glass"><label>💬 واتساب</label><input type="text" id="admin-whatsapp" class="cyber-input"><button class="btn btn-sm" onclick="saveWhatsApp()">💾 حفظ</button></div>
+            <div class="glass"><label>💳 إضافة دفع</label><input type="text" id="pay-name" class="cyber-input" placeholder="الاسم"><input type="text" id="pay-details" class="cyber-input" placeholder="الرقم"><button class="btn btn-sm" onclick="addPayment()">➕</button><div id="payments-list" style="margin-top:8px"></div></div>
+            <button class="btn btn-sm" onclick="closeModal('modal-admin')" style="background:var(--danger);width:100%;margin-top:10px">إغلاق</button>
         </div>
     </div>
 
     <script>
-    // ==================== الإعدادات ====================
     const API_KEY = "SDpoC/9YxijfEyiSz0Tm8zNmWTdlNE1lUkk4SU5iS2c9PQ==";
     const API_URL = "https://syristore.com/api.php";
-    const ADMIN_PASS = "admin123";
+    const CORS_PROXY = "https://api.allorigins.win/raw?url=";
     
-    // وكيل CORS مجاني
-    const CORS_PROXIES = [
-        "https://api.allorigins.win/raw?url=",
-        "https://corsproxy.io/?",
-        "https://api.codetabs.com/v1/proxy?quest="
-    ];
-    
-    let allCategories = [], allProducts = [], currentProduct = null;
-    let selectedPlan = {}, margin = 20;
+    let allProducts = [], currentProduct = null, selectedPlan = {}, margin = 20;
     let tapCount = 0, tapTimer = null;
 
-    // ==================== دوال API مع CORS ====================
-    async function callAPI(action, extraData = {}) {
-        const params = new URLSearchParams({ action, ...extraData });
-        const directUrl = `${API_URL}?${params}`;
+    // ==================== API CALL ====================
+    async function callAPI(action, extra = {}) {
+        const params = new URLSearchParams({ action, ...extra });
+        const url = API_URL + "?" + params.toString();
+        const debug = document.getElementById('debug-info');
         
-        // الطريقة 1: محاولة مباشرة مع no-cors
+        // طريقة 1: allorigins proxy
         try {
-            const response = await fetch(directUrl, {
-                headers: { "apikey": API_KEY }
-            });
-            if (response.ok) {
-                const text = await response.text();
+            const proxyUrl = CORS_PROXY + encodeURIComponent(url);
+            const r = await fetch(proxyUrl);
+            if (r.ok) {
+                const text = await r.text();
                 try { return JSON.parse(text); } catch(e) { return text; }
             }
-        } catch(e) {
-            console.log("Direct fetch failed, trying proxies...");
-        }
+        } catch(e) { if(debug) debug.innerText = "allorigins: " + e.message; }
         
-        // الطريقة 2: استخدام وكيل CORS
-        for (const proxy of CORS_PROXIES) {
-            try {
-                const proxyUrl = proxy + encodeURIComponent(directUrl);
-                const response = await fetch(proxyUrl);
-                if (response.ok) {
-                    const text = await response.text();
-                    try { return JSON.parse(text); } catch(e) { return text; }
-                }
-            } catch(e) { continue; }
-        }
+        // طريقة 2: corsproxy.io
+        try {
+            const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(url);
+            const r = await fetch(proxyUrl);
+            if (r.ok) {
+                const text = await r.text();
+                try { return JSON.parse(text); } catch(e) { return text; }
+            }
+        } catch(e) { if(debug) debug.innerText += " | corsproxy: " + e.message; }
         
-        // الطريقة 3: POST مع CORS proxy
-        for (const proxy of CORS_PROXIES) {
-            try {
-                const response = await fetch(proxy + encodeURIComponent(API_URL), {
-                    method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: params.toString()
-                });
-                if (response.ok) {
-                    const text = await response.text();
-                    try { return JSON.parse(text); } catch(e) { return text; }
-                }
-            } catch(e) { continue; }
-        }
+        // طريقة 3: codetabs
+        try {
+            const proxyUrl = "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(url);
+            const r = await fetch(proxyUrl);
+            if (r.ok) {
+                const text = await r.text();
+                try { return JSON.parse(text); } catch(e) { return text; }
+            }
+        } catch(e) { if(debug) debug.innerText += " | codetabs: " + e.message; }
         
-        console.error("All methods failed for action:", action);
+        // طريقة 4: مباشر
+        try {
+            const r = await fetch(url, { headers: { "apikey": API_KEY }, mode: "cors" });
+            if (r.ok) {
+                const text = await r.text();
+                try { return JSON.parse(text); } catch(e) { return text; }
+            }
+        } catch(e) { if(debug) debug.innerText += " | direct: " + e.message; }
+        
         return null;
     }
 
-    // ==================== التنقل ====================
-    function navigate(page) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        const el = document.getElementById('page-' + page);
-        if (el) el.classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        if (page === 'checkout') loadPaymentMethods();
-    }
-
-    function showModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-    function showAlert(msg, icon) {
-        document.getElementById('modal-icon').innerText = icon || '🎉';
-        document.getElementById('modal-msg').innerText = msg;
-        showModal('modal-alert');
-    }
-
-    // ==================== الدخول للوحة التحكم ====================
-    function handleLogoClick() {
-        tapCount++;
-        clearTimeout(tapTimer);
-        if (tapCount >= 5) {
-            tapCount = 0;
-            const pw = prompt('🔐 كلمة المرور:');
-            if (pw === ADMIN_PASS) {
-                loadAdminPanel();
-                showModal('modal-admin');
-            } else if (pw) {
-                showAlert('❌ كلمة مرور خاطئة', '🔐');
-            }
-        }
-        tapTimer = setTimeout(() => tapCount = 0, 1500);
-    }
-
-    function loadAdminPanel() {
-        document.getElementById('admin-margin').value = margin;
-        document.getElementById('admin-whatsapp').value = localStorage.getItem('whatsapp') || '';
-        loadAdminPayments();
-    }
-
-    function updateMargin() {
-        margin = parseFloat(document.getElementById('admin-margin').value) || 20;
-        showAlert('✅ تم حفظ نسبة الربح: ' + margin + '%', '✅');
-    }
-
-    function updateWhatsApp() {
-        const url = document.getElementById('admin-whatsapp').value.trim();
-        localStorage.setItem('whatsapp', url);
-        const btn = document.getElementById('whatsapp-btn');
-        if (url) { btn.href = url; btn.classList.add('visible'); }
-        else { btn.classList.remove('visible'); }
-        showAlert('✅ تم الحفظ', '✅');
-    }
-
-    function loadAdminPayments() {
-        const methods = JSON.parse(localStorage.getItem('payments') || '[{"name":"سيرياتيل كاش","details":"0987654321"}]');
-        document.getElementById('admin-payments-list').innerHTML = methods.map((m, i) =>
-            `<div class="pkg-card"><span>💳 ${m.name} - ${m.details}</span>
-             <button class="btn btn-sm" style="background:var(--danger);width:auto;padding:4px 8px" onclick="deletePaymentMethod(${i})">🗑️</button></div>`
-        ).join('');
-    }
-
-    function addPayment() {
-        const name = document.getElementById('admin-pay-name').value.trim();
-        const details = document.getElementById('admin-pay-details').value.trim();
-        if (!name || !details) return showAlert('⚠️ املأ الحقول', '⚠️');
-        const methods = JSON.parse(localStorage.getItem('payments') || '[]');
-        methods.push({ name, details });
-        localStorage.setItem('payments', JSON.stringify(methods));
-        document.getElementById('admin-pay-name').value = '';
-        document.getElementById('admin-pay-details').value = '';
-        loadAdminPayments();
-        showAlert('✅ تمت الإضافة', '✅');
-    }
-
-    function deletePaymentMethod(i) {
-        const methods = JSON.parse(localStorage.getItem('payments') || '[]');
-        methods.splice(i, 1);
-        localStorage.setItem('payments', JSON.stringify(methods));
-        loadAdminPayments();
-    }
-
-    async function testConnection() {
-        const div = document.getElementById('test-result');
-        div.innerHTML = '<p style="color:#888">⏳ جاري الاختبار...</p>';
-        
-        let report = '';
-        
-        // اختبار الرصيد
-        const balance = await callAPI("balance");
-        report += '<b>💰 الرصيد:</b><br>';
-        report += '<pre style="font-size:.7rem">' + JSON.stringify(balance, null, 2) + '</pre><br>';
-        
-        // اختبار المنتجات
-        const products = await callAPI("products");
-        if (products && products.products) {
-            report += '<b>📦 المنتجات (' + products.products.length + '):</b><br>';
-            products.products.slice(0, 5).forEach(p => {
-                report += '• ' + (p.name || 'بدون اسم') + '<br>';
-            });
-        }
-        
-        div.innerHTML = report || '<p style="color:var(--danger)">❌ فشل الاتصال</p>';
-    }
-
-    // ==================== تحميل الفئات ====================
-    async function loadCategories() {
+    // ==================== تحميل المنتجات ====================
+    async function loadAllProducts() {
         const grid = document.getElementById('categories-grid');
+        const debug = document.getElementById('debug-info');
         
-        // أولاً نجرب جلب المنتجات مباشرة
+        debug.innerText = "⏳ جاري الاتصال بـ SyriaStore...";
+        
         const result = await callAPI("products");
         
-        if (result && result.products && result.products.length) {
-            // استخراج الفئات من أسماء المنتجات
-            const categoriesMap = {};
-            
-            result.products.forEach(p => {
-                const name = (p.name || "").replace(/SyriaStore|syriastore/gi, "").trim();
-                if (!name) return;
-                
-                // استخدام الكلمة الأولى كفئة
-                const firstWord = name.split(" ")[0];
-                if (!categoriesMap[firstWord]) {
-                    categoriesMap[firstWord] = {
-                        api_name: firstWord,
-                        display_name: getDisplayName(firstWord),
-                        icon: getIcon(Object.keys(categoriesMap).length),
-                        color: getColor(Object.keys(categoriesMap).length),
-                        count: 0
-                    };
-                }
-                categoriesMap[firstWord].count++;
-            });
-            
-            allCategories = Object.values(categoriesMap);
-            
-            // حفظ المنتجات الخام
-            window._rawProducts = result.products;
-            
-            renderCategories();
-        } else {
-            grid.innerHTML = '<p style="text-align:center;color:var(--danger);grid-column:1/-1;padding:20px">❌ فشل الاتصال بـ SyriaStore<br><small>تأكد من اتصالك بالإنترنت</small></p>';
+        if (!result) {
+            grid.innerHTML = '<p style="text-align:center;color:var(--danger);grid-column:1/-1;padding:20px">❌ فشل الاتصال بجميع الطرق</p>';
+            debug.innerText = "❌ فشل الاتصال - تحقق من الانترنت أو جرب لاحقاً";
+            return;
         }
+        
+        debug.innerText = "✅ تم الاتصال! نوع البيانات: " + typeof result;
+        
+        // عرض البيانات الخام للتشخيص
+        console.log("API Response:", result);
+        
+        let products = [];
+        
+        if (result.products && Array.isArray(result.products)) {
+            products = result.products;
+            debug.innerText += " | products: " + products.length;
+        } else if (Array.isArray(result)) {
+            products = result;
+            debug.innerText += " | array: " + products.length;
+        } else if (result.data && Array.isArray(result.data)) {
+            products = result.data;
+            debug.innerText += " | data: " + products.length;
+        } else {
+            debug.innerText += " | raw: " + JSON.stringify(result).substring(0, 200);
+            // محاولة استخراج المنتجات من أي مفتاح
+            for (const key in result) {
+                if (Array.isArray(result[key]) && result[key].length > 0) {
+                    products = result[key];
+                    debug.innerText += " | found in key: " + key;
+                    break;
+                }
+            }
+        }
+        
+        if (!products.length) {
+            grid.innerHTML = '<p style="text-align:center;color:#888;grid-column:1/-1;padding:20px">📭 لا توجد منتجات متاحة</p>';
+            debug.innerText += " | لا توجد منتجات";
+            return;
+        }
+        
+        // تنظيف وتصنيف المنتجات
+        const categoriesMap = {};
+        
+        products.forEach(p => {
+            const rawName = p.name || p.product_name || p.title || "";
+            const cleanName = rawName.replace(/SyriaStore|syriastore|SYRIASTORE/gi, "").trim();
+            if (!cleanName) return;
+            
+            // استخراج الكلمة الأولى كفئة
+            const firstWord = cleanName.split(" ")[0];
+            const catKey = firstWord.toLowerCase();
+            
+            if (!categoriesMap[catKey]) {
+                categoriesMap[catKey] = {
+                    key: catKey,
+                    name: getCatDisplayName(firstWord),
+                    icon: getIcon(Object.keys(categoriesMap).length),
+                    color: getColor(Object.keys(categoriesMap).length),
+                    products: []
+                };
+            }
+            
+            // تجهيز الباقات
+            const plans = (p.plans || []).filter(pl => !pl.disabled).map(pl => ({
+                plan_id: pl.planid || pl.id,
+                name: (pl.name || "").replace(/SyriaStore|syriastore/gi, "").trim(),
+                price: Math.round((pl.price || 0) * (1 + margin / 100))
+            }));
+            
+            if (plans.length > 0) {
+                categoriesMap[catKey].products.push({
+                    name: cleanName,
+                    plans: plans
+                });
+            }
+        });
+        
+        // حفظ البيانات
+        window._categories = Object.values(categoriesMap).filter(c => c.products.length > 0);
+        window._allProducts = products;
+        
+        debug.innerText += " | فئات: " + window._categories.length;
+        
+        renderCategories();
     }
 
-    function getDisplayName(name) {
-        const t = { game: "🎮 ألعاب", gaming: "🎮 ألعاب", pubg: "🎮 ألعاب", chat: "💬 دردشة", balance: "💰 رصيد", topup: "💰 شحن", card: "💳 بطاقات", gift: "💳 بطاقات", crypto: "₿ عملات", bitcoin: "₿ عملات", social: "📱 سوشل", facebook: "📱 سوشل", number: "📞 أرقام", virtual: "📞 أرقام", account: "👤 حسابات", vpn: "🛡️ VPN", telegram: "📲 تيليجرام", special: "🔥 عروض", offer: "🔥 عروض" };
-        const lower = name.toLowerCase();
-        for (const [k, v] of Object.entries(t)) { if (lower.includes(k)) return v; }
-        return "📦 " + name;
+    function getCatDisplayName(word) {
+        const w = word.toLowerCase();
+        if (w.includes("pubg") || w.includes("free") || w.includes("game") || w.includes("فري") || w.includes("ببجي") || w.includes("mobile") || w.includes("call") || w.includes("fortnite") || w.includes("clash")) return "🎮 ألعاب";
+        if (w.includes("whatsapp") || w.includes("telegram") || w.includes("messenger") || w.includes("chat") || w.includes("واتس") || w.includes("تلي")) return "💬 دردشة";
+        if (w.includes("balance") || w.includes("topup") || w.includes("رصيد") || w.includes("شحن") || w.includes("mtc") || w.includes("mtn") || w.includes("syriatel")) return "💰 رصيد";
+        if (w.includes("card") || w.includes("gift") || w.includes("بطاقة") || w.includes("itunes") || w.includes("google") || w.includes("steam") || w.includes("netflix")) return "💳 بطاقات";
+        if (w.includes("bitcoin") || w.includes("usdt") || w.includes("crypto") || w.includes("عملة") || w.includes("binance")) return "₿ عملات";
+        if (w.includes("facebook") || w.includes("instagram") || w.includes("twitter") || w.includes("tiktok") || w.includes("snapchat") || w.includes("youtube") || w.includes("social")) return "📱 سوشل";
+        if (w.includes("number") || w.includes("virtual") || w.includes("رقم") || w.includes("otp") || w.includes("sms")) return "📞 أرقام";
+        if (w.includes("account") || w.includes("حساب")) return "👤 حسابات";
+        if (w.includes("vpn") || w.includes("proxy")) return "🛡️ VPN";
+        if (w.includes("special") || w.includes("offer") || w.includes("عرض")) return "🔥 عروض";
+        return "📦 " + word;
     }
 
     function getIcon(i) {
@@ -392,56 +288,38 @@
 
     function renderCategories() {
         const grid = document.getElementById('categories-grid');
-        if (!allCategories.length) {
+        const cats = window._categories || [];
+        
+        if (!cats.length) {
             grid.innerHTML = '<p style="text-align:center;color:#888;grid-column:1/-1">لا توجد فئات</p>';
             return;
         }
-        grid.innerHTML = allCategories.map(cat =>
-            `<div class="cat-card" onclick="openCategory('${cat.api_name}', '${cat.display_name}')">
-                <i class="fas ${cat.icon}" style="color:${cat.color}"></i>
-                <h3>${cat.display_name}</h3>
-                <small style="color:#888;font-size:.7rem">${cat.count} منتج</small>
+        
+        grid.innerHTML = cats.map(c =>
+            `<div class="cat-card" onclick="showCategoryProducts('${c.key}')">
+                <i class="fas ${c.icon}" style="color:${c.color}"></i>
+                <h3>${c.name}</h3>
+                <small style="color:#888;font-size:.7rem">${c.products.length} منتج</small>
             </div>`
         ).join('');
     }
 
-    // ==================== المنتجات ====================
-    function openCategory(key, name) {
-        document.getElementById('products-title').innerText = name;
-        navigate('products');
-        loadProducts(key);
+    function navigate(page) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('page-' + page)?.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (page === 'checkout') loadPaymentMethods();
     }
 
-    function loadProducts(catKey) {
-        const div = document.getElementById('products-list');
-        div.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner"></i><p>جاري التحميل...</p></div>';
+    function showCategoryProducts(catKey) {
+        const cat = (window._categories || []).find(c => c.key === catKey);
+        if (!cat) return;
         
-        const rawProducts = window._rawProducts || [];
+        document.getElementById('products-title').innerText = cat.name;
+        navigate('products');
         
-        // تصفية المنتجات حسب الفئة
-        const filtered = rawProducts.filter(p => {
-            const name = (p.name || "").replace(/SyriaStore|syriastore/gi, "").trim();
-            return name.split(" ")[0] === catKey;
-        });
-        
-        allProducts = filtered.map(p => {
-            const plans = (p.plans || []).filter(pl => !pl.disabled).map(pl => ({
-                plan_id: pl.planid,
-                name: (pl.name || "").replace(/SyriaStore|syriastore/gi, "").trim(),
-                price: Math.round((pl.price || 0) * (1 + margin / 100))
-            }));
-            return {
-                name: (p.name || "").replace(/SyriaStore|syriastore/gi, "").trim(),
-                plans
-            };
-        }).filter(p => p.plans.length > 0);
-        
-        if (!allProducts.length) {
-            div.innerHTML = '<p style="text-align:center;padding:30px;color:#888">📭 لا توجد منتجات</p>';
-            return;
-        }
-        
-        div.innerHTML = allProducts.map((p, i) =>
+        allProducts = cat.products;
+        document.getElementById('products-list').innerHTML = allProducts.map((p, i) =>
             `<div class="pkg-card glass" onclick="selectProduct(${i})">
                 <span>📦 ${p.name}</span>
                 <span style="color:var(--primary);font-size:.75rem">${p.plans.length} باقة</span>
@@ -457,33 +335,29 @@
                 <span>${p.name}</span>
                 <span class="pkg-price">${p.price.toLocaleString()} ل.س</span>
             </div>`
-        ).join('') || '<p style="text-align:center;color:#888">لا توجد باقات</p>';
+        ).join('');
         navigate('plans');
     }
 
     function selectPlan(id, name, price) {
         selectedPlan = { id, name, price };
-        document.getElementById('summary-plan').innerHTML = `🎯 ${name}<br><small style="color:#888">📦 ${currentProduct.name}</small>`;
+        document.getElementById('summary-plan').innerHTML = `🎯 ${name}<br><small style="color:#888">📦 ${currentProduct?.name || ''}</small>`;
         document.getElementById('summary-price').innerText = `💰 ${price.toLocaleString()} ل.س`;
         navigate('checkout');
     }
 
     function loadPaymentMethods() {
-        const methods = JSON.parse(localStorage.getItem('payments') || '[{"name":"سيرياتيل كاش","details":"0987654321"}]');
+        const methods = JSON.parse(localStorage.getItem('pm') || '[{"name":"سيرياتيل كاش","details":"0987654321"}]');
         const div = document.getElementById('payment-methods-list');
-        if (!methods.length) { div.innerHTML = '<p style="color:#888">لا توجد طرق دفع</p>'; return; }
         div.innerHTML = methods.map((m, i) =>
-            `<div class="pkg-card" onclick="selectPayMethod(${i})" id="pm-${i}">
-                <span>💳 ${m.name}</span>
-                <span style="color:var(--primary);font-size:.8rem">${m.details}</span>
+            `<div class="pkg-card" onclick="selectPM(${i})" id="pm-${i}">
+                <span>💳 ${m.name}</span><span style="color:var(--primary);font-size:.8rem">${m.details}</span>
             </div>`
         ).join('');
-        if (methods.length > 0) {
-            setTimeout(() => document.getElementById('pm-0')?.classList.add('selected'), 100);
-        }
+        setTimeout(() => document.getElementById('pm-0')?.classList.add('selected'), 100);
     }
 
-    function selectPayMethod(i) {
+    function selectPM(i) {
         document.querySelectorAll('#payment-methods-list .pkg-card').forEach(c => c.classList.remove('selected'));
         document.getElementById('pm-' + i)?.classList.add('selected');
     }
@@ -491,28 +365,72 @@
     function submitOrder() {
         const pid = document.getElementById('player-id').value.trim();
         const tx = document.getElementById('tx-num').value.trim();
-        if (!pid) { showAlert('⚠️ أدخل الآيدي', '⚠️'); return; }
-        if (!tx) { showAlert('⚠️ أدخل رقم العملية', '⚠️'); return; }
-        localStorage.setItem('lastPlayerId', pid);
-        showAlert('✅ تم استلام الطلب وسيتم معالجته', '✅');
+        if (!pid) return showAlert('⚠️ أدخل الآيدي', '⚠️');
+        if (!tx) return showAlert('⚠️ أدخل رقم العملية', '⚠️');
+        localStorage.setItem('pid', pid);
+        showAlert('✅ تم استلام الطلب', '✅');
         navigate('home');
     }
 
-    // ==================== بدء التشغيل ====================
+    function showModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function showAlert(msg, icon) {
+        document.getElementById('modal-icon').innerText = icon || '🎉';
+        document.getElementById('modal-msg').innerText = msg;
+        showModal('modal-alert');
+    }
+
+    // دخول لوحة التحكم
+    document.getElementById('main-logo').addEventListener('click', () => {
+        tapCount++;
+        clearTimeout(tapTimer);
+        if (tapCount >= 5) {
+            tapCount = 0;
+            const pw = prompt('🔐 كلمة المرور:');
+            if (pw === 'admin123') {
+                document.getElementById('admin-margin').value = margin;
+                document.getElementById('admin-whatsapp').value = localStorage.getItem('wa') || '';
+                loadAdminPayments();
+                showModal('modal-admin');
+            } else if (pw) showAlert('❌ خطأ', '🔐');
+        }
+        tapTimer = setTimeout(() => tapCount = 0, 1500);
+    });
+
+    function saveMargin() { margin = parseFloat(document.getElementById('admin-margin').value) || 20; showAlert('✅ تم الحفظ', '✅'); }
+    function saveWhatsApp() {
+        const u = document.getElementById('admin-whatsapp').value.trim();
+        localStorage.setItem('wa', u);
+        const b = document.getElementById('whatsapp-btn');
+        if (u) { b.href = u; b.classList.add('visible'); } else b.classList.remove('visible');
+        showAlert('✅ تم', '✅');
+    }
+    function loadAdminPayments() {
+        const m = JSON.parse(localStorage.getItem('pm') || '[{"name":"سيرياتيل كاش","details":"0987654321"}]');
+        document.getElementById('payments-list').innerHTML = m.map((p, i) =>
+            `<div class="pkg-card"><span>💳 ${p.name} - ${p.details}</span><button class="btn btn-sm" style="background:var(--danger);width:auto;padding:4px 8px" onclick="delPM(${i})">🗑️</button></div>`
+        ).join('');
+    }
+    function addPayment() {
+        const n = document.getElementById('pay-name').value.trim();
+        const d = document.getElementById('pay-details').value.trim();
+        if (!n || !d) return showAlert('⚠️ املأ الحقول', '⚠️');
+        const m = JSON.parse(localStorage.getItem('pm') || '[]');
+        m.push({ name: n, details: d });
+        localStorage.setItem('pm', JSON.stringify(m));
+        document.getElementById('pay-name').value = '';
+        document.getElementById('pay-details').value = '';
+        loadAdminPayments();
+    }
+    function delPM(i) { const m = JSON.parse(localStorage.getItem('pm') || '[]'); m.splice(i, 1); localStorage.setItem('pm', JSON.stringify(m)); loadAdminPayments(); }
+
+    // بدء التشغيل
     document.addEventListener('DOMContentLoaded', () => {
-        loadCategories();
-        
-        const whatsapp = localStorage.getItem('whatsapp');
-        if (whatsapp) {
-            document.getElementById('whatsapp-btn').href = whatsapp;
-            document.getElementById('whatsapp-btn').classList.add('visible');
-        }
-        
-        const pid = localStorage.getItem('lastPlayerId');
-        if (pid) {
-            const el = document.getElementById('player-id');
-            if (el) el.value = pid;
-        }
+        loadAllProducts();
+        const wa = localStorage.getItem('wa');
+        if (wa) { document.getElementById('whatsapp-btn').href = wa; document.getElementById('whatsapp-btn').classList.add('visible'); }
+        const pid = localStorage.getItem('pid');
+        if (pid) { const el = document.getElementById('player-id'); if (el) el.value = pid; }
     });
     </script>
 </body>
