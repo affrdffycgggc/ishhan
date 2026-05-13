@@ -4,499 +4,238 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ishhen - متجر الخدمات الرقمية</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;600;700;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         :root {
-            --primary: #00e5bf;
-            --primary2: #7c3aed;
-            --bg: #030014;
-            --card: rgba(12, 10, 30, 0.75);
-            --border: rgba(255, 255, 255, 0.07);
-            --danger: #ff3b5c;
-            --warning: #f39c12;
-            --success: #00b894;
-            --text: #e0e0e0;
-            --text-secondary: rgba(255, 255, 255, 0.5);
-            --radius: 20px;
+            --primary: #00e5bf; --primary2: #7c3aed; --bg: #030014;
+            --card: rgba(12,10,30,0.75); --border: rgba(255,255,255,0.07);
+            --danger: #ff3b5c; --warning: #f39c12; --success: #00b894;
+            --text: #e0e0e0; --text-secondary: rgba(255,255,255,0.5); --radius: 20px;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Cairo', 'Tajawal', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        #cosmos {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -3; overflow: hidden; pointer-events: none;
-        }
-        .nebula {
-            position: absolute; border-radius: 50%;
-            filter: blur(100px); opacity: 0.25;
-            animation: drift 25s ease-in-out infinite;
-        }
+        body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+        
+        #cosmos { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3; overflow: hidden; pointer-events: none; }
+        .nebula { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.25; animation: drift 25s ease-in-out infinite; }
         .nebula-1 { width: 500px; height: 500px; background: radial-gradient(circle, #7c3aed, transparent); top: -15%; right: -10%; }
         .nebula-2 { width: 400px; height: 400px; background: radial-gradient(circle, #00e5bf, transparent); bottom: 5%; left: -8%; animation-delay: -8s; }
-        .nebula-3 { width: 300px; height: 300px; background: radial-gradient(circle, #ff3b5c, transparent); top: 50%; right: 40%; animation-delay: -15s; opacity: 0.15; }
-        @keyframes drift {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            25% { transform: translate(40px, -50px) scale(1.1); }
-            50% { transform: translate(-30px, 40px) scale(0.95); }
-            75% { transform: translate(50px, 30px) scale(1.05); }
-        }
-
-        #category-bg {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -2; background-size: cover; background-position: center;
-            opacity: 0; transition: opacity 0.8s ease; pointer-events: none;
-        }
-        #category-bg.active { opacity: 1; }
-        #category-bg::after {
-            content: ''; position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: linear-gradient(180deg, rgba(3,0,20,0.3) 0%, rgba(3,0,20,0.6) 50%, rgba(3,0,20,0.95) 100%);
-        }
-
-        #particles-canvas {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%; z-index: -1; pointer-events: none;
-        }
-
-        header {
-            position: sticky; top: 0; z-index: 100;
-            padding: 16px 20px; display: flex; justify-content: center; align-items: center;
-            border-bottom: 1px solid var(--border);
-            background: rgba(3, 0, 20, 0.85); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-        }
-        .header-back {
-            position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
-            width: 40px; height: 40px; border-radius: 12px;
-            background: rgba(0, 229, 191, 0.1); border: 1px solid rgba(0, 229, 191, 0.25);
-            color: var(--primary); font-size: 1rem; cursor: pointer;
-            display: none; align-items: center; justify-content: center; transition: all 0.3s;
-        }
-        .header-back.visible { display: flex; }
-        .header-back:active { transform: translateY(-50%) scale(0.9); }
-
-        .logo {
-            font-family: 'Orbitron'; font-size: clamp(1.6rem, 5vw, 2.2rem); font-weight: 900;
-            background: linear-gradient(135deg, var(--primary), var(--primary2), var(--primary));
-            background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: logoShine 3s ease infinite; letter-spacing: 6px; cursor: pointer; transition: all 0.3s;
-            user-select: none;
-        }
-        @keyframes logoShine {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        .page {
-            display: none; padding: 20px 16px 80px; max-width: 550px; margin: 0 auto;
-            animation: pageIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+        @keyframes drift { 0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(40px,-50px)scale(1.1)}50%{transform:translate(-30px,40px)scale(.95)}75%{transform:translate(50px,30px)scale(1.05)} }
+        
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        
+        header { position: sticky; top: 0; z-index: 100; padding: 16px 20px; text-align: center; border-bottom: 1px solid var(--border); background: rgba(3,0,20,0.85); backdrop-filter: blur(30px); }
+        .logo { font-family: 'Orbitron'; font-size: 1.8rem; font-weight: 900; background: linear-gradient(135deg,var(--primary),var(--primary2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; cursor: pointer; letter-spacing: 6px; user-select: none; }
+        
+        .page { display: none; padding: 16px; max-width: 550px; margin: 0 auto 80px; animation: pageIn .5s ease; }
         .page.active { display: block; }
-        @keyframes pageIn {
-            from { opacity: 0; transform: translateY(30px) scale(0.97); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .glass {
-            background: var(--card); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--border); border-radius: var(--radius);
-            padding: 20px; margin-bottom: 14px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3), 0 0 40px rgba(0,229,191,0.15);
-        }
-
-        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
-
-        .btn {
-            width: 100%; padding: 15px; border-radius: 16px; border: none;
-            background: linear-gradient(135deg, var(--primary), #00c9a7, var(--primary2));
-            background-size: 200% 200%; color: #000; font-family: 'Cairo';
-            font-weight: 900; font-size: 1rem; cursor: pointer; margin-top: 10px;
-            transition: all 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px;
-            box-shadow: 0 8px 30px rgba(0, 229, 191, 0.25);
-            animation: btnShine 4s ease infinite;
-        }
-        @keyframes btnShine {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        .btn:active { transform: scale(0.97); }
-        .btn-sm { width: auto; padding: 8px 16px; font-size: 0.8rem; animation: none; }
-
-        .input-group { margin-bottom: 16px; }
-        .input-group label { display: block; margin-bottom: 6px; color: var(--text-secondary); font-size: 0.82rem; font-weight: 600; }
-        .cyber-input {
-            width: 100%; padding: 14px 16px; border-radius: 14px;
-            background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-            color: #fff; font-family: 'Cairo'; font-size: 0.92rem;
-            transition: all 0.3s; outline: none;
-        }
-        .cyber-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,229,191,0.1), 0 0 30px rgba(0,229,191,0.08); background: rgba(0,0,0,0.2); }
-        .cyber-input::placeholder { color: rgba(255,255,255,0.2); }
-        textarea.cyber-input { resize: none; min-height: 100px; }
-        select.cyber-input { appearance: none; cursor: pointer; }
-
-        .cat-card {
-            position: relative; padding: 28px 12px; border-radius: var(--radius);
-            text-align: center; cursor: pointer; border: 1px solid var(--border);
-            background: var(--card); backdrop-filter: blur(20px);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            min-height: 140px; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; overflow: hidden;
-        }
-        .cat-card::before {
-            content: ''; position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: linear-gradient(180deg, transparent 0%, rgba(3,0,20,0.7) 100%);
-            z-index: 1; pointer-events: none; transition: all 0.4s;
-        }
-        .cat-card:hover { transform: translateY(-8px); border-color: rgba(0,229,191,0.4); box-shadow: 0 20px 60px rgba(0,229,191,0.15); }
-        .cat-card i { font-size: clamp(2rem, 6vw, 2.8rem); margin-bottom: 12px; position: relative; z-index: 2; filter: drop-shadow(0 0 20px currentColor); animation: iconFloat 4s ease-in-out infinite; }
-        .cat-card h3 { font-size: clamp(0.8rem, 2.6vw, 0.95rem); position: relative; z-index: 2; font-weight: 800; }
-        @keyframes iconFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-
-        .pkg-card {
-            padding: 16px 18px; border-radius: 16px; display: flex;
-            justify-content: space-between; align-items: center; margin-bottom: 10px;
-            cursor: pointer; border: 1px solid var(--border);
-            background: rgba(255,255,255,0.02); transition: all 0.3s;
-        }
-        .pkg-card:hover, .pkg-card.selected { border-color: var(--primary); background: rgba(0,229,191,0.06); }
+        @keyframes pageIn { from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)} }
+        
+        .glass { background: var(--card); backdrop-filter: blur(25px); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 12px; }
+        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+        
+        .btn { width: 100%; padding: 14px; border-radius: 14px; border: none; background: linear-gradient(135deg,var(--primary),var(--primary2)); color: #000; font-family: 'Cairo'; font-weight: 900; font-size: 1rem; cursor: pointer; margin-top: 8px; transition: .3s; }
+        .btn:active { transform: scale(.97); }
+        .btn-sm { width: auto; padding: 8px 14px; font-size: .8rem; display: inline-block; }
+        
+        .cyber-input { width: 100%; padding: 12px; border-radius: 12px; background: rgba(255,255,255,.04); border: 1px solid var(--border); color: #fff; font-family: 'Cairo'; font-size: .9rem; margin-bottom: 10px; outline: none; }
+        .cyber-input:focus { border-color: var(--primary); }
+        label { display: block; margin-bottom: 4px; color: var(--text-secondary); font-size: .8rem; }
+        
+        .cat-card { padding: 24px 10px; border-radius: var(--radius); text-align: center; cursor: pointer; border: 1px solid var(--border); background: var(--card); transition: .3s; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .cat-card:hover { transform: translateY(-4px); border-color: var(--primary); }
+        .cat-card i { font-size: 2rem; margin-bottom: 8px; }
+        .cat-card h3 { font-size: .85rem; font-weight: 700; }
+        
+        .pkg-card { padding: 14px 16px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; cursor: pointer; border: 1px solid var(--border); transition: .3s; }
+        .pkg-card:hover { border-color: var(--primary); background: rgba(0,229,191,.05); }
         .pkg-price { font-family: 'Orbitron'; color: var(--primary); font-weight: 700; }
-
-        .checkout-summary { padding: 20px; border-radius: var(--radius); margin-bottom: 16px; border: 1px solid rgba(0,229,191,0.2); background: linear-gradient(135deg, rgba(0,229,191,0.03), rgba(124,58,237,0.03)); }
-        .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 0.9rem; }
-        .summary-label { color: var(--text-secondary); }
-        .summary-value { font-weight: 700; }
-        .total-row { padding-top: 12px; margin-top: 6px; border-top: 2px solid rgba(0,229,191,0.3) !important; }
-        .total-row .summary-value { color: var(--primary); font-family: 'Orbitron'; font-size: 1.2rem; }
-
-        .steps { display: flex; justify-content: center; gap: 10px; margin-bottom: 18px; }
-        .step-dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.08); transition: 0.3s; }
-        .step-dot.active { background: var(--primary); box-shadow: 0 0 15px var(--primary); }
-        .step-dot.done { background: #00c9a7; }
-
-        .pay-method-card {
-            padding: 16px; border-radius: 16px; border: 1px solid var(--border);
-            background: rgba(255,255,255,0.02); margin-bottom: 8px; cursor: pointer;
-            transition: all 0.3s; display: flex; align-items: center; gap: 14px;
-        }
-        .pay-method-card.selected { border-color: var(--primary); background: rgba(0,229,191,0.06); }
-        .pay-method-card .pm-icon {
-            width: 44px; height: 44px; border-radius: 14px;
-            background: linear-gradient(135deg, rgba(0,229,191,0.1), rgba(124,58,237,0.1));
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.1rem; color: var(--primary); flex-shrink: 0;
-        }
-        .pay-method-card .pm-name { flex: 1; font-weight: 700; }
-
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 999; display: none;
-            justify-content: center; align-items: center; padding: 20px;
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-        }
-        .modal-content {
-            background: linear-gradient(145deg, rgba(15,12,35,0.98), rgba(8,5,20,0.98));
-            padding: 35px 28px; border-radius: 28px; max-width: 420px; width: 100%;
-            text-align: center; border: 1px solid rgba(0,229,191,0.3);
-            box-shadow: 0 0 60px rgba(0,229,191,0.1); animation: modalPop 0.4s cubic-bezier(0.16,1,0.3,1);
-            max-height: 85vh; overflow-y: auto;
-        }
-        @keyframes modalPop {
-            0% { transform: scale(0.7) translateY(40px); opacity: 0; }
-            100% { transform: scale(1) translateY(0); opacity: 1; }
-        }
-
-        .admin-tabs { display: flex; gap: 6px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 6px; }
-        .admin-tab {
-            padding: 10px 18px; border-radius: 25px; background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border); cursor: pointer; font-size: 0.82rem;
-            white-space: nowrap; font-weight: 700; transition: all 0.3s;
-        }
-        .admin-tab.active { background: var(--primary); color: #000; border-color: var(--primary); }
+        
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,.9); z-index: 999; display: none; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: #1a1a2e; padding: 30px; border-radius: 24px; max-width: 380px; width: 100%; text-align: center; border: 1px solid var(--primary); animation: modalPop .4s ease; }
+        @keyframes modalPop { from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1} }
+        
+        .admin-tabs { display: flex; gap: 4px; margin-bottom: 14px; overflow-x: auto; }
+        .admin-tab { padding: 8px 14px; border-radius: 20px; background: rgba(255,255,255,.03); border: 1px solid var(--border); cursor: pointer; font-size: .78rem; white-space: nowrap; font-weight: 700; }
+        .admin-tab.active { background: var(--primary); color: #000; }
         .admin-tab-content { display: none; }
         .admin-tab-content.active { display: block; }
-
-        .stat-card { background: rgba(255,255,255,0.03); border-radius: 18px; padding: 18px; text-align: center; border: 1px solid var(--border); }
-        .stat-value { font-family: 'Orbitron'; font-size: 1.8rem; font-weight: 900; color: var(--primary); }
-        .stat-label { font-size: 0.75rem; color: var(--text-secondary); margin-top: 6px; }
-
-        .whatsapp-btn {
-            position: fixed; bottom: 24px; left: 24px;
-            width: 56px; height: 56px; border-radius: 50%;
-            background: #25D366; color: #fff; display: none;
-            align-items: center; justify-content: center; font-size: 1.6rem;
-            box-shadow: 0 4px 20px rgba(37,211,102,0.4); z-index: 100;
-            text-decoration: none; animation: waFloat 3s ease-in-out infinite;
-        }
+        
+        .stat-card { background: rgba(255,255,255,.03); border-radius: 16px; padding: 16px; text-align: center; border: 1px solid var(--border); }
+        .stat-value { font-family: 'Orbitron'; font-size: 1.6rem; font-weight: 900; color: var(--primary); }
+        .stat-label { font-size: .7rem; color: var(--text-secondary); margin-top: 4px; }
+        
+        .whatsapp-btn { position: fixed; bottom: 20px; left: 20px; width: 50px; height: 50px; border-radius: 50%; background: #25D366; color: #fff; display: none; align-items: center; justify-content: center; font-size: 1.4rem; z-index: 100; text-decoration: none; animation: waFloat 3s ease-in-out infinite; }
         .whatsapp-btn.visible { display: flex; }
-        @keyframes waFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-
-        .moving-ad {
-            margin-bottom: 10px; border-radius: 14px; overflow: hidden;
-            border: 1px solid rgba(0,229,191,0.2);
-            background: linear-gradient(135deg, rgba(0,229,191,0.06), rgba(124,58,237,0.06));
-            height: 44px; display: flex; align-items: center; direction: ltr;
-        }
-        .moving-ad-text { white-space: nowrap; animation: marquee 20s linear infinite; font-weight: 800; font-size: 0.9rem; padding-left: 100%; }
-        @keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-200%); } }
-
-        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 800; }
-        .badge-pending { background: rgba(243,156,18,0.15); color: #f39c12; }
-        .badge-approved { background: rgba(0,229,191,0.15); color: #00e5bf; }
-        .badge-rejected { background: rgba(255,59,92,0.15); color: #ff3b5c; }
-
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(0,229,191,0.3); border-radius: 10px; }
-
-        @media (max-width: 380px) {
-            .grid2 { gap: 8px; }
-            .cat-card { padding: 20px 8px; min-height: 110px; }
-            .cat-card i { font-size: 1.6rem; }
-            .page { padding: 14px 10px 70px; }
-        }
+        @keyframes waFloat { 0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)} }
+        
+        .status-badge { display: inline-block; padding: 3px 10px; border-radius: 15px; font-size: .7rem; font-weight: 800; }
+        .badge-pending { background: rgba(243,156,18,.15); color: #f39c12; }
+        .badge-approved { background: rgba(0,229,191,.15); color: #00e5bf; }
+        .badge-rejected { background: rgba(255,59,92,.15); color: #ff3b5c; }
+        
+        @media(max-width:380px){.grid2{gap:8px}.cat-card{padding:18px 6px;min-height:100px}.cat-card i{font-size:1.5rem}.cat-card h3{font-size:.75rem}}
     </style>
 </head>
 <body>
-    <div id="cosmos"><div class="nebula nebula-1"></div><div class="nebula nebula-2"></div><div class="nebula nebula-3"></div></div>
-    <div id="category-bg"></div>
+    <div id="cosmos"><div class="nebula nebula-1"></div><div class="nebula nebula-2"></div></div>
     <canvas id="particles-canvas"></canvas>
     <a id="whatsapp-btn" class="whatsapp-btn" href="#" target="_blank"><i class="fab fa-whatsapp"></i></a>
 
-    <header>
-        <button class="header-back" id="header-back-btn" onclick="goBack()"><i class="fas fa-arrow-right"></i></button>
-        <div class="logo" id="main-logo">ISHHEN</div>
-    </header>
+    <header><div class="logo" id="main-logo">ISHHEN</div></header>
 
     <!-- الصفحة الرئيسية -->
     <div id="page-home" class="page active">
-        <div style="text-align:center;margin-bottom:20px">
-            <h2 style="font-family:'Orbitron';font-size:clamp(1rem,4vw,1.3rem);font-weight:700;background:linear-gradient(90deg,var(--primary),#fff,var(--primary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px">مرحباً بك في عالم الخدمات الرقمية</h2>
-            <p style="color:var(--text-secondary);font-size:0.85rem">اختر الخدمة التي تريدها</p>
+        <div style="text-align:center;margin-bottom:16px">
+            <h2 style="font-family:'Orbitron';background:linear-gradient(90deg,var(--primary),#fff,var(--primary));-webkit-background-clip:text;-webkit-text-fill-color:transparent">مرحباً بك</h2>
         </div>
-        <div id="home-ads"></div>
-        <div class="grid2" id="categories-grid"></div>
+        <div class="grid2" id="categories-grid"><p style="text-align:center;color:#888;grid-column:1/-1">⏳ جاري تحميل الفئات...</p></div>
     </div>
 
     <!-- صفحة المنتجات -->
     <div id="page-products" class="page">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <h2 id="products-title" style="font-family:'Orbitron';color:var(--primary);font-size:1.2rem"></h2>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <h2 id="products-title" style="color:var(--primary)"></h2>
+            <button class="btn btn-sm" onclick="navigate('home')">🔙 رجوع</button>
         </div>
         <div id="products-list"></div>
     </div>
 
     <!-- صفحة الباقات -->
     <div id="page-plans" class="page">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <h2 id="plans-title" style="font-family:'Orbitron';color:var(--primary);font-size:1.2rem"></h2>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <h2 id="plans-title" style="color:var(--primary)"></h2>
+            <button class="btn btn-sm" onclick="navigate('products')">🔙 رجوع</button>
         </div>
         <div id="plans-list"></div>
     </div>
 
     <!-- صفحة الدفع -->
     <div id="page-checkout" class="page">
-        <h2 style="font-family:'Orbitron';color:var(--primary);font-size:1.1rem;margin-bottom:16px">💳 إتمام الدفع</h2>
-        <div class="steps"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div></div>
-        <div class="checkout-summary glass">
-            <div class="summary-row"><span class="summary-label">🎯 الباقة</span><span class="summary-value" id="summary-plan">-</span></div>
-            <div class="summary-row"><span class="summary-label">📦 المنتج</span><span class="summary-value" id="summary-product">-</span></div>
-            <div class="summary-row total-row"><span class="summary-label">💰 المبلغ</span><span class="summary-value" id="summary-price">-</span></div>
+        <h2 style="color:var(--primary);margin-bottom:12px">💳 الدفع</h2>
+        <div class="glass">
+            <div id="summary-plan" style="font-weight:700"></div>
+            <div id="summary-price" style="font-family:'Orbitron';color:var(--primary);font-weight:900;font-size:1.2rem;margin-top:8px"></div>
         </div>
         <div class="glass">
-            <div class="input-group"><label>👤 الآيدي أو الحساب</label><input type="text" id="player-id" class="cyber-input" placeholder="أدخل الآيدي أو رقم الحساب..."></div>
-            <div class="input-group"><label>🧾 رقم عملية الدفع</label><input type="text" id="tx-num" class="cyber-input" placeholder="أدخل رقم عملية التحويل..."></div>
+            <label>👤 الآيدي أو الحساب</label>
+            <input type="text" id="player-id" class="cyber-input" placeholder="أدخل الآيدي...">
+            <label>🧾 رقم عملية الدفع</label>
+            <input type="text" id="tx-num" class="cyber-input" placeholder="أدخل رقم التحويل...">
         </div>
-        <div class="glass"><label style="font-weight:700;color:var(--primary);margin-bottom:10px;display:block">💳 اختر طريقة الدفع</label><div id="payment-methods-list"></div></div>
-        <button class="btn" onclick="submitOrder()"><i class="fas fa-bolt"></i> تأكيد وإرسال الطلب</button>
-    </div>
-
-    <!-- صفحة الطلبات -->
-    <div id="page-orders" class="page">
-        <h2 style="font-family:'Orbitron';color:var(--primary);font-size:1.1rem;margin-bottom:16px">📋 طلباتي</h2>
         <div class="glass">
-            <div class="input-group"><label>🔍 آيدي الحساب</label><input type="text" id="orders-player-id" class="cyber-input" placeholder="أدخل الآيدي للبحث..."></div>
-            <button class="btn" onclick="loadOrders()"><i class="fas fa-search"></i> بحث</button>
-            <div id="orders-list" style="margin-top:14px"></div>
+            <label style="font-weight:700;color:var(--primary)">💳 طريقة الدفع</label>
+            <div id="payment-methods-list"></div>
         </div>
-    </div>
-
-    <!-- صفحة كود الهدية -->
-    <div id="page-redeem" class="page">
-        <h2 style="font-family:'Orbitron';color:var(--primary);font-size:1.1rem;margin-bottom:16px">🎟️ كود الهدية</h2>
-        <div class="glass">
-            <div class="input-group"><label>🎫 الكود</label><input type="text" id="redeem-code" class="cyber-input" placeholder="GIFT-XXXX-XXXX"></div>
-            <div class="input-group"><label>👤 آيدي الحساب</label><input type="text" id="redeem-player-id" class="cyber-input" placeholder="أدخل الآيدي..."></div>
-            <button class="btn" onclick="redeemCode()"><i class="fas fa-gift"></i> استلام الهدية</button>
-        </div>
-    </div>
-
-    <!-- صفحة التواصل -->
-    <div id="page-contact" class="page">
-        <h2 style="font-family:'Orbitron';color:var(--primary);font-size:1.1rem;margin-bottom:16px">📞 تواصل معنا</h2>
-        <div class="glass">
-            <div class="input-group"><label>👤 اسمك</label><input type="text" id="contact-name" class="cyber-input" placeholder="أدخل اسمك..."></div>
-            <div class="input-group"><label>🆔 آيدي الحساب</label><input type="text" id="contact-player-id" class="cyber-input" placeholder="أدخل الآيدي..."></div>
-            <div class="input-group"><label>💬 رسالتك</label><textarea id="contact-msg" class="cyber-input" rows="4" placeholder="اكتب رسالتك هنا..."></textarea></div>
-            <button class="btn" onclick="sendContact()"><i class="fas fa-paper-plane"></i> إرسال</button>
-        </div>
+        <button class="btn" onclick="submitOrder()">🚀 تأكيد الطلب</button>
     </div>
 
     <!-- لوحة التحكم -->
     <div id="page-admin" class="page">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <h2 style="font-family:'Orbitron';color:var(--primary);font-size:1.2rem">👑 لوحة التحكم</h2>
-            <button class="btn btn-sm" onclick="adminLogout()" style="margin:0;background:var(--danger)">🚪 خروج</button>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <h2 style="color:var(--primary)">👑 لوحة التحكم</h2>
+            <button class="btn btn-sm" onclick="adminLogout()" style="background:var(--danger)">🚪 خروج</button>
         </div>
-        <div class="admin-tabs" id="admin-tabs">
+        <div class="admin-tabs">
             <div class="admin-tab active" onclick="switchAdminTab('dashboard')">📊 الرئيسية</div>
             <div class="admin-tab" onclick="switchAdminTab('orders')">📋 الطلبات</div>
             <div class="admin-tab" onclick="switchAdminTab('settings')">⚙️ الإعدادات</div>
             <div class="admin-tab" onclick="switchAdminTab('payments')">💳 الدفع</div>
-            <div class="admin-tab" onclick="switchAdminTab('gifts')">🎁 الهدايا</div>
             <div class="admin-tab" onclick="switchAdminTab('diagnose')">🔍 تشخيص</div>
         </div>
-
         <div id="tab-dashboard" class="admin-tab-content active">
-            <div class="grid2" style="margin-bottom:16px">
+            <div class="grid2" style="margin-bottom:12px">
                 <div class="stat-card"><div class="stat-value" id="stat-products">-</div><div class="stat-label">منتج</div></div>
-                <div class="stat-card"><div class="stat-value" id="stat-orders">-</div><div class="stat-label">طلب</div></div>
                 <div class="stat-card"><div class="stat-value" id="stat-balance">-</div><div class="stat-label">ل.س</div></div>
-                <div class="stat-card"><div class="stat-value" id="stat-users">-</div><div class="stat-label">مستخدم</div></div>
             </div>
-            <div class="glass">
-                <button class="btn btn-sm" onclick="refreshCache()" style="margin:4px">🔄 تحديث المنتجات</button>
-                <button class="btn btn-sm" onclick="toggleBot()" style="margin:4px">⏸️ إيقاف البوت</button>
-                <button class="btn btn-sm" onclick="toggleWebsite()" style="margin:4px">⏸️ إيقاف الموقع</button>
-            </div>
+            <button class="btn btn-sm" onclick="refreshProducts()">🔄 تحديث المنتجات</button>
         </div>
-
         <div id="tab-orders" class="admin-tab-content"><div id="admin-orders-list"></div></div>
-
         <div id="tab-settings" class="admin-tab-content">
-            <div class="glass"><div class="input-group"><label>📈 نسبة الربح (%)</label><input type="number" id="set-margin" class="cyber-input"></div><button class="btn btn-sm" onclick="saveSetting('profit_margin','set-margin')">💾 حفظ</button></div>
-            <div class="glass"><div class="input-group"><label>🎉 نسبة الخصم (%)</label><input type="number" id="set-discount" class="cyber-input"></div><button class="btn btn-sm" onclick="saveSetting('discount','set-discount')">💾 حفظ</button></div>
-            <div class="glass"><div class="input-group"><label>💬 رابط واتساب</label><input type="text" id="set-whatsapp" class="cyber-input" placeholder="https://wa.me/963xxxxxxxxx"></div><button class="btn btn-sm" onclick="saveSetting('whatsapp_url','set-whatsapp')">💾 حفظ</button></div>
+            <div class="glass"><label>📈 نسبة الربح (%)</label><input type="number" id="set-margin" class="cyber-input" value="20"><button class="btn btn-sm" onclick="saveSetting('margin')">💾 حفظ</button></div>
+            <div class="glass"><label>🎉 نسبة الخصم (%)</label><input type="number" id="set-discount" class="cyber-input" value="0"><button class="btn btn-sm" onclick="saveSetting('discount')">💾 حفظ</button></div>
+            <div class="glass"><label>💬 رابط واتساب</label><input type="text" id="set-whatsapp" class="cyber-input"><button class="btn btn-sm" onclick="saveSetting('whatsapp')">💾 حفظ</button></div>
         </div>
-
         <div id="tab-payments" class="admin-tab-content">
             <div class="glass">
-                <h3 style="color:var(--primary);margin-bottom:10px">➕ إضافة طريقة دفع</h3>
-                <div class="input-group"><label>الاسم</label><input type="text" id="new-pay-name" class="cyber-input" placeholder="مثال: سيرياتيل كاش"></div>
-                <div class="input-group"><label>الرقم</label><input type="text" id="new-pay-details" class="cyber-input" placeholder="مثال: 099xxxxxxxx"></div>
-                <button class="btn btn-sm" onclick="addPayment()">➕ إضافة</button>
+                <label>➕ اسم الطريقة</label><input type="text" id="new-pay-name" class="cyber-input" placeholder="سيرياتيل كاش">
+                <label>الرقم</label><input type="text" id="new-pay-details" class="cyber-input" placeholder="099xxxxxxxx">
+                <button class="btn btn-sm" onclick="addPaymentMethod()">➕ إضافة</button>
             </div>
             <div id="admin-payments-list"></div>
         </div>
-
-        <div id="tab-gifts" class="admin-tab-content">
-            <div class="glass">
-                <h3 style="color:var(--primary);margin-bottom:10px">🎁 توليد كود هدية</h3>
-                <div class="input-group"><label>اختر الباقة</label><select id="gift-plan-select" class="cyber-input"></select></div>
-                <div class="input-group"><label>عدد المستفيدين</label><input type="number" id="gift-max-uses" class="cyber-input" value="1" min="1"></div>
-                <button class="btn btn-sm" onclick="generateGiftCode()">🎟️ توليد</button>
-            </div>
-            <div id="gift-result" style="display:none;margin-top:12px" class="glass">
-                <h3 style="color:var(--success)">✅ تم التوليد!</h3>
-                <p style="font-family:'Orbitron';font-size:1.4rem;margin:12px 0;letter-spacing:2px" id="gift-code-display"></p>
-                <button class="btn btn-sm" onclick="copyGiftCode()">📋 نسخ</button>
-            </div>
-        </div>
-
         <div id="tab-diagnose" class="admin-tab-content">
-            <button class="btn btn-sm" onclick="diagnoseAPI()" style="margin:4px">🔍 تشخيص شامل</button>
+            <button class="btn btn-sm" onclick="testAPIConnection()" style="margin:4px">🔍 اختبار الاتصال</button>
             <button class="btn btn-sm" onclick="discoverCategories()" style="margin:4px">📋 اكتشاف الفئات</button>
-            <div id="diagnose-result" style="margin-top:12px;font-size:0.78rem;max-height:400px;overflow-y:auto"></div>
+            <div id="diagnose-result" style="margin-top:10px;font-size:.75rem;max-height:400px;overflow-y:auto"></div>
         </div>
     </div>
 
     <!-- نافذة التنبيهات -->
     <div id="modal-alert" class="modal">
         <div class="modal-content">
-            <div style="font-size:3rem;margin-bottom:12px" id="modal-icon">🎉</div>
-            <p style="margin-bottom:20px;font-size:1rem;line-height:1.6" id="modal-msg"></p>
+            <div style="font-size:3rem;margin-bottom:10px" id="modal-icon">🎉</div>
+            <p style="margin-bottom:16px" id="modal-msg"></p>
             <button class="btn" onclick="closeModal('modal-alert')">حسناً</button>
         </div>
     </div>
 
     <script>
-    var API = window.location.origin;
-    var allCategories = [], allProducts = [], currentProduct = null;
-    var selectedPlan = {}, paymentMethods = [];
-    var isAdmin = false, navHistory = ['home'];
-    var categoryBgs = {}, generatedGiftCode = '';
-    var logoTapCount = 0, logoTapTimer = null;
+    // ==================== الإعدادات ====================
+    const SYRISTORE_API_KEY = "SDpoC/9YxijfEyiSz0Tm8zNmWTdlNE1lUkk4SU5iS2c9PQ==";
+    const SYRISTORE_URLS = ["https://syristore.com/api.php", "https://syristore.com/api", "https://syristore.com/index.php"];
+    const ADMIN_PASSWORD = "admin123";
+    
+    // ==================== المتغيرات ====================
+    let allCategories = [], allProducts = [], currentProduct = null;
+    let selectedPlan = {}, paymentMethods = [];
+    let isAdmin = false, navHistory = ['home'];
+    let profitMargin = 20, discountPercent = 0;
+    let logoTapCount = 0, logoTapTimer = null;
+    let workingUrl = null;
 
-    // ==================== نظام الدخول السريع (5 ضغطات على الشعار) ====================
-    document.getElementById('main-logo').addEventListener('click', function(e) {
-        e.stopPropagation();
-        logoTapCount++;
-        clearTimeout(logoTapTimer);
+    // ==================== دوال API ====================
+    async function syristoreAPI(action, extraData = {}) {
+        const payload = { action, ...extraData };
+        const headers = { "apikey": SYRISTORE_API_KEY };
         
-        if (logoTapCount >= 5) {
-            logoTapCount = 0;
-            if (isAdmin) {
-                adminLogout();
-            } else {
-                var pw = prompt('🔐 أدخل كلمة المرور للوحة التحكم:');
-                if (pw === 'admin123') {
-                    isAdmin = true;
-                    navigate('admin');
-                    showAlert('✅ مرحباً بك في لوحة التحكم 👑', '👑');
-                } else if (pw) {
-                    showAlert('❌ كلمة مرور خاطئة', '🔐');
-                }
+        // استخدام الرابط العامل إذا وجد
+        const urls = workingUrl ? [workingUrl, ...SYRISTORE_URLS] : SYRISTORE_URLS;
+        
+        for (const url of urls) {
+            for (const method of ["POST", "GET"]) {
+                try {
+                    const response = method === "POST" 
+                        ? await fetch(url, { method: "POST", headers: { ...headers, "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams(payload) })
+                        : await fetch(url + "?" + new URLSearchParams(payload), { headers });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data && typeof data === "object" && data.status !== "error") {
+                            workingUrl = url; // حفظ الرابط العامل
+                            return data;
+                        }
+                        if (data && (data.balance || data.products || data.categories)) {
+                            workingUrl = url;
+                            return data;
+                        }
+                    }
+                } catch (e) { continue; }
             }
         }
-        
-        logoTapTimer = setTimeout(function() { logoTapCount = 0; }, 1500);
-    });
+        return null;
+    }
 
+    // ==================== التنقل ====================
     function navigate(page) {
-        if (page === 'admin' && !isAdmin) { showAlert('🔐 لا تملك صلاحية الوصول', '🔐'); return; }
+        if (page === 'admin' && !isAdmin) { showAlert('🔐 لا تملك صلاحية', '🔐'); return; }
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        var el = document.getElementById('page-' + page);
+        const el = document.getElementById('page-' + page);
         if (el) { el.classList.add('active'); navHistory.push(page); }
-        document.getElementById('header-back-btn').classList.toggle('visible', page !== 'home');
-        updateCategoryBg(page);
-        window.scrollTo({top: 0, behavior: 'smooth'});
-        if (page === 'home') loadAds();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         if (page === 'admin') loadAdminDashboard();
         if (page === 'checkout') loadPaymentMethods();
-        restorePlayerId();
-    }
-
-    function goBack() {
-        if (navHistory.length > 1) {
-            navHistory.pop();
-            var prev = navHistory[navHistory.length - 1];
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            var el = document.getElementById('page-' + prev);
-            if (el) el.classList.add('active');
-            document.getElementById('header-back-btn').classList.toggle('visible', prev !== 'home');
-            updateCategoryBg(prev);
-        }
-    }
-
-    function updateCategoryBg(page) {
-        var bg = document.getElementById('category-bg');
-        bg.classList.remove('active');
-        if (['products','plans','checkout'].includes(page) && window._currentCat && categoryBgs[window._currentCat]) {
-            bg.style.backgroundImage = "url('" + categoryBgs[window._currentCat] + "')";
-            bg.classList.add('active');
-        }
+        if (page === 'home') loadAllCategories();
     }
 
     function showModal(id) { document.getElementById(id).style.display = 'flex'; }
@@ -507,261 +246,387 @@
         showModal('modal-alert');
     }
 
-    function restorePlayerId() {
-        var pid = localStorage.getItem('lastPlayerId');
-        if (pid) {
-            ['orders-player-id','contact-player-id'].forEach(function(id) {
-                var el = document.getElementById(id);
-                if (el) el.value = pid;
-            });
+    // ==================== نظام الدخول السريع ====================
+    document.getElementById('main-logo').addEventListener('click', function(e) {
+        e.stopPropagation();
+        logoTapCount++;
+        clearTimeout(logoTapTimer);
+        if (logoTapCount >= 5) {
+            logoTapCount = 0;
+            if (isAdmin) { adminLogout(); }
+            else {
+                const pw = prompt('🔐 كلمة المرور:');
+                if (pw === ADMIN_PASSWORD) { isAdmin = true; navigate('admin'); showAlert('✅ مرحباً 👑', '👑'); }
+                else if (pw) { showAlert('❌ خطأ', '🔐'); }
+            }
         }
+        logoTapTimer = setTimeout(() => logoTapCount = 0, 1500);
+    });
+
+    function adminLogout() { isAdmin = false; navigate('home'); showAlert('👋 تم الخروج', '👋'); }
+
+    // ==================== تحميل الفئات ====================
+    async function loadAllCategories() {
+        const grid = document.getElementById('categories-grid');
+        grid.innerHTML = '<p style="text-align:center;color:#888;grid-column:1/-1">⏳ جاري تحميل الفئات...</p>';
+        
+        // محاولة جلب الفئات
+        let categories = [];
+        const catResult = await syristoreAPI("categories");
+        
+        if (catResult && catResult.categories) {
+            categories = catResult.categories;
+        } else {
+            // استخراج الفئات من المنتجات
+            const prodResult = await syristoreAPI("products");
+            if (prodResult && prodResult.products) {
+                const cats = new Set();
+                prodResult.products.forEach(p => {
+                    const name = p.name || "";
+                    const firstWord = name.split(" ")[0];
+                    if (firstWord) cats.add(firstWord);
+                });
+                categories = [...cats];
+            }
+        }
+        
+        allCategories = categories.map((cat, i) => ({
+            api_name: typeof cat === "object" ? (cat.id || cat.name || String(cat)) : String(cat),
+            display_name: getDisplayName(typeof cat === "object" ? (cat.name || String(cat)) : String(cat)),
+            icon: getIcon(i),
+            color: getColor(i)
+        }));
+        
+        renderCategories();
     }
 
-    async function loadCategories() {
-        try { var r = await fetch(API+'/api/real-categories'); allCategories = await r.json(); renderCategories(); } catch(e) {}
+    function getDisplayName(name) {
+        const t = { game: "🎮 ألعاب", chat: "💬 دردشة", balance: "💰 رصيد", card: "💳 بطاقات", crypto: "₿ عملات", social: "📱 سوشل", number: "📞 أرقام", account: "👤 حسابات", vpn: "🛡️ VPN", telegram: "📲 تيليجرام", special: "🔥 عروض" };
+        for (const [k, v] of Object.entries(t)) { if (name.toLowerCase().includes(k)) return v; }
+        return "📦 " + name;
+    }
+
+    function getIcon(i) {
+        const icons = ["fa-fire", "fa-comments", "fa-gamepad", "fa-wallet", "fa-bitcoin", "fa-credit-card", "fa-phone", "fa-user-check", "fa-share-alt", "fa-shield-alt", "fa-telegram"];
+        return icons[i % icons.length];
+    }
+
+    function getColor(i) {
+        const colors = ["#ff6b6b", "#0984e3", "#00b894", "#fdcb6e", "#f39c12", "#e17055", "#6c5ce7", "#00cec9", "#e84393", "#a29bfe", "#74b9ff"];
+        return colors[i % colors.length];
     }
 
     function renderCategories() {
-        var g = document.getElementById('categories-grid');
-        var h = '';
-        allCategories.forEach(function(cat) {
-            var bgStyle = categoryBgs[cat.api_name] ? "background-image:url('"+categoryBgs[cat.api_name]+"');background-size:cover;background-position:center;" : '';
-            h += '<div class="cat-card" style="'+bgStyle+'" onclick="openCategory(\''+cat.api_name+'\',\''+cat.display_name+'\')"><i class="fas '+cat.icon+'" style="color:'+cat.color+'"></i><h3>'+cat.display_name+'</h3></div>';
-        });
-        g.innerHTML = h || '<p style="text-align:center;color:#888;grid-column:1/-1">⏳ جاري التحميل...</p>';
+        const grid = document.getElementById('categories-grid');
+        if (!allCategories.length) { grid.innerHTML = '<p style="text-align:center;color:#888;grid-column:1/-1">لا توجد فئات</p>'; return; }
+        grid.innerHTML = allCategories.map(cat => 
+            `<div class="cat-card" onclick="openCategory('${cat.api_name}', '${cat.display_name}')">
+                <i class="fas ${cat.icon}" style="color:${cat.color}"></i>
+                <h3>${cat.display_name}</h3>
+            </div>`
+        ).join('');
     }
 
-    async function loadCategoryBgs() { try { var r = await fetch(API+'/api/category-bgs'); categoryBgs = await r.json(); renderCategories(); } catch(e) { renderCategories(); } }
-
-    function openCategory(key, name) { window._currentCat = key; document.getElementById('products-title').innerText = name; navigate('products'); loadProducts(key); }
+    // ==================== المنتجات ====================
+    async function openCategory(key, name) {
+        document.getElementById('products-title').innerText = name;
+        navigate('products');
+        await loadProducts(key);
+    }
 
     async function loadProducts(catKey) {
-        var div = document.getElementById('products-list');
-        div.innerHTML = '<p style="text-align:center;padding:30px;color:#888"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</p>';
-        try {
-            var r = await fetch(API+'/api/products?category='+encodeURIComponent(catKey));
-            allProducts = await r.json();
-            if (!allProducts.length) { div.innerHTML = '<p style="text-align:center;padding:40px;color:#888">📭 لا توجد منتجات</p>'; return; }
-            var h = '';
-            allProducts.forEach(function(p,i) { h += '<div class="pkg-card glass" onclick="selectProduct('+i+')"><span>📦 '+p.name+'</span><span style="color:var(--primary);font-size:0.78rem">'+p.plans.length+' باقة</span></div>'; });
-            div.innerHTML = h;
-        } catch(e) { div.innerHTML = '<p style="text-align:center;padding:30px;color:var(--danger)">❌ خطأ في الاتصال</p>'; }
+        const div = document.getElementById('products-list');
+        div.innerHTML = '<p style="text-align:center;padding:30px;color:#888">⏳ جاري التحميل...</p>';
+        
+        const result = await syristoreAPI("products", { category: catKey });
+        
+        if (!result || !result.products || !result.products.length) {
+            div.innerHTML = '<p style="text-align:center;padding:30px;color:#888">📭 لا توجد منتجات</p>';
+            return;
+        }
+        
+        allProducts = result.products.map(p => {
+            const plans = (p.plans || []).filter(pl => !pl.disabled).map(pl => ({
+                plan_id: pl.planid,
+                name: (pl.name || "").replace(/SyriaStore|syriastore/gi, "").trim(),
+                price: Math.round(pl.price * (1 + profitMargin / 100) * (1 - discountPercent / 100))
+            }));
+            return {
+                name: (p.name || "").replace(/SyriaStore|syriastore/gi, "").trim(),
+                plans
+            };
+        }).filter(p => p.plans.length > 0);
+        
+        div.innerHTML = allProducts.map((p, i) => 
+            `<div class="pkg-card glass" onclick="selectProduct(${i})">
+                <span>📦 ${p.name}</span>
+                <span style="color:var(--primary);font-size:.75rem">${p.plans.length} باقة</span>
+            </div>`
+        ).join('') || '<p style="text-align:center;color:#888">لا توجد منتجات</p>';
     }
 
     function selectProduct(i) {
         currentProduct = allProducts[i];
         document.getElementById('plans-title').innerText = currentProduct.name;
-        var h = '';
-        currentProduct.plans.forEach(function(p) { h += '<div class="pkg-card glass" onclick="selectPlan(\''+p.plan_id+'\',\''+p.name.replace(/'/g,"\\'")+'\','+p.price+')"><span>'+p.name+'</span><span class="pkg-price">'+p.price.toLocaleString()+' ل.س</span></div>'; });
-        document.getElementById('plans-list').innerHTML = h || '<p style="text-align:center;color:#888">لا توجد باقات</p>';
+        document.getElementById('plans-list').innerHTML = currentProduct.plans.map(p => 
+            `<div class="pkg-card glass" onclick="selectPlan('${p.plan_id}', '${p.name.replace(/'/g, "\\'")}', ${p.price})">
+                <span>${p.name}</span>
+                <span class="pkg-price">${p.price.toLocaleString()} ل.س</span>
+            </div>`
+        ).join('') || '<p style="text-align:center;color:#888">لا توجد باقات</p>';
         navigate('plans');
     }
 
     function selectPlan(id, name, price) {
-        selectedPlan = {id:id, name:name, price:price};
-        document.getElementById('summary-plan').innerText = name;
-        document.getElementById('summary-product').innerText = currentProduct.name;
-        document.getElementById('summary-price').innerText = price.toLocaleString()+' ل.س';
+        selectedPlan = { id, name, price };
+        document.getElementById('summary-plan').innerHTML = `🎯 ${name}<br><small style="color:#888">📦 ${currentProduct.name}</small>`;
+        document.getElementById('summary-price').innerText = `💰 ${price.toLocaleString()} ل.س`;
         navigate('checkout');
     }
 
-    async function loadPaymentMethods() {
-        try {
-            var r = await fetch(API+'/api/payment-methods'); paymentMethods = await r.json();
-            var div = document.getElementById('payment-methods-list');
-            if (!paymentMethods.length) { div.innerHTML = '<p style="color:#888;text-align:center">لا توجد طرق دفع</p>'; return; }
-            div.innerHTML = '';
-            paymentMethods.forEach(function(m) {
-                var el = document.createElement('div'); el.className = 'pay-method-card';
-                el.innerHTML = '<div class="pm-icon"><i class="fas fa-credit-card"></i></div><div class="pm-name">'+m.name+'</div>';
-                el.onclick = function() { document.querySelectorAll('.pay-method-card').forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); };
-                div.appendChild(el);
-            });
-            if (div.firstChild) div.firstChild.classList.add('selected');
-        } catch(e) {}
+    // ==================== الدفع ====================
+    function loadPaymentMethods() {
+        const div = document.getElementById('payment-methods-list');
+        const methods = JSON.parse(localStorage.getItem('payment_methods') || '[{"name":"سيرياتيل كاش","details":"0987654321"}]');
+        if (!methods.length) { div.innerHTML = '<p style="color:#888">لا توجد طرق دفع</p>'; return; }
+        div.innerHTML = methods.map((m, i) => 
+            `<div class="pkg-card pay-method-card" onclick="selectPayMethod(${i})" id="pay-method-${i}">
+                <span>💳 ${m.name}</span>
+                <span style="color:var(--primary);font-size:.8rem">${m.details}</span>
+            </div>`
+        ).join('');
+        if (methods.length > 0) document.getElementById('pay-method-0')?.classList.add('selected');
     }
 
-    async function submitOrder() {
-        var pid = document.getElementById('player-id').value.trim();
-        var tx = document.getElementById('tx-num').value.trim();
-        if (!pid) { showAlert('⚠️ أدخل الآيدي أو الحساب','⚠️'); return; }
-        if (!tx) { showAlert('⚠️ أدخل رقم عملية الدفع','⚠️'); return; }
-        try {
-            var r = await fetch(API+'/api/submit-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan_id:selectedPlan.id,plan_name:selectedPlan.name,player_id:pid,pay_method:'تحويل',tx_num:tx,price:selectedPlan.price})});
-            var d = await r.json();
-            if (d.status==='success') { localStorage.setItem('lastPlayerId',pid); showAlert('✅ تم استلام الطلب','✅'); navigate('home'); }
-            else showAlert(d.message||'❌ خطأ','❌');
-        } catch(e) { showAlert('❌ فشل الاتصال','❌'); }
+    function selectPayMethod(i) {
+        document.querySelectorAll('.pay-method-card').forEach(c => c.classList.remove('selected'));
+        document.getElementById('pay-method-' + i)?.classList.add('selected');
     }
 
-    async function loadOrders() {
-        var pid = document.getElementById('orders-player-id').value.trim();
-        if (!pid) { showAlert('⚠️ أدخل الآيدي','⚠️'); return; }
-        localStorage.setItem('lastPlayerId',pid);
-        var div = document.getElementById('orders-list');
-        div.innerHTML = '<p style="text-align:center;color:#888;padding:20px">⏳ جاري البحث...</p>';
-        try {
-            var r = await fetch(API+'/api/orders?player_id='+encodeURIComponent(pid));
-            var orders = await r.json();
-            if (!orders.length) { div.innerHTML = '<p style="text-align:center;color:#888;padding:30px">📭 لا توجد طلبات</p>'; return; }
-            var h = '';
-            orders.forEach(function(o) {
-                var sc = o.status==='pending'?'badge-pending':o.status==='approved'?'badge-approved':'badge-rejected';
-                var st = o.status==='pending'?'⏳ قيد المراجعة':o.status==='approved'?'✅ مكتمل':'❌ مرفوض';
-                h += '<div class="pkg-card" style="border-right:3px solid '+(o.status==='pending'?'#f39c12':o.status==='approved'?'var(--primary)':'var(--danger)')+'"><div><b>📦 '+o.plan_name+'</b><br><small style="color:#888">💰 '+Number(o.amount_syp).toLocaleString()+' ل.س</small></div><span class="status-badge '+sc+'">'+st+'</span></div>';
-            });
-            div.innerHTML = h;
-        } catch(e) { div.innerHTML = '<p style="text-align:center;color:var(--danger)">❌ خطأ</p>'; }
+    function submitOrder() {
+        const pid = document.getElementById('player-id').value.trim();
+        const tx = document.getElementById('tx-num').value.trim();
+        if (!pid) { showAlert('⚠️ أدخل الآيدي', '⚠️'); return; }
+        if (!tx) { showAlert('⚠️ أدخل رقم العملية', '⚠️'); return; }
+        
+        // حفظ الطلب محلياً
+        const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+        orders.unshift({
+            order_id: Date.now(),
+            plan_name: selectedPlan.name,
+            amount_syp: selectedPlan.price,
+            player_id: pid,
+            tx_num: tx,
+            status: 'pending',
+            created_at: new Date().toISOString()
+        });
+        localStorage.setItem('orders', JSON.stringify(orders));
+        localStorage.setItem('lastPlayerId', pid);
+        showAlert('✅ تم استلام الطلب', '✅');
+        navigate('home');
     }
 
-    async function redeemCode() {
-        var code = document.getElementById('redeem-code').value.trim();
-        var pid = document.getElementById('redeem-player-id').value.trim();
-        if (!code||!pid) { showAlert('⚠️ أدخل الكود والآيدي','⚠️'); return; }
-        try {
-            var r = await fetch(API+'/api/redeem-code',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:code,player_id:pid})});
-            var d = await r.json();
-            showAlert(d.message, d.status==='success'?'🎉':'❌');
-        } catch(e) { showAlert('❌ فشل الاتصال','❌'); }
-    }
-
-    async function sendContact() {
-        var msg = document.getElementById('contact-msg').value.trim();
-        var pid = document.getElementById('contact-player-id').value.trim();
-        var name = document.getElementById('contact-name').value.trim()||'زائر';
-        if (!pid) { showAlert('⚠️ أدخل الآيدي','⚠️'); return; }
-        if (!msg) { showAlert('⚠️ اكتب رسالتك','⚠️'); return; }
-        localStorage.setItem('lastPlayerId',pid);
-        try {
-            var r = await fetch(API+'/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg,player_id:pid,name:name})});
-            var d = await r.json();
-            if (d.status==='success') { showAlert('✅ تم الإرسال','✅'); document.getElementById('contact-msg').value=''; }
-        } catch(e) { showAlert('❌ فشل الاتصال','❌'); }
-    }
-
-    async function loadAds() {
-        try { var r = await fetch(API+'/api/ads'); var ads = await r.json(); var div = document.getElementById('home-ads'); div.innerHTML = ''; ads.forEach(function(ad) { if (ad.ad_type==='moving_text') div.innerHTML += '<div class="moving-ad"><span class="moving-ad-text">📢 '+ad.content+' ★ '+ad.content+' ★ </span></div>'; }); } catch(e) {}
-    }
-
-    function adminLogout() { isAdmin = false; navigate('home'); showAlert('👋 تم تسجيل الخروج','👋'); }
-
+    // ==================== لوحة التحكم ====================
     function switchAdminTab(tab) {
-        document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
-        document.querySelectorAll('.admin-tab-content').forEach(c=>c.classList.remove('active'));
-        var tabEl = document.querySelector('.admin-tab[onclick*="'+tab+'"]');
-        if (tabEl) tabEl.classList.add('active');
-        var contentEl = document.getElementById('tab-'+tab);
-        if (contentEl) contentEl.classList.add('active');
-        if (tab==='dashboard') loadAdminDashboard();
-        if (tab==='orders') loadAdminOrders();
-        if (tab==='settings') loadAdminSettings();
-        if (tab==='payments') loadAdminPayments();
-        if (tab==='gifts') loadAdminGifts();
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelector(`.admin-tab[onclick*="${tab}"]`)?.classList.add('active');
+        document.getElementById('tab-' + tab)?.classList.add('active');
+        if (tab === 'dashboard') loadAdminDashboard();
+        if (tab === 'orders') loadAdminOrders();
+        if (tab === 'settings') loadAdminSettings();
+        if (tab === 'payments') loadAdminPayments();
     }
 
     async function loadAdminDashboard() {
-        try { var r = await fetch(API+'/api/admin/stats'); var s = await r.json();
-            document.getElementById('stat-products').innerText = s.products||0;
-            document.getElementById('stat-orders').innerText = s.orders||0;
-            document.getElementById('stat-balance').innerText = (s.balance||0).toLocaleString();
-            document.getElementById('stat-users').innerText = s.users||0;
-        } catch(e) {}
+        document.getElementById('stat-products').innerText = allProducts.length || '-';
+        const result = await syristoreAPI("balance");
+        document.getElementById('stat-balance').innerText = result?.balance ? Number(result.balance).toLocaleString() : '-';
+        document.getElementById('set-margin').value = profitMargin;
+        document.getElementById('set-discount').value = discountPercent;
+        document.getElementById('set-whatsapp').value = localStorage.getItem('whatsapp_url') || '';
     }
 
-    async function loadAdminOrders() {
-        var div = document.getElementById('admin-orders-list');
-        div.innerHTML = '<p style="color:#888;text-align:center;padding:20px">⏳ جاري التحميل...</p>';
-        try {
-            var r = await fetch(API+'/api/admin/orders'); var orders = await r.json();
-            if (!orders.length) { div.innerHTML = '<p style="text-align:center;color:#888;padding:30px">📭 لا توجد طلبات</p>'; return; }
-            var h = '';
-            orders.forEach(function(o) {
-                var sc = o.status==='pending'?'badge-pending':o.status==='approved'?'badge-approved':'badge-rejected';
-                var st = o.status==='pending'?'⏳ قيد المراجعة':o.status==='approved'?'✅ مكتمل':'❌ مرفوض';
-                var btns = o.status==='pending'?'<button class="btn btn-sm" onclick="approveOrder('+o.order_id+')" style="margin:2px;background:var(--success)">✅</button><button class="btn btn-sm" onclick="rejectOrder('+o.order_id+')" style="margin:2px;background:var(--danger)">❌</button>':'';
-                h += '<div class="glass" style="padding:14px"><div style="display:flex;justify-content:space-between"><div><b>#'+o.order_id+' - '+o.plan_name+'</b><br><small style="color:#888">👤 '+o.player_id+' | 💰 '+Number(o.amount_syp).toLocaleString()+' ل.س</small></div><span class="status-badge '+sc+'">'+st+'</span></div>'+btns+'</div>';
-            });
-            div.innerHTML = h;
-        } catch(e) { div.innerHTML = '<p style="color:var(--danger);text-align:center">❌ خطأ</p>'; }
+    function loadAdminOrders() {
+        const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+        const div = document.getElementById('admin-orders-list');
+        if (!orders.length) { div.innerHTML = '<p style="text-align:center;color:#888;padding:20px">📭 لا توجد طلبات</p>'; return; }
+        div.innerHTML = orders.map(o => {
+            const sc = o.status === 'pending' ? 'badge-pending' : o.status === 'approved' ? 'badge-approved' : 'badge-rejected';
+            const st = o.status === 'pending' ? '⏳ قيد المراجعة' : o.status === 'approved' ? '✅ مكتمل' : '❌ مرفوض';
+            const btns = o.status === 'pending' ? 
+                `<button class="btn btn-sm" style="background:var(--success);margin:2px" onclick="updateOrderStatus(${o.order_id},'approved')">✅</button>
+                 <button class="btn btn-sm" style="background:var(--danger);margin:2px" onclick="updateOrderStatus(${o.order_id},'rejected')">❌</button>` : '';
+            return `<div class="glass" style="padding:12px">
+                <div style="display:flex;justify-content:space-between">
+                    <div><b>📦 ${o.plan_name}</b><br><small>👤 ${o.player_id} | 💰 ${Number(o.amount_syp).toLocaleString()} ل.س</small></div>
+                    <span class="status-badge ${sc}">${st}</span>
+                </div>${btns}</div>`;
+        }).join('');
     }
 
-    async function approveOrder(id) { await fetch(API+'/api/admin/approve/'+id); loadAdminOrders(); }
-    async function rejectOrder(id) { await fetch(API+'/api/admin/reject/'+id); loadAdminOrders(); }
-
-    async function loadAdminSettings() {
-        try { var r = await fetch(API+'/api/admin/settings'); var s = await r.json();
-            document.getElementById('set-margin').value = s.profit_margin||20;
-            document.getElementById('set-discount').value = s.discount||0;
-            document.getElementById('set-whatsapp').value = s.whatsapp_url||'';
-        } catch(e) {}
+    function updateOrderStatus(id, status) {
+        const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+        const idx = orders.findIndex(o => o.order_id === id);
+        if (idx !== -1) { orders[idx].status = status; localStorage.setItem('orders', JSON.stringify(orders)); }
+        loadAdminOrders();
     }
 
-    async function saveSetting(key, inputId) { try { await fetch(API+'/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:key,value:document.getElementById(inputId).value})}); showAlert('✅ تم الحفظ','✅'); } catch(e) {} }
-    async function toggleBot() { await fetch(API+'/api/admin/toggle-bot'); loadAdminDashboard(); }
-    async function toggleWebsite() { await fetch(API+'/api/admin/toggle-web'); loadAdminDashboard(); }
-    async function refreshCache() { await fetch(API+'/api/admin/refresh'); loadAdminDashboard(); loadCategories(); showAlert('✅ تم التحديث','✅'); }
-
-    async function loadAdminPayments() {
-        try { var r = await fetch(API+'/api/payment-methods'); var methods = await r.json();
-            var h = '<h3 style="color:var(--primary);margin-top:12px">طرق الدفع الحالية</h3>';
-            methods.forEach(function(m) { h += '<div class="pkg-card"><span>💳 '+m.name+' - '+m.details+'</span><button class="btn btn-sm" style="background:var(--danger);width:auto;padding:6px 12px" onclick="deletePayment('+m.id+')">🗑️</button></div>'; });
-            document.getElementById('admin-payments-list').innerHTML = h;
-        } catch(e) {}
+    function loadAdminSettings() {
+        document.getElementById('set-margin').value = profitMargin;
+        document.getElementById('set-discount').value = discountPercent;
+        document.getElementById('set-whatsapp').value = localStorage.getItem('whatsapp_url') || '';
     }
 
-    async function addPayment() {
-        var name = document.getElementById('new-pay-name').value.trim();
-        var details = document.getElementById('new-pay-details').value.trim();
-        if (!name||!details) { showAlert('⚠️ املأ الحقول','⚠️'); return; }
-        try { await fetch(API+'/api/admin/payments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,details:details})}); showAlert('✅ تمت الإضافة','✅'); loadAdminPayments(); } catch(e) {}
+    function saveSetting(type) {
+        if (type === 'margin') { profitMargin = parseFloat(document.getElementById('set-margin').value) || 20; }
+        else if (type === 'discount') { discountPercent = parseFloat(document.getElementById('set-discount').value) || 0; }
+        else if (type === 'whatsapp') {
+            const url = document.getElementById('set-whatsapp').value.trim();
+            localStorage.setItem('whatsapp_url', url);
+            updateWhatsAppBtn(url);
+        }
+        showAlert('✅ تم الحفظ', '✅');
     }
 
-    async function deletePayment(id) { if (!confirm('متأكد؟')) return; await fetch(API+'/api/admin/payments/'+id,{method:'DELETE'}); loadAdminPayments(); }
-
-    async function loadAdminGifts() {
-        try { var r = await fetch(API+'/api/products'); var products = await r.json();
-            var h = '<option value="">اختر باقة...</option>';
-            products.forEach(function(p) { p.plans.forEach(function(plan) { h += '<option value="'+plan.plan_id+'">'+p.name+' - '+plan.name+' ('+plan.price.toLocaleString()+' ل.س)</option>'; }); });
-            document.getElementById('gift-plan-select').innerHTML = h;
-        } catch(e) {}
+    function loadAdminPayments() {
+        const methods = JSON.parse(localStorage.getItem('payment_methods') || '[{"name":"سيرياتيل كاش","details":"0987654321"}]');
+        document.getElementById('admin-payments-list').innerHTML = 
+            '<h3 style="color:var(--primary);margin-top:10px">طرق الدفع</h3>' +
+            methods.map((m, i) => 
+                `<div class="pkg-card"><span>💳 ${m.name} - ${m.details}</span>
+                 <button class="btn btn-sm" style="background:var(--danger);width:auto;padding:4px 10px" onclick="deletePayment(${i})">🗑️</button></div>`
+            ).join('');
     }
 
-    async function generateGiftCode() {
-        var planId = document.getElementById('gift-plan-select').value;
-        if (!planId) { showAlert('⚠️ اختر باقة','⚠️'); return; }
-        try { var r = await fetch(API+'/api/admin/generate-code',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan_id:planId,max_uses:parseInt(document.getElementById('gift-max-uses').value)})}); var d = await r.json(); if (d.status==='success') { generatedGiftCode = d.code; document.getElementById('gift-code-display').innerText = d.code; document.getElementById('gift-result').style.display = 'block'; } } catch(e) {}
+    function addPaymentMethod() {
+        const name = document.getElementById('new-pay-name').value.trim();
+        const details = document.getElementById('new-pay-details').value.trim();
+        if (!name || !details) { showAlert('⚠️ املأ الحقول', '⚠️'); return; }
+        const methods = JSON.parse(localStorage.getItem('payment_methods') || '[]');
+        methods.push({ name, details });
+        localStorage.setItem('payment_methods', JSON.stringify(methods));
+        document.getElementById('new-pay-name').value = '';
+        document.getElementById('new-pay-details').value = '';
+        loadAdminPayments();
+        showAlert('✅ تمت الإضافة', '✅');
     }
 
-    function copyGiftCode() { if (generatedGiftCode) navigator.clipboard.writeText(generatedGiftCode).then(function() { showAlert('📋 تم النسخ','✅'); }); }
+    function deletePayment(i) {
+        if (!confirm('متأكد؟')) return;
+        const methods = JSON.parse(localStorage.getItem('payment_methods') || '[]');
+        methods.splice(i, 1);
+        localStorage.setItem('payment_methods', JSON.stringify(methods));
+        loadAdminPayments();
+    }
 
-    async function diagnoseAPI() {
-        var div = document.getElementById('diagnose-result');
-        div.innerHTML = '<p style="color:#888">⏳ جاري التشخيص...</p>';
-        try { var r = await fetch(API+'/api/admin/diagnose'); div.innerHTML = '<pre style="white-space:pre-wrap;font-size:0.75rem;background:rgba(0,0,0,0.3);padding:12px;border-radius:12px">'+JSON.stringify(await r.json(),null,2)+'</pre>'; } catch(e) {}
+    async function testAPIConnection() {
+        const div = document.getElementById('diagnose-result');
+        div.innerHTML = '<p style="color:#888">⏳ جاري اختبار الاتصال...</p>';
+        
+        let report = '<b>🔍 اختبار الاتصال</b>\n\n';
+        
+        for (const url of SYRISTORE_URLS) {
+            report += `📍 ${url}\n`;
+            for (const method of ["POST", "GET"]) {
+                try {
+                    const headers = { "apikey": SYRISTORE_API_KEY };
+                    const response = method === "POST"
+                        ? await fetch(url, { method: "POST", headers: { ...headers, "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ action: "balance" }) })
+                        : await fetch(url + "?" + new URLSearchParams({ action: "balance" }), { headers });
+                    
+                    report += `  ${method}: Status ${response.status}`;
+                    if (response.ok) {
+                        const data = await response.json();
+                        report += ` ✅ ${JSON.stringify(data).substring(0, 100)}\n`;
+                        if (data.balance) workingUrl = url;
+                    } else {
+                        report += ` ❌\n`;
+                    }
+                } catch (e) {
+                    report += `  ${method}: ❌ ${e.message}\n`;
+                }
+            }
+            report += '\n';
+        }
+        
+        div.innerHTML = `<pre style="white-space:pre-wrap;font-size:.7rem;background:rgba(0,0,0,0.3);padding:10px;border-radius:10px">${report}</pre>`;
     }
 
     async function discoverCategories() {
-        var div = document.getElementById('diagnose-result');
-        div.innerHTML = '<p style="color:#888">⏳ جاري الاكتشاف...</p>';
-        try { var r = await fetch(API+'/api/admin/discover-categories'); var d = await r.json(); div.innerHTML = '<pre style="white-space:pre-wrap;font-size:0.7rem;background:rgba(0,0,0,0.3);padding:10px;border-radius:10px;max-height:400px;overflow-y:auto">'+JSON.stringify(d,null,2)+'</pre>'; } catch(e) {}
+        const div = document.getElementById('diagnose-result');
+        div.innerHTML = '<p style="color:#888">⏳ جاري اكتشاف الفئات...</p>';
+        
+        let report = '<b>📋 اكتشاف الفئات</b>\n\n';
+        
+        const catResult = await syristoreAPI("categories");
+        if (catResult) {
+            report += `<b>✅ استجابة categories:</b>\n${JSON.stringify(catResult, null, 2).substring(0, 1500)}\n\n`;
+        }
+        
+        const prodResult = await syristoreAPI("products");
+        if (prodResult?.products) {
+            report += `<b>📦 أول 10 منتجات:</b>\n`;
+            prodResult.products.slice(0, 10).forEach((p, i) => {
+                report += `${i + 1}. ${p.name}\n`;
+            });
+            
+            const cats = new Set();
+            prodResult.products.forEach(p => {
+                const word = (p.name || "").split(" ")[0];
+                if (word) cats.add(word);
+            });
+            report += `\n<b>📁 الفئات المستخرجة (${cats.size}):</b>\n${[...cats].join('\n')}`;
+        }
+        
+        div.innerHTML = `<pre style="white-space:pre-wrap;font-size:.7rem;background:rgba(0,0,0,0.3);padding:10px;border-radius:10px;max-height:400px;overflow-y:auto">${report}</pre>`;
     }
 
-    async function loadWhatsApp() {
-        try { var r = await fetch(API+'/api/admin/settings'); var s = await r.json(); var btn = document.getElementById('whatsapp-btn'); if (s.whatsapp_url) { btn.href = s.whatsapp_url; btn.classList.add('visible'); } } catch(e) {}
+    function refreshProducts() {
+        allProducts = [];
+        loadAllCategories();
+        showAlert('✅ تم التحديث', '✅');
     }
 
+    function updateWhatsAppBtn(url) {
+        const btn = document.getElementById('whatsapp-btn');
+        if (url) { btn.href = url; btn.classList.add('visible'); }
+        else { btn.classList.remove('visible'); }
+    }
+
+    // ==================== جسيمات ====================
     (function() {
-        var canvas = document.getElementById('particles-canvas');
-        var ctx = canvas.getContext('2d');
-        var particles = [];
-        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        resize(); window.addEventListener('resize', resize);
-        for (var i=0;i<50;i++) { particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+0.5,d:Math.random()*1,dx:(Math.random()-0.5)*0.5,dy:(Math.random()-0.5)*0.5}); }
-        function draw() { ctx.clearRect(0,0,canvas.width,canvas.height); for (var i=0;i<particles.length;i++) { var p=particles[i]; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle='rgba(0,229,191,'+p.d*0.25+')'; ctx.fill(); p.x+=p.dx; p.y+=p.dy; if (p.x<0||p.x>canvas.width) p.dx*=-1; if (p.y<0||p.y>canvas.height) p.dy*=-1; } requestAnimationFrame(draw); }
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        const particles = [];
+        function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
+        resize(); addEventListener('resize', resize);
+        for (let i = 0; i < 40; i++) particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, r: Math.random() * 2 + 0.5, dx: (Math.random() - 0.5) * 0.4, dy: (Math.random() - 0.5) * 0.4 });
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0,229,191,${Math.random() * 0.2})`; ctx.fill();
+                p.x += p.dx; p.y += p.dy;
+                if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+            });
+            requestAnimationFrame(draw);
+        }
         draw();
     })();
 
-    document.addEventListener('DOMContentLoaded', function() { loadCategories(); loadCategoryBgs(); loadAds(); loadWhatsApp(); restorePlayerId(); });
+    // ==================== بدء التشغيل ====================
+    document.addEventListener('DOMContentLoaded', () => {
+        loadAllCategories();
+        const url = localStorage.getItem('whatsapp_url');
+        if (url) updateWhatsAppBtn(url);
+        const pid = localStorage.getItem('lastPlayerId');
+        if (pid) {
+            const el = document.getElementById('player-id');
+            if (el) el.value = pid;
+        }
+    });
     </script>
 </body>
 </html>
