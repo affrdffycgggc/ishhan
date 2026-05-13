@@ -7,452 +7,281 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        :root {
-            --primary: #00e5bf; --primary2: #7c3aed; --bg: #030014;
-            --card: rgba(12,10,30,0.75); --border: rgba(255,255,255,0.07);
-            --danger: #ff3b5c; --success: #00b894; --warning: #f39c12;
-            --text: #e0e0e0; --text-secondary: rgba(255,255,255,0.5); --radius: 20px;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text);
-            min-height: 100vh; overflow-x: hidden; -webkit-font-smoothing: antialiased;
-        }
-        #cosmos { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3; overflow: hidden; pointer-events: none; }
-        .nebula { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.25; animation: drift 25s ease-in-out infinite; }
-        .nebula-1 { width: 500px; height: 500px; background: radial-gradient(circle, #7c3aed, transparent); top: -15%; right: -10%; }
-        .nebula-2 { width: 400px; height: 400px; background: radial-gradient(circle, #00e5bf, transparent); bottom: 5%; left: -8%; animation-delay: -8s; }
-        @keyframes drift { 0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(40px,-50px)scale(1.1)}50%{transform:translate(-30px,40px)scale(.95)}75%{transform:translate(50px,30px)scale(1.05)} }
-        
-        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
-        
-        header { position: sticky; top: 0; z-index: 100; padding: 16px 20px; display: flex; justify-content: center; align-items: center; border-bottom: 1px solid var(--border); background: rgba(3,0,20,0.85); backdrop-filter: blur(30px); }
-        .header-back { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 12px; background: rgba(0,229,191,0.1); border: 1px solid rgba(0,229,191,0.25); color: var(--primary); font-size: 1rem; cursor: pointer; display: none; align-items: center; justify-content: center; transition: all 0.3s; }
-        .header-back.visible { display: flex; }
-        .header-back:active { transform: translateY(-50%) scale(0.9); }
-        
-        .logo { font-family: 'Orbitron'; font-size: clamp(1.6rem, 5vw, 2.2rem); font-weight: 900; background: linear-gradient(135deg,var(--primary),var(--primary2),var(--primary)); background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: logoShine 3s ease infinite; letter-spacing: 6px; cursor: pointer; user-select: none; }
-        @keyframes logoShine { 0%,100%{background-position:0% 50%}50%{background-position:100% 50%} }
-        
-        .page { display: none; padding: 20px 16px 80px; max-width: 550px; margin: 0 auto; animation: pageIn 0.5s cubic-bezier(0.16,1,0.3,1); }
-        .page.active { display: block; }
-        @keyframes pageIn { from{opacity:0;transform:translateY(30px)scale(0.97)}to{opacity:1;transform:translateY(0)scale(1)} }
-        
-        .glass { background: var(--card); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 14px; box-shadow: 0 10px 40px rgba(0,0,0,0.3), 0 0 40px rgba(0,229,191,0.15); }
-        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
-        
-        .btn { width: 100%; padding: 15px; border-radius: 16px; border: none; background: linear-gradient(135deg,var(--primary),#00c9a7,var(--primary2)); background-size: 200% 200%; color: #000; font-family: 'Cairo'; font-weight: 900; font-size: 1rem; cursor: pointer; margin-top: 10px; transition: all 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 8px 30px rgba(0,229,191,0.25); animation: btnShine 4s ease infinite; }
-        @keyframes btnShine { 0%,100%{background-position:0% 50%}50%{background-position:100% 50%} }
-        .btn:active { transform: scale(0.97); }
-        .btn-sm { width: auto; padding: 8px 16px; font-size: 0.8rem; display: inline-block; animation: none; }
-        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); box-shadow: none; animation: none; }
-        
-        .input-group { margin-bottom: 16px; }
-        .input-group label { display: block; margin-bottom: 6px; color: var(--text-secondary); font-size: 0.82rem; font-weight: 600; }
-        .cyber-input { width: 100%; padding: 14px 16px; border-radius: 14px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: #fff; font-family: 'Cairo'; font-size: 0.92rem; transition: all 0.3s; outline: none; }
-        .cyber-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,229,191,0.1), 0 0 30px rgba(0,229,191,0.08); background: rgba(0,0,0,0.2); }
-        .cyber-input::placeholder { color: rgba(255,255,255,0.2); }
-        textarea.cyber-input { resize: none; min-height: 100px; }
-        select.cyber-input { appearance: none; cursor: pointer; }
-        
-        .cat-card { position: relative; padding: 28px 12px; border-radius: var(--radius); text-align: center; cursor: pointer; border: 1px solid var(--border); background: var(--card); backdrop-filter: blur(20px); transition: all 0.4s cubic-bezier(0.16,1,0.3,1); min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
-        .cat-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg,transparent 0%,rgba(3,0,20,0.7) 100%); z-index: 1; pointer-events: none; transition: all 0.4s; }
-        .cat-card::after { content: ''; position: absolute; bottom: 0; left: 50%; width: 0; height: 3px; background: linear-gradient(90deg,var(--primary2),var(--primary)); transition: all 0.4s; transform: translateX(-50%); border-radius: 3px; z-index: 3; }
-        .cat-card:hover::after { width: 60%; }
-        .cat-card:hover { transform: translateY(-8px); border-color: rgba(0,229,191,0.4); box-shadow: 0 20px 60px rgba(0,229,191,0.15); }
-        .cat-card:hover::before { background: linear-gradient(180deg,transparent 0%,rgba(3,0,20,0.5) 100%); }
-        .cat-card i { font-size: clamp(2rem, 6vw, 2.8rem); margin-bottom: 12px; position: relative; z-index: 2; filter: drop-shadow(0 0 20px currentColor); animation: iconFloat 4s ease-in-out infinite; }
-        .cat-card h3 { font-size: clamp(0.8rem, 2.6vw, 0.95rem); position: relative; z-index: 2; font-weight: 800; letter-spacing: 0.5px; }
-        @keyframes iconFloat { 0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)} }
-        
-        .pkg-card { padding: 16px 18px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; cursor: pointer; border: 1px solid var(--border); background: rgba(255,255,255,0.02); transition: all 0.3s; }
-        .pkg-card:hover, .pkg-card.selected { border-color: var(--primary); background: rgba(0,229,191,0.06); box-shadow: 0 0 25px rgba(0,229,191,0.1); transform: translateX(-4px); }
-        .pkg-card.selected { border-width: 2px; }
-        .pkg-price { font-family: 'Orbitron'; color: var(--primary); font-weight: 700; font-size: clamp(0.82rem, 3vw, 0.95rem); }
-        
-        .checkout-summary { padding: 20px; border-radius: var(--radius); margin-bottom: 16px; border: 1px solid rgba(0,229,191,0.2); background: linear-gradient(135deg,rgba(0,229,191,0.03),rgba(124,58,237,0.03)); }
-        .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 0.9rem; }
-        .summary-row:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,0.03); }
-        .summary-label { color: var(--text-secondary); }
-        .summary-value { font-weight: 700; }
-        .total-row { padding-top: 12px; margin-top: 6px; border-top: 2px solid rgba(0,229,191,0.3) !important; }
-        .total-row .summary-label { color: var(--primary); font-weight: 800; }
-        .total-row .summary-value { color: var(--primary); font-family: 'Orbitron'; font-size: 1.2rem; font-weight: 900; }
-        
-        .steps { display: flex; justify-content: center; gap: 10px; margin-bottom: 18px; }
-        .step-dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.08); transition: 0.3s; }
-        .step-dot.active { background: var(--primary); box-shadow: 0 0 15px var(--primary); }
-        .step-dot.done { background: #00c9a7; }
-        
-        .pay-method-card { padding: 16px; border-radius: 16px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); margin-bottom: 8px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 14px; }
-        .pay-method-card:hover, .pay-method-card.selected { border-color: var(--primary); background: rgba(0,229,191,0.06); }
-        .pay-method-card .pm-icon { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg,rgba(0,229,191,0.1),rgba(124,58,237,0.1)); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: var(--primary); flex-shrink: 0; }
-        .pay-method-card .pm-name { flex: 1; font-weight: 700; font-size: 0.92rem; }
-        .pay-method-card .pm-check { width: 24px; height: 24px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; transition: 0.3s; flex-shrink: 0; }
-        .pay-method-card.selected .pm-check { border-color: var(--primary); background: var(--primary); color: #000; box-shadow: 0 0 15px rgba(0,229,191,0.4); }
-        .pay-method-card.selected .pm-check::after { content: '✓'; font-weight: 900; font-size: 0.7rem; }
-        
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 999; display: none; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(15px); }
-        .modal-content { background: linear-gradient(145deg,rgba(15,12,35,0.98),rgba(8,5,20,0.98)); padding: 35px 28px; border-radius: 28px; max-width: 420px; width: 100%; text-align: center; border: 1px solid rgba(0,229,191,0.3); box-shadow: 0 0 60px rgba(0,229,191,0.1); animation: modalPop 0.4s cubic-bezier(0.16,1,0.3,1); max-height: 85vh; overflow-y: auto; }
-        @keyframes modalPop { 0%{transform:scale(0.7) translateY(40px);opacity:0}100%{transform:scale(1) translateY(0);opacity:1} }
-        
-        .admin-tabs { display: flex; gap: 6px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 6px; }
-        .admin-tab { padding: 10px 18px; border-radius: 25px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); cursor: pointer; font-size: 0.82rem; white-space: nowrap; font-weight: 700; transition: all 0.3s; }
-        .admin-tab.active { background: var(--primary); color: #000; border-color: var(--primary); }
-        .admin-tab-content { display: none; }
-        .admin-tab-content.active { display: block; }
-        
-        .stat-card { background: rgba(255,255,255,0.03); border-radius: 18px; padding: 18px; text-align: center; border: 1px solid var(--border); }
-        .stat-value { font-family: 'Orbitron'; font-size: 1.8rem; font-weight: 900; color: var(--primary); }
-        .stat-label { font-size: 0.75rem; color: var(--text-secondary); margin-top: 6px; }
-        
-        .whatsapp-btn { position: fixed; bottom: 24px; left: 24px; width: 56px; height: 56px; border-radius: 50%; background: #25D366; color: #fff; display: none; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 4px 20px rgba(37,211,102,0.4); z-index: 100; text-decoration: none; animation: waFloat 3s ease-in-out infinite; }
-        .whatsapp-btn.visible { display: flex; }
-        @keyframes waFloat { 0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)} }
-        
-        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 800; }
-        .badge-pending { background: rgba(243,156,18,0.15); color: #f39c12; }
-        .badge-approved { background: rgba(0,229,191,0.15); color: #00e5bf; }
-        .badge-rejected { background: rgba(255,59,92,0.15); color: #ff3b5c; }
-        
-        #debug-console { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.9); color: #0f0; font-size: 0.7rem; padding: 8px; max-height: 150px; overflow-y: auto; z-index: 200; display: none; font-family: monospace; }
-        #debug-toggle { position: fixed; bottom: 80px; right: 10px; z-index: 201; background: rgba(0,0,0,0.7); color: #0f0; border: 1px solid #0f0; border-radius: 50%; width: 30px; height: 30px; font-size: 0.7rem; cursor: pointer; display: none; }
-        
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(0,229,191,0.3); border-radius: 10px; }
-        
-        @media (max-width: 380px) { .grid2 { gap: 8px; } .cat-card { padding: 20px 8px; min-height: 110px; } .cat-card i { font-size: 1.6rem; } .page { padding: 14px 10px 70px; } }
+        :root{--primary:#00e5bf;--primary2:#7c3aed;--bg:#030014;--card:rgba(12,10,30,0.75);--border:rgba(255,255,255,0.07);--danger:#ff3b5c;--success:#00b894;--text:#e0e0e0;--text-secondary:rgba(255,255,255,0.5);--radius:20px}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+        header{position:sticky;top:0;z-index:100;padding:16px;text-align:center;border-bottom:1px solid var(--border);background:rgba(3,0,20,0.85);backdrop-filter:blur(30px)}
+        .logo{font-family:'Orbitron';font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,var(--primary),var(--primary2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;letter-spacing:6px;user-select:none}
+        .page{display:none;padding:16px;max-width:550px;margin:0 auto 80px;animation:pageIn .5s ease}
+        .page.active{display:block}
+        @keyframes pageIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+        .glass{background:var(--card);backdrop-filter:blur(25px);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:12px}
+        .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+        .btn{width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--primary),var(--primary2));color:#000;font-family:'Cairo';font-weight:900;font-size:1rem;cursor:pointer;margin-top:8px}
+        .btn:active{transform:scale(.97)}
+        .btn-sm{width:auto;padding:8px 14px;font-size:.8rem;display:inline-block}
+        .cyber-input{width:100%;padding:12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:#fff;font-family:'Cairo';font-size:.9rem;margin-bottom:10px;outline:none}
+        .cyber-input:focus{border-color:var(--primary)}
+        label{display:block;margin-bottom:4px;color:var(--text-secondary);font-size:.8rem}
+        .cat-card{padding:24px 10px;border-radius:var(--radius);text-align:center;cursor:pointer;border:1px solid var(--border);background:var(--card);transition:.3s;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+        .cat-card:hover{transform:translateY(-4px);border-color:var(--primary)}
+        .cat-card i{font-size:2rem;margin-bottom:8px}
+        .cat-card h3{font-size:.85rem;font-weight:700}
+        .pkg-card{padding:14px 16px;border-radius:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;cursor:pointer;border:1px solid var(--border);transition:.3s}
+        .pkg-card:hover{border-color:var(--primary);background:rgba(0,229,191,.05)}
+        .pkg-card.selected{border-color:var(--primary);border-width:2px;background:rgba(0,229,191,.1)}
+        .pkg-price{font-family:'Orbitron';color:var(--primary);font-weight:700}
+        .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:999;display:none;justify-content:center;align-items:center;padding:20px}
+        .modal-content{background:#1a1a2e;padding:30px;border-radius:24px;max-width:400px;width:100%;text-align:center;border:1px solid var(--primary);animation:modalPop .4s ease;max-height:85vh;overflow-y:auto}
+        @keyframes modalPop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+        .whatsapp-btn{position:fixed;bottom:20px;left:20px;width:50px;height:50px;border-radius:50%;background:#25D366;color:#fff;display:none;align-items:center;justify-content:center;font-size:1.4rem;z-index:100;text-decoration:none}
+        .whatsapp-btn.visible{display:flex}
+        .pay-method-card{padding:14px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.02);margin-bottom:6px;cursor:pointer;transition:.3s;display:flex;align-items:center;gap:10px}
+        .pay-method-card.selected{border-color:var(--primary);background:rgba(0,229,191,.1)}
+        .status-badge{display:inline-block;padding:3px 10px;border-radius:15px;font-size:.7rem;font-weight:800}
+        .badge-pending{background:rgba(243,156,18,.15);color:#f39c12}
+        .badge-approved{background:rgba(0,229,191,.15);color:#00e5bf}
+        .badge-rejected{background:rgba(255,59,92,.15);color:#ff3b5c}
+        @media(max-width:380px){.grid2{gap:8px}.cat-card{padding:18px 6px;min-height:100px}.cat-card i{font-size:1.5rem}}
     </style>
 </head>
 <body>
-    <div id="cosmos"><div class="nebula nebula-1"></div><div class="nebula nebula-2"></div></div>
-    <canvas id="particles-canvas"></canvas>
     <a id="whatsapp-btn" class="whatsapp-btn" href="#" target="_blank"><i class="fab fa-whatsapp"></i></a>
-    
-    <!-- كونسول التشخيص -->
-    <div id="debug-console"></div>
-    <button id="debug-toggle" onclick="toggleDebug()">🐛</button>
+    <header><div class="logo" id="main-logo">ISHHEN</div></header>
 
-    <header>
-        <button class="header-back" id="header-back-btn" onclick="goBack()"><i class="fas fa-arrow-right"></i></button>
-        <div class="logo" id="main-logo">ISHHEN</div>
-    </header>
-
-    <!-- الصفحة الرئيسية -->
+    <!-- الرئيسية -->
     <div id="page-home" class="page active">
-        <div style="text-align:center;margin-bottom:20px">
-            <h2 style="font-family:'Orbitron';font-size:clamp(1rem,4vw,1.3rem);font-weight:700;background:linear-gradient(90deg,var(--primary),#fff,var(--primary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px">مرحباً بك في عالم الخدمات الرقمية</h2>
-            <p style="color:var(--text-secondary);font-size:0.85rem">اختر الخدمة التي تريدها</p>
-        </div>
+        <div style="text-align:center;margin-bottom:16px"><h2 style="color:var(--primary)">مرحباً بك</h2></div>
         <div class="grid2" id="categories-grid">
             <div style="text-align:center;padding:30px;color:#888;grid-column:1/-1">
                 <i class="fas fa-spinner fa-spin" style="font-size:2rem"></i>
-                <p style="margin-top:10px">⏳ جاري تحميل المنتجات من SyriaStore...</p>
-                <p style="font-size:0.7rem;margin-top:5px" id="load-status">جاري الاتصال...</p>
+                <p>⏳ جاري التحميل...</p>
+                <p style="font-size:.7rem;margin-top:5px" id="load-status"></p>
             </div>
         </div>
+        <button class="btn btn-sm" onclick="testAllMethods()" style="margin-top:10px;background:rgba(255,255,255,0.1);color:#fff">🔍 تشخيص</button>
+        <div id="test-results" style="margin-top:10px;font-size:.7rem;max-height:300px;overflow-y:auto;background:rgba(0,0,0,0.3);padding:8px;border-radius:10px;display:none"></div>
     </div>
 
-    <!-- صفحة المنتجات -->
+    <!-- المنتجات -->
     <div id="page-products" class="page">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <h2 id="products-title" style="font-family:'Orbitron';color:var(--primary);font-size:1.2rem"></h2>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <h2 id="products-title" style="color:var(--primary)"></h2>
+            <button class="btn btn-sm" onclick="navigate('home')">🔙</button>
         </div>
         <div id="products-list"></div>
     </div>
 
-    <!-- صفحة الباقات -->
+    <!-- الباقات -->
     <div id="page-plans" class="page">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <h2 id="plans-title" style="font-family:'Orbitron';color:var(--primary);font-size:1.2rem"></h2>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <h2 id="plans-title" style="color:var(--primary)"></h2>
+            <button class="btn btn-sm" onclick="navigate('products')">🔙</button>
         </div>
         <div id="plans-list"></div>
     </div>
 
-    <!-- صفحة الدفع -->
+    <!-- الدفع -->
     <div id="page-checkout" class="page">
-        <h2 style="font-family:'Orbitron';color:var(--primary);font-size:1.1rem;margin-bottom:16px">💳 إتمام الدفع</h2>
-        <div class="steps"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div></div>
-        <div class="checkout-summary glass">
-            <div class="summary-row"><span class="summary-label">🎯 الباقة</span><span class="summary-value" id="summary-plan">-</span></div>
-            <div class="summary-row"><span class="summary-label">📦 المنتج</span><span class="summary-value" id="summary-product">-</span></div>
-            <div class="summary-row total-row"><span class="summary-label">💰 المبلغ</span><span class="summary-value" id="summary-price">-</span></div>
-        </div>
-        <div class="glass">
-            <div class="input-group"><label>👤 الآيدي أو الحساب</label><input type="text" id="player-id" class="cyber-input" placeholder="أدخل الآيدي أو رقم الحساب..."></div>
-            <div class="input-group"><label>🧾 رقم عملية الدفع</label><input type="text" id="tx-num" class="cyber-input" placeholder="أدخل رقم عملية التحويل..."></div>
-        </div>
-        <div class="glass"><label style="font-weight:700;color:var(--primary);margin-bottom:10px;display:block">💳 اختر طريقة الدفع</label><div id="payment-methods-list"></div></div>
-        <button class="btn" onclick="submitOrder()"><i class="fas fa-bolt"></i> تأكيد وإرسال الطلب</button>
+        <h2 style="color:var(--primary);margin-bottom:12px">💳 الدفع</h2>
+        <div class="glass"><div id="summary-plan" style="font-weight:700"></div><div id="summary-price" style="font-family:'Orbitron';color:var(--primary);font-weight:900;font-size:1.2rem;margin-top:8px"></div></div>
+        <div class="glass"><label>👤 الآيدي</label><input type="text" id="player-id" class="cyber-input"><label>🧾 رقم العملية</label><input type="text" id="tx-num" class="cyber-input"></div>
+        <div class="glass"><label style="font-weight:700;color:var(--primary)">💳 الدفع</label><div id="payment-methods-list"></div></div>
+        <button class="btn" onclick="submitOrder()">🚀 تأكيد</button>
     </div>
 
-    <!-- صفحة الطلبات -->
+    <!-- الطلبات -->
     <div id="page-orders" class="page">
-        <h2 style="font-family:'Orbitron';color:var(--primary);font-size:1.1rem;margin-bottom:16px">📋 طلباتي</h2>
-        <div class="glass">
-            <div class="input-group"><label>🔍 آيدي الحساب</label><input type="text" id="orders-player-id" class="cyber-input" placeholder="أدخل الآيدي للبحث..."></div>
-            <button class="btn" onclick="loadOrders()"><i class="fas fa-search"></i> بحث</button>
-            <div id="orders-list" style="margin-top:14px"></div>
-        </div>
+        <h2 style="color:var(--primary);margin-bottom:12px">📋 طلباتي</h2>
+        <div class="glass"><label>🔍 الآيدي</label><input type="text" id="orders-player-id" class="cyber-input"><button class="btn" onclick="loadOrders()">بحث</button><div id="orders-list" style="margin-top:10px"></div></div>
     </div>
 
-    <!-- صفحة كود الهدية -->
+    <!-- الهدية -->
     <div id="page-redeem" class="page">
-        <h2 style="font-family:'Orbitron';color:var(--primary);font-size:1.1rem;margin-bottom:16px">🎟️ كود الهدية</h2>
-        <div class="glass">
-            <div class="input-group"><label>🎫 الكود</label><input type="text" id="redeem-code" class="cyber-input" placeholder="GIFT-XXXX-XXXX"></div>
-            <div class="input-group"><label>👤 آيدي الحساب</label><input type="text" id="redeem-player-id" class="cyber-input" placeholder="أدخل الآيدي..."></div>
-            <button class="btn" onclick="redeemCode()"><i class="fas fa-gift"></i> استلام الهدية</button>
-        </div>
+        <h2 style="color:var(--primary);margin-bottom:12px">🎟️ كود الهدية</h2>
+        <div class="glass"><label>🎫 الكود</label><input type="text" id="redeem-code" class="cyber-input"><label>👤 الآيدي</label><input type="text" id="redeem-player-id" class="cyber-input"><button class="btn" onclick="redeemCode()">🎁 استلام</button></div>
     </div>
 
-    <!-- صفحة التواصل -->
+    <!-- التواصل -->
     <div id="page-contact" class="page">
-        <h2 style="font-family:'Orbitron';color:var(--primary);font-size:1.1rem;margin-bottom:16px">📞 تواصل معنا</h2>
-        <div class="glass">
-            <div class="input-group"><label>👤 اسمك</label><input type="text" id="contact-name" class="cyber-input" placeholder="أدخل اسمك..."></div>
-            <div class="input-group"><label>🆔 آيدي الحساب</label><input type="text" id="contact-player-id" class="cyber-input" placeholder="أدخل الآيدي..."></div>
-            <div class="input-group"><label>💬 رسالتك</label><textarea id="contact-msg" class="cyber-input" rows="4" placeholder="اكتب رسالتك هنا..."></textarea></div>
-            <button class="btn" onclick="sendContact()"><i class="fas fa-paper-plane"></i> إرسال</button>
-        </div>
+        <h2 style="color:var(--primary);margin-bottom:12px">📞 تواصل</h2>
+        <div class="glass"><label>👤 الاسم</label><input type="text" id="contact-name" class="cyber-input"><label>🆔 الآيدي</label><input type="text" id="contact-player-id" class="cyber-input"><label>💬 الرسالة</label><textarea id="contact-msg" class="cyber-input" rows="3"></textarea><button class="btn" onclick="sendContact()">📩 إرسال</button></div>
     </div>
 
     <!-- لوحة التحكم -->
     <div id="page-admin" class="page">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <h2 style="font-family:'Orbitron';color:var(--primary);font-size:1.2rem">👑 لوحة التحكم</h2>
-            <button class="btn btn-sm btn-outline" onclick="adminLogout()" style="margin:0">🚪 خروج</button>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <h2 style="color:var(--primary)">👑 لوحة التحكم</h2>
+            <button class="btn btn-sm" onclick="adminLogout()" style="background:var(--danger)">🚪 خروج</button>
         </div>
-        <div class="admin-tabs">
-            <div class="admin-tab active" onclick="switchAdminTab('dashboard')">📊 الرئيسية</div>
-            <div class="admin-tab" onclick="switchAdminTab('orders')">📋 الطلبات</div>
-            <div class="admin-tab" onclick="switchAdminTab('settings')">⚙️ الإعدادات</div>
-            <div class="admin-tab" onclick="switchAdminTab('payments')">💳 الدفع</div>
-            <div class="admin-tab" onclick="switchAdminTab('diagnose')">🔍 تشخيص</div>
-        </div>
-        <div id="tab-dashboard" class="admin-tab-content active">
-            <div class="grid2" style="margin-bottom:16px">
-                <div class="stat-card"><div class="stat-value" id="stat-products">-</div><div class="stat-label">منتج</div></div>
-                <div class="stat-card"><div class="stat-value" id="stat-balance">-</div><div class="stat-label">ل.س</div></div>
-            </div>
-            <button class="btn btn-sm" onclick="refreshData()">🔄 تحديث</button>
-        </div>
-        <div id="tab-orders" class="admin-tab-content"><div id="admin-orders-list"></div></div>
-        <div id="tab-settings" class="admin-tab-content">
-            <div class="glass"><div class="input-group"><label>📈 نسبة الربح (%)</label><input type="number" id="set-margin" class="cyber-input" value="20"></div><button class="btn btn-sm" onclick="saveSetting('margin')">💾 حفظ</button></div>
-            <div class="glass"><div class="input-group"><label>💬 رابط واتساب</label><input type="text" id="set-whatsapp" class="cyber-input"></div><button class="btn btn-sm" onclick="saveSetting('whatsapp')">💾 حفظ</button></div>
-        </div>
-        <div id="tab-payments" class="admin-tab-content">
-            <div class="glass">
-                <div class="input-group"><label>الاسم</label><input type="text" id="new-pay-name" class="cyber-input" placeholder="سيرياتيل كاش"></div>
-                <div class="input-group"><label>الرقم</label><input type="text" id="new-pay-details" class="cyber-input" placeholder="099xxxxxxxx"></div>
-                <button class="btn btn-sm" onclick="addPayment()">➕ إضافة</button>
-            </div>
-            <div id="admin-payments-list"></div>
-        </div>
-        <div id="tab-diagnose" class="admin-tab-content">
-            <button class="btn btn-sm" onclick="testConnection()" style="margin:4px">🔍 اختبار الاتصال</button>
-            <div id="diagnose-result" style="margin-top:10px;font-size:0.75rem;max-height:400px;overflow-y:auto;background:rgba(0,0,0,0.3);padding:10px;border-radius:10px"></div>
-        </div>
+        <div class="glass"><label>📈 الربح (%)</label><input type="number" id="set-margin" class="cyber-input" value="20"><button class="btn btn-sm" onclick="saveMargin()">💾</button></div>
+        <div class="glass"><label>💬 واتساب</label><input type="text" id="set-whatsapp" class="cyber-input"><button class="btn btn-sm" onclick="saveWA()">💾</button></div>
+        <div class="glass"><label>💳 إضافة دفع</label><input type="text" id="pay-name" class="cyber-input" placeholder="الاسم"><input type="text" id="pay-details" class="cyber-input" placeholder="الرقم"><button class="btn btn-sm" onclick="addPM()">➕</button><div id="pm-list" style="margin-top:8px"></div></div>
+        <div class="glass"><h4 style="color:var(--primary)">📋 الطلبات</h4><div id="admin-orders"></div></div>
     </div>
 
-    <!-- نافذة التنبيهات -->
     <div id="modal-alert" class="modal">
-        <div class="modal-content">
-            <div style="font-size:3rem;margin-bottom:12px" id="modal-icon">🎉</div>
-            <p style="margin-bottom:20px;font-size:1rem;line-height:1.6" id="modal-msg"></p>
-            <button class="btn" onclick="closeModal('modal-alert')">حسناً</button>
-        </div>
+        <div class="modal-content"><div style="font-size:3rem;margin-bottom:10px" id="modal-icon">🎉</div><p style="margin-bottom:16px" id="modal-msg"></p><button class="btn" onclick="closeModal('modal-alert')">حسناً</button></div>
     </div>
 
     <script>
-    // ==================== الإعدادات ====================
     const API_KEY = "SDpoC/9YxijfEyiSz0Tm8zNmWTdlNE1lUkk4SU5iS2c9PQ==";
-    const API_URL = "https://syristore.com/api.php";
-    const ADMIN_PASS = "admin123";
-    
-    let allProducts = [], currentProduct = null, selectedPlan = {};
-    let margin = 20, isAdmin = false, navHistory = ['home'];
-    let logoTapCount = 0, logoTapTimer = null;
-    
-    // ==================== نظام التشخيص ====================
-    const debugLines = [];
-    function debug(msg) {
-        debugLines.push(new Date().toLocaleTimeString() + " - " + msg);
-        if (debugLines.length > 50) debugLines.shift();
-        const console = document.getElementById('debug-console');
-        if (console) console.innerText = debugLines.join('\n');
-        console.log("[DEBUG]", msg);
-    }
-    
-    function toggleDebug() {
-        const console = document.getElementById('debug-console');
-        if (console.style.display === 'block') {
-            console.style.display = 'none';
-        } else {
-            console.style.display = 'block';
-        }
-    }
-    
-    // إظهار زر التشخيص دائماً
-    document.getElementById('debug-toggle').style.display = 'block';
-    
-    debug("🚀 بدء التشغيل");
-    
-    // ==================== API CALL - طرق متعددة ====================
+    const API_BASE = "https://syristore.com";
+    let allProducts = [], currentProduct = null, selectedPlan = {}, margin = 20;
+    let isAdmin = false, navHistory = ['home'], tapCount = 0, tapTimer = null;
+
+    // ==================== API ====================
     async function callAPI(action, extra = {}) {
         const params = new URLSearchParams({ action, ...extra });
-        const directUrl = API_URL + "?" + params.toString();
         
-        debug(`🔍 استدعاء API: ${action}`);
+        // استخدام index.php بدل api.php
+        const urls = [
+            API_BASE + "/api.php?" + params,
+            API_BASE + "/index.php?" + params,
+            API_BASE + "/api?" + params,
+        ];
         
-        // الطريقة 1: allorigins.win
-        try {
-            const proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent(directUrl);
-            debug(`  محاولة allorigins...`);
-            const r = await fetch(proxyUrl);
-            if (r.ok) {
-                const text = await r.text();
-                debug(`  ✅ allorigins نجح! (${text.length} حرف)`);
-                try { return JSON.parse(text); } catch(e) { return text; }
+        const proxies = [
+            "https://api.allorigins.win/raw?url=",
+            "https://corsproxy.io/?",
+        ];
+        
+        for (const url of urls) {
+            // محاولة مباشرة
+            try {
+                const r = await fetch(url, { headers: { "apikey": API_KEY } });
+                if (r.ok) {
+                    const text = await r.text();
+                    if (text.startsWith("{") || text.startsWith("[")) {
+                        return JSON.parse(text);
+                    }
+                }
+            } catch(e) {}
+            
+            // عبر proxy
+            for (const proxy of proxies) {
+                try {
+                    const r = await fetch(proxy + encodeURIComponent(url));
+                    if (r.ok) {
+                        const text = await r.text();
+                        if (text.startsWith("{") || text.startsWith("[")) {
+                            return JSON.parse(text);
+                        }
+                    }
+                } catch(e) {}
             }
-        } catch(e) { debug(`  ❌ allorigins: ${e.message}`); }
+        }
         
-        // الطريقة 2: corsproxy.io
-        try {
-            const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(directUrl);
-            debug(`  محاولة corsproxy.io...`);
-            const r = await fetch(proxyUrl);
-            if (r.ok) {
-                const text = await r.text();
-                debug(`  ✅ corsproxy.io نجح! (${text.length} حرف)`);
-                try { return JSON.parse(text); } catch(e) { return text; }
-            }
-        } catch(e) { debug(`  ❌ corsproxy.io: ${e.message}`); }
-        
-        // الطريقة 3: codetabs
-        try {
-            const proxyUrl = "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(directUrl);
-            debug(`  محاولة codetabs...`);
-            const r = await fetch(proxyUrl);
-            if (r.ok) {
-                const text = await r.text();
-                debug(`  ✅ codetabs نجح! (${text.length} حرف)`);
-                try { return JSON.parse(text); } catch(e) { return text; }
-            }
-        } catch(e) { debug(`  ❌ codetabs: ${e.message}`); }
-        
-        // الطريقة 4: thingproxy
-        try {
-            const proxyUrl = "https://thingproxy.freeboard.io/fetch/" + directUrl;
-            debug(`  محاولة thingproxy...`);
-            const r = await fetch(proxyUrl);
-            if (r.ok) {
-                const text = await r.text();
-                debug(`  ✅ thingproxy نجح! (${text.length} حرف)`);
-                try { return JSON.parse(text); } catch(e) { return text; }
-            }
-        } catch(e) { debug(`  ❌ thingproxy: ${e.message}`); }
-        
-        // الطريقة 5: مباشر (قد يعمل على بعض المتصفحات)
-        try {
-            debug(`  محاولة مباشرة...`);
-            const r = await fetch(directUrl, { 
-                headers: { "apikey": API_KEY },
-                mode: "cors"
-            });
-            if (r.ok) {
-                const text = await r.text();
-                debug(`  ✅ مباشر نجح! (${text.length} حرف)`);
-                try { return JSON.parse(text); } catch(e) { return text; }
-            }
-        } catch(e) { debug(`  ❌ مباشر: ${e.message}`); }
-        
-        debug(`❌ جميع الطرق فشلت لـ ${action}`);
         return null;
     }
-    
+
+    async function testAllMethods() {
+        const div = document.getElementById('test-results');
+        div.style.display = 'block';
+        div.innerHTML = '<p style="color:#888">⏳ جاري اختبار جميع الطرق...</p>';
+        
+        let report = '<b>🔍 نتائج الاختبار:</b><br><br>';
+        
+        const urls = [API_BASE + "/api.php", API_BASE + "/index.php", API_BASE + "/api"];
+        const actions = ["products", "services", "balance"];
+        
+        for (const url of urls) {
+            for (const action of actions) {
+                const params = new URLSearchParams({ action });
+                const fullUrl = url + "?" + params;
+                
+                report += `<b>📍 ${url.split('/').pop()}?action=${action}</b><br>`;
+                
+                // مباشر
+                try {
+                    const r = await fetch(fullUrl, { headers: { "apikey": API_KEY } });
+                    report += `  مباشر: ${r.status} - ${(await r.text()).substring(0, 100)}<br>`;
+                } catch(e) { report += `  مباشر: ❌ ${e.message}<br>`; }
+                
+                // proxy
+                try {
+                    const r = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(fullUrl));
+                    if (r.ok) {
+                        const text = await r.text();
+                        report += `  proxy: ✅ ${text.substring(0, 150)}<br>`;
+                        if (text.startsWith("{") || text.startsWith("[")) {
+                            report += `  <b style="color:#0f0">✅ JSON صالح!</b><br>`;
+                        }
+                    }
+                } catch(e) { report += `  proxy: ❌ ${e.message}<br>`; }
+                
+                report += '<br>';
+            }
+        }
+        
+        div.innerHTML = report;
+    }
+
     // ==================== تحميل المنتجات ====================
-    async function loadAllProducts() {
-        const statusEl = document.getElementById('load-status');
+    async function loadProducts() {
+        const status = document.getElementById('load-status');
         const grid = document.getElementById('categories-grid');
         
-        statusEl.innerText = "جاري الاتصال بـ SyriaStore API...";
-        debug("📦 بدء تحميل المنتجات");
+        status.innerText = "جاري الاتصال...";
         
-        const result = await callAPI("products");
+        // تجربة كل الروابط الممكنة
+        let data = null;
         
-        if (!result) {
-            grid.innerHTML = `
-                <div style="text-align:center;color:var(--danger);grid-column:1/-1;padding:20px">
-                    <i class="fas fa-exclamation-triangle" style="font-size:3rem"></i>
-                    <p style="margin-top:10px">❌ فشل الاتصال بـ SyriaStore</p>
-                    <p style="font-size:0.8rem;margin-top:5px">تأكد من اتصالك بالإنترنت</p>
-                    <button class="btn btn-sm" onclick="loadAllProducts()" style="margin-top:10px">🔄 إعادة المحاولة</button>
-                    <button class="btn btn-sm" onclick="toggleDebug()" style="margin-top:5px;background:rgba(255,255,255,0.1);color:#fff">🐛 إظهار سجل التشخيص</button>
-                </div>`;
-            statusEl.innerText = "❌ فشل";
-            return;
-        }
+        // 1. api.php مع allorigins
+        try {
+            const url = API_BASE + "/api.php?action=products";
+            const r = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(url));
+            if (r.ok) {
+                const text = await r.text();
+                try { data = JSON.parse(text); status.innerText = "✅ api.php via allorigins"; } catch(e) {}
+            }
+        } catch(e) {}
         
-        statusEl.innerText = "✅ تم الاتصال! جاري معالجة البيانات...";
-        debug(`📦 نوع البيانات: ${typeof result}`);
-        
-        // استخراج المنتجات
-        let products = [];
-        
-        if (result.products && Array.isArray(result.products)) {
-            products = result.products;
-            debug(`✅ وجد products: ${products.length} منتج`);
-        } else if (Array.isArray(result)) {
-            products = result;
-            debug(`✅ وجد array: ${products.length} عنصر`);
-        } else if (result.data && Array.isArray(result.data)) {
-            products = result.data;
-            debug(`✅ وجد data: ${products.length} منتج`);
-        } else if (result.result && Array.isArray(result.result)) {
-            products = result.result;
-            debug(`✅ وجد result: ${products.length} منتج`);
-        } else {
-            // البحث في كل المفاتيح
-            debug(`🔍 البحث في المفاتيح: ${Object.keys(result).join(', ')}`);
-            for (const key in result) {
-                if (Array.isArray(result[key]) && result[key].length > 0) {
-                    products = result[key];
-                    debug(`✅ وجد في ${key}: ${products.length} عنصر`);
-                    break;
+        // 2. index.php مع allorigins
+        if (!data || !data.products) {
+            try {
+                const url = API_BASE + "/index.php?action=products";
+                const r = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(url));
+                if (r.ok) {
+                    const text = await r.text();
+                    try { data = JSON.parse(text); status.innerText = "✅ index.php via allorigins"; } catch(e) {}
                 }
-            }
+            } catch(e) {}
         }
         
-        if (!products.length) {
-            grid.innerHTML = '<p style="text-align:center;color:#888;grid-column:1/-1;padding:20px">📭 لا توجد منتجات متاحة</p>';
-            statusEl.innerText = "⚠️ لا توجد منتجات";
-            debug("⚠️ لا توجد منتجات في الاستجابة");
+        // 3. corsproxy.io
+        if (!data || !data.products) {
+            try {
+                const url = API_BASE + "/api.php?action=products";
+                const r = await fetch("https://corsproxy.io/?" + encodeURIComponent(url));
+                if (r.ok) {
+                    const text = await r.text();
+                    try { data = JSON.parse(text); status.innerText = "✅ via corsproxy.io"; } catch(e) {}
+                }
+            } catch(e) {}
+        }
+        
+        if (!data || !data.products) {
+            grid.innerHTML = `<div style="text-align:center;color:var(--danger);grid-column:1/-1;padding:20px">
+                <i class="fas fa-exclamation-triangle" style="font-size:3rem"></i>
+                <p>❌ فشل تحميل المنتجات</p>
+                <button class="btn btn-sm" onclick="loadProducts()" style="margin-top:10px">🔄 إعادة المحاولة</button>
+                <button class="btn btn-sm" onclick="testAllMethods()" style="margin-top:5px;background:rgba(255,255,255,0.1);color:#fff">🔍 تشخيص</button>
+            </div>`;
+            status.innerText = "❌ فشل";
             return;
         }
         
-        // تصنيف المنتجات
-        const categoriesMap = {};
+        const products = data.products || [];
+        status.innerText = `✅ ${products.length} منتج`;
         
+        // تصنيف
+        const cats = {};
         products.forEach(p => {
-            const rawName = p.name || p.product_name || p.title || "";
-            const cleanName = rawName.replace(/SyriaStore|syriastore|SYRIASTORE/gi, "").trim();
-            if (!cleanName) return;
-            
-            const firstWord = cleanName.split(" ")[0];
-            const catKey = firstWord;
-            
-            if (!categoriesMap[catKey]) {
-                categoriesMap[catKey] = {
-                    key: catKey,
-                    name: getCatName(firstWord),
-                    icon: getIcon(Object.keys(categoriesMap).length),
-                    color: getColor(Object.keys(categoriesMap).length),
-                    products: []
-                };
-            }
+            const name = (p.name || "").replace(/SyriaStore|syriastore/gi, "").trim();
+            if (!name) return;
+            const cat = name.split(" ")[0];
+            if (!cats[cat]) cats[cat] = { key: cat, name: getCatName(cat), icon: getIcon(Object.keys(cats).length), color: getColor(Object.keys(cats).length), products: [] };
             
             const plans = (p.plans || []).filter(pl => !pl.disabled).map(pl => ({
                 plan_id: pl.planid || pl.id,
@@ -460,329 +289,132 @@
                 price: Math.round((pl.price || 0) * (1 + margin / 100))
             }));
             
-            if (plans.length > 0) {
-                categoriesMap[catKey].products.push({ name: cleanName, plans });
-            }
+            if (plans.length) cats[cat].products.push({ name, plans });
         });
         
-        window._categories = Object.values(categoriesMap).filter(c => c.products.length > 0);
-        window._rawProducts = products;
-        
-        debug(`✅ ${window._categories.length} فئة جاهزة`);
-        statusEl.innerText = `✅ تم تحميل ${products.length} منتج في ${window._categories.length} فئة`;
-        
+        window._categories = Object.values(cats).filter(c => c.products.length);
         renderCategories();
     }
-    
-    function getCatName(word) {
-        const w = word.toLowerCase();
-        if (w.includes("pubg")||w.includes("free")||w.includes("game")||w.includes("فري")||w.includes("ببجي")||w.includes("mobile")||w.includes("call")||w.includes("fortnite")||w.includes("clash")||w.includes("gaming")) return "🎮 ألعاب";
-        if (w.includes("whatsapp")||w.includes("telegram")||w.includes("messenger")||w.includes("chat")||w.includes("واتس")||w.includes("تلي")) return "💬 دردشة";
-        if (w.includes("balance")||w.includes("topup")||w.includes("رصيد")||w.includes("شحن")||w.includes("mtc")||w.includes("mtn")||w.includes("syriatel")) return "💰 رصيد";
-        if (w.includes("card")||w.includes("gift")||w.includes("بطاقة")||w.includes("itunes")||w.includes("google")||w.includes("steam")||w.includes("netflix")||w.includes("spotify")) return "💳 بطاقات";
-        if (w.includes("bitcoin")||w.includes("usdt")||w.includes("crypto")||w.includes("عملة")||w.includes("binance")) return "₿ عملات";
-        if (w.includes("facebook")||w.includes("instagram")||w.includes("twitter")||w.includes("tiktok")||w.includes("snapchat")||w.includes("youtube")||w.includes("social")||w.includes("سوشل")) return "📱 سوشل";
-        if (w.includes("number")||w.includes("virtual")||w.includes("رقم")||w.includes("otp")||w.includes("sms")||w.includes("وهمي")) return "📞 أرقام";
-        if (w.includes("account")||w.includes("حساب")||w.includes("ready")) return "👤 حسابات";
-        if (w.includes("vpn")||w.includes("proxy")||w.includes("بروكسي")) return "🛡️ VPN";
-        if (w.includes("special")||w.includes("offer")||w.includes("عرض")||w.includes("تخفيض")) return "🔥 عروض";
-        return "📦 " + word;
+
+    function getCatName(w) {
+        const t = {pubg:"🎮 ألعاب",free:"🎮 ألعاب",game:"🎮 ألعاب",mobile:"🎮 ألعاب",whatsapp:"💬 دردشة",telegram:"💬 دردشة",chat:"💬 دردشة",balance:"💰 رصيد",topup:"💰 رصيد",شحن:"💰 رصيد",card:"💳 بطاقات",gift:"💳 بطاقات",netflix:"💳 بطاقات",google:"💳 بطاقات",bitcoin:"₿ عملات",usdt:"₿ عملات",facebook:"📱 سوشل",instagram:"📱 سوشل",tiktok:"📱 سوشل",number:"📞 أرقام",virtual:"📞 أرقام",account:"👤 حسابات",vpn:"🛡️ VPN",special:"🔥 عروض"};
+        for(const[k,v]of Object.entries(t)){if(w.toLowerCase().includes(k))return v}
+        return "📦 "+w;
     }
-    
-    function getIcon(i) {
-        const icons = ["fa-fire","fa-comments","fa-gamepad","fa-wallet","fa-bitcoin","fa-credit-card","fa-phone","fa-user-check","fa-share-alt","fa-shield-alt","fa-telegram","fa-star"];
-        return icons[i % icons.length];
-    }
-    
-    function getColor(i) {
-        const colors = ["#ff6b6b","#0984e3","#00b894","#fdcb6e","#f39c12","#e17055","#6c5ce7","#00cec9","#e84393","#a29bfe","#74b9ff","#ffd700"];
-        return colors[i % colors.length];
-    }
-    
+    function getIcon(i){return["fa-fire","fa-comments","fa-gamepad","fa-wallet","fa-bitcoin","fa-credit-card","fa-phone","fa-user-check","fa-share-alt","fa-shield-alt","fa-telegram","fa-star"][i%12]}
+    function getColor(i){return["#ff6b6b","#0984e3","#00b894","#fdcb6e","#f39c12","#e17055","#6c5ce7","#00cec9","#e84393","#a29bfe","#74b9ff","#ffd700"][i%12]}
+
     function renderCategories() {
         const grid = document.getElementById('categories-grid');
         const cats = window._categories || [];
-        
-        if (!cats.length) {
-            grid.innerHTML = '<p style="text-align:center;color:#888;grid-column:1/-1">لا توجد فئات</p>';
-            return;
-        }
-        
-        grid.innerHTML = cats.map(c =>
-            `<div class="cat-card" onclick="showCategory('${c.key}')">
-                <i class="fas ${c.icon}" style="color:${c.color}"></i>
-                <h3>${c.name}</h3>
-                <small style="color:#888;font-size:.7rem">${c.products.length} منتج</small>
-            </div>`
-        ).join('');
+        if (!cats.length) { grid.innerHTML = '<p style="text-align:center;color:#888;grid-column:1/-1">لا توجد فئات</p>'; return; }
+        grid.innerHTML = cats.map(c => `<div class="cat-card" onclick="showCat('${c.key}')"><i class="fas ${c.icon}" style="color:${c.color}"></i><h3>${c.name}</h3><small style="color:#888;font-size:.7rem">${c.products.length} منتج</small></div>`).join('');
     }
-    
-    // ==================== التنقل ====================
+
     function navigate(page) {
-        if (page === 'admin' && !isAdmin) { showAlert('🔐 لا تملك صلاحية', '🔐'); return; }
+        if (page === 'admin' && !isAdmin) return showAlert('🔐 لا تملك صلاحية', '🔐');
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        const el = document.getElementById('page-' + page);
-        if (el) { el.classList.add('active'); navHistory.push(page); }
-        document.getElementById('header-back-btn').classList.toggle('visible', page !== 'home');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        if (page === 'home') loadAllProducts();
-        if (page === 'admin') loadAdminDashboard();
-        if (page === 'checkout') loadPaymentMethods();
-        if (page === 'orders') { const pid = localStorage.getItem('pid'); if (pid) document.getElementById('orders-player-id').value = pid; }
-        if (page === 'contact') { const pid = localStorage.getItem('pid'); if (pid) document.getElementById('contact-player-id').value = pid; }
+        document.getElementById('page-' + page)?.classList.add('active');
+        navHistory.push(page);
+        window.scrollTo({top:0,behavior:'smooth'});
+        if (page === 'checkout') loadPM();
+        if (page === 'orders') { const p = localStorage.getItem('pid'); if (p) document.getElementById('orders-player-id').value = p; }
+        if (page === 'contact') { const p = localStorage.getItem('pid'); if (p) document.getElementById('contact-player-id').value = p; }
     }
-    
-    function goBack() {
-        if (navHistory.length > 1) {
-            navHistory.pop();
-            const prev = navHistory[navHistory.length - 1];
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById('page-' + prev)?.classList.add('active');
-            document.getElementById('header-back-btn').classList.toggle('visible', prev !== 'home');
-        }
-    }
-    
-    function showModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-    function showAlert(msg, icon) {
-        document.getElementById('modal-icon').innerText = icon || '🎉';
-        document.getElementById('modal-msg').innerText = msg;
-        showModal('modal-alert');
-    }
-    
-    // ==================== فئات ومنتجات ====================
-    function showCategory(key) {
+
+    function showCat(key) {
         const cat = (window._categories || []).find(c => c.key === key);
         if (!cat) return;
         document.getElementById('products-title').innerText = cat.name;
         navigate('products');
         allProducts = cat.products;
-        document.getElementById('products-list').innerHTML = allProducts.map((p, i) =>
-            `<div class="pkg-card glass" onclick="selectProduct(${i})">
-                <span>📦 ${p.name}</span>
-                <span style="color:var(--primary);font-size:.75rem">${p.plans.length} باقة</span>
-            </div>`
-        ).join('');
+        document.getElementById('products-list').innerHTML = allProducts.map((p,i) => `<div class="pkg-card glass" onclick="selProd(${i})"><span>📦 ${p.name}</span><span style="color:var(--primary);font-size:.75rem">${p.plans.length} باقة</span></div>`).join('');
     }
-    
-    function selectProduct(i) {
+
+    function selProd(i) {
         currentProduct = allProducts[i];
         document.getElementById('plans-title').innerText = currentProduct.name;
-        document.getElementById('plans-list').innerHTML = currentProduct.plans.map(p =>
-            `<div class="pkg-card glass" onclick="selectPlan('${p.plan_id}', '${p.name.replace(/'/g, "\\'")}', ${p.price})">
-                <span>${p.name}</span>
-                <span class="pkg-price">${p.price.toLocaleString()} ل.س</span>
-            </div>`
-        ).join('');
+        document.getElementById('plans-list').innerHTML = currentProduct.plans.map(p => `<div class="pkg-card glass" onclick="selPlan('${p.plan_id}','${p.name.replace(/'/g,"\\'")}',${p.price})"><span>${p.name}</span><span class="pkg-price">${p.price.toLocaleString()} ل.س</span></div>`).join('');
         navigate('plans');
     }
-    
-    function selectPlan(id, name, price) {
-        selectedPlan = { id, name, price };
-        document.getElementById('summary-plan').innerText = name;
-        document.getElementById('summary-product').innerText = currentProduct?.name || '';
-        document.getElementById('summary-price').innerText = price.toLocaleString() + ' ل.س';
+
+    function selPlan(id, name, price) {
+        selectedPlan = {id, name, price};
+        document.getElementById('summary-plan').innerHTML = `🎯 ${name}<br><small style="color:#888">📦 ${currentProduct?.name||''}</small>`;
+        document.getElementById('summary-price').innerText = `💰 ${price.toLocaleString()} ل.س`;
         navigate('checkout');
     }
-    
-    function loadPaymentMethods() {
-        const methods = JSON.parse(localStorage.getItem('pm') || '[{"name":"سيرياتيل كاش","details":"0987654321"}]');
-        const div = document.getElementById('payment-methods-list');
-        div.innerHTML = methods.map((m, i) =>
-            `<div class="pay-method-card" onclick="selectPM(${i})" id="pm-${i}">
-                <div class="pm-icon"><i class="fas fa-credit-card"></i></div>
-                <div class="pm-name">${m.name}</div>
-                <div class="pm-check"></div>
-            </div>`
-        ).join('');
-        setTimeout(() => document.getElementById('pm-0')?.classList.add('selected'), 100);
+
+    function loadPM() {
+        const m = JSON.parse(localStorage.getItem('pm') || '[{"name":"سيرياتيل كاش","details":"0987654321"}]');
+        document.getElementById('payment-methods-list').innerHTML = m.map((x,i) => `<div class="pay-method-card" onclick="selPM(${i})" id="pmi-${i}"><span>💳 ${x.name}</span><span style="color:var(--primary);font-size:.8rem">${x.details}</span></div>`).join('');
+        setTimeout(()=>document.getElementById('pmi-0')?.classList.add('selected'),100);
     }
-    
-    function selectPM(i) {
-        document.querySelectorAll('.pay-method-card').forEach(c => c.classList.remove('selected'));
-        document.getElementById('pm-' + i)?.classList.add('selected');
-    }
-    
+    function selPM(i){document.querySelectorAll('.pay-method-card').forEach(c=>c.classList.remove('selected'));document.getElementById('pmi-'+i)?.classList.add('selected')}
+
     function submitOrder() {
         const pid = document.getElementById('player-id').value.trim();
         const tx = document.getElementById('tx-num').value.trim();
-        if (!pid) return showAlert('⚠️ أدخل الآيدي', '⚠️');
-        if (!tx) return showAlert('⚠️ أدخل رقم العملية', '⚠️');
-        localStorage.setItem('pid', pid);
-        
-        const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-        orders.unshift({
-            id: Date.now(),
-            plan: selectedPlan.name,
-            product: currentProduct?.name || '',
-            price: selectedPlan.price,
-            player: pid,
-            tx: tx,
-            status: 'pending',
-            date: new Date().toISOString()
-        });
-        localStorage.setItem('orders', JSON.stringify(orders));
-        
-        showAlert('✅ تم استلام الطلب', '✅');
+        if (!pid||!tx) return showAlert('⚠️ املأ الحقول','⚠️');
+        localStorage.setItem('pid',pid);
+        const orders = JSON.parse(localStorage.getItem('orders')||'[]');
+        orders.unshift({id:Date.now(),plan:selectedPlan.name,price:selectedPlan.price,player:pid,tx,status:'pending',date:new Date().toISOString()});
+        localStorage.setItem('orders',JSON.stringify(orders));
+        showAlert('✅ تم الاستلام','✅');
         navigate('home');
     }
-    
+
     function loadOrders() {
         const pid = document.getElementById('orders-player-id').value.trim();
-        if (!pid) return showAlert('⚠️ أدخل الآيدي', '⚠️');
-        const orders = JSON.parse(localStorage.getItem('orders') || '[]').filter(o => o.player === pid);
+        if (!pid) return showAlert('⚠️ أدخل الآيدي','⚠️');
+        const orders = JSON.parse(localStorage.getItem('orders')||'[]').filter(o=>o.player===pid);
         const div = document.getElementById('orders-list');
         if (!orders.length) { div.innerHTML = '<p style="text-align:center;color:#888;padding:20px">📭 لا توجد طلبات</p>'; return; }
-        div.innerHTML = orders.map(o => {
-            const sc = o.status === 'pending' ? 'badge-pending' : o.status === 'approved' ? 'badge-approved' : 'badge-rejected';
-            const st = o.status === 'pending' ? '⏳ قيد المراجعة' : o.status === 'approved' ? '✅ مكتمل' : '❌ مرفوض';
-            return `<div class="pkg-card"><div><b>📦 ${o.plan}</b><br><small>💰 ${o.price.toLocaleString()} ل.س</small></div><span class="status-badge ${sc}">${st}</span></div>`;
-        }).join('');
+        div.innerHTML = orders.map(o=>`<div class="pkg-card"><div><b>📦 ${o.plan}</b><br><small>💰 ${o.price.toLocaleString()} ل.س</small></div><span class="status-badge badge-${o.status==='pending'?'pending':o.status==='approved'?'approved':'rejected'}">${o.status==='pending'?'⏳ قيد المراجعة':o.status==='approved'?'✅ مكتمل':'❌ مرفوض'}</span></div>`).join('');
     }
-    
+
     function redeemCode() {
         const code = document.getElementById('redeem-code').value.trim();
         const pid = document.getElementById('redeem-player-id').value.trim();
-        if (!code || !pid) return showAlert('⚠️ أدخل الكود والآيدي', '⚠️');
-        showAlert('🎉 تم استلام الهدية!', '🎉');
+        if (!code||!pid) return showAlert('⚠️ املأ الحقول','⚠️');
+        showAlert('🎉 تم استلام الهدية!','🎉');
     }
-    
+
     function sendContact() {
         const msg = document.getElementById('contact-msg').value.trim();
         const pid = document.getElementById('contact-player-id').value.trim();
-        if (!pid) return showAlert('⚠️ أدخل الآيدي', '⚠️');
-        if (!msg) return showAlert('⚠️ اكتب رسالتك', '⚠️');
-        localStorage.setItem('pid', pid);
-        showAlert('✅ تم الإرسال', '✅');
-        document.getElementById('contact-msg').value = '';
+        if (!pid||!msg) return showAlert('⚠️ املأ الحقول','⚠️');
+        localStorage.setItem('pid',pid);
+        showAlert('✅ تم الإرسال','✅');
+        document.getElementById('contact-msg').value='';
     }
-    
-    // ==================== لوحة التحكم ====================
-    document.getElementById('main-logo').addEventListener('click', () => {
-        logoTapCount++;
-        clearTimeout(logoTapTimer);
-        if (logoTapCount >= 5) {
-            logoTapCount = 0;
-            const pw = prompt('🔐 كلمة المرور:');
-            if (pw === ADMIN_PASS) {
-                isAdmin = true;
-                navigate('admin');
-                showAlert('✅ مرحباً بك 👑', '👑');
-            } else if (pw) showAlert('❌ خطأ', '🔐');
-        }
-        logoTapTimer = setTimeout(() => logoTapCount = 0, 1500);
+
+    function showModal(id){document.getElementById(id).style.display='flex'}
+    function closeModal(id){document.getElementById(id).style.display='none'}
+    function showAlert(msg,icon){document.getElementById('modal-icon').innerText=icon||'🎉';document.getElementById('modal-msg').innerText=msg;showModal('modal-alert')}
+
+    // لوحة التحكم
+    document.getElementById('main-logo').addEventListener('click',()=>{
+        tapCount++;clearTimeout(tapTimer);
+        if(tapCount>=5){tapCount=0;const pw=prompt('🔐 كلمة المرور:');if(pw==='admin123'){isAdmin=true;navigate('admin');loadAdmin()}else if(pw)showAlert('❌ خطأ','🔐')}
+        tapTimer=setTimeout(()=>tapCount=0,1500);
     });
-    
-    function adminLogout() { isAdmin = false; navigate('home'); }
-    
-    function switchAdminTab(tab) {
-        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
-        document.querySelector(`.admin-tab[onclick*="${tab}"]`)?.classList.add('active');
-        document.getElementById('tab-' + tab)?.classList.add('active');
-        if (tab === 'dashboard') loadAdminDashboard();
-        if (tab === 'orders') loadAdminOrders();
-        if (tab === 'settings') loadAdminSettings();
-        if (tab === 'payments') loadAdminPayments();
-    }
-    
-    function loadAdminDashboard() {
-        document.getElementById('stat-products').innerText = (window._rawProducts || []).length;
-        document.getElementById('stat-balance').innerText = '-';
-    }
-    
-    function loadAdminOrders() {
-        const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-        const div = document.getElementById('admin-orders-list');
-        if (!orders.length) { div.innerHTML = '<p style="text-align:center;color:#888;padding:20px">📭 لا توجد طلبات</p>'; return; }
-        div.innerHTML = orders.map(o => {
-            const sc = o.status === 'pending' ? 'badge-pending' : o.status === 'approved' ? 'badge-approved' : 'badge-rejected';
-            const st = o.status === 'pending' ? '⏳ قيد المراجعة' : o.status === 'approved' ? '✅ مكتمل' : '❌ مرفوض';
-            const btns = o.status === 'pending' ? 
-                `<button class="btn btn-sm" style="background:var(--success);margin:2px" onclick="updateOrder(${o.id},'approved')">✅</button>
-                 <button class="btn btn-sm" style="background:var(--danger);margin:2px" onclick="updateOrder(${o.id},'rejected')">❌</button>` : '';
-            return `<div class="glass" style="padding:12px"><div style="display:flex;justify-content:space-between">
-                <div><b>📦 ${o.plan}</b><br><small>👤 ${o.player} | 💰 ${o.price.toLocaleString()} ل.س</small></div>
-                <span class="status-badge ${sc}">${st}</span></div>${btns}</div>`;
-        }).join('');
-    }
-    
-    function updateOrder(id, status) {
-        const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-        const idx = orders.findIndex(o => o.id === id);
-        if (idx !== -1) { orders[idx].status = status; localStorage.setItem('orders', JSON.stringify(orders)); }
-        loadAdminOrders();
-    }
-    
-    function loadAdminSettings() {
-        document.getElementById('set-margin').value = margin;
-        document.getElementById('set-whatsapp').value = localStorage.getItem('wa') || '';
-    }
-    
-    function saveSetting(type) {
-        if (type === 'margin') { margin = parseFloat(document.getElementById('set-margin').value) || 20; }
-        else if (type === 'whatsapp') {
-            const u = document.getElementById('set-whatsapp').value.trim();
-            localStorage.setItem('wa', u);
-            const b = document.getElementById('whatsapp-btn');
-            if (u) { b.href = u; b.classList.add('visible'); } else b.classList.remove('visible');
-        }
-        showAlert('✅ تم الحفظ', '✅');
-    }
-    
-    function loadAdminPayments() {
-        const m = JSON.parse(localStorage.getItem('pm') || '[{"name":"سيرياتيل كاش","details":"0987654321"}]');
-        document.getElementById('admin-payments-list').innerHTML = m.map((p, i) =>
-            `<div class="pkg-card"><span>💳 ${p.name} - ${p.details}</span>
-             <button class="btn btn-sm" style="background:var(--danger);width:auto;padding:4px 8px" onclick="delPM(${i})">🗑️</button></div>`
-        ).join('');
-    }
-    
-    function addPayment() {
-        const n = document.getElementById('new-pay-name').value.trim();
-        const d = document.getElementById('new-pay-details').value.trim();
-        if (!n || !d) return showAlert('⚠️ املأ الحقول', '⚠️');
-        const m = JSON.parse(localStorage.getItem('pm') || '[]');
-        m.push({ name: n, details: d });
-        localStorage.setItem('pm', JSON.stringify(m));
-        loadAdminPayments();
-        showAlert('✅ تمت الإضافة', '✅');
-    }
-    
-    function delPM(i) { const m = JSON.parse(localStorage.getItem('pm') || '[]'); m.splice(i,1); localStorage.setItem('pm',JSON.stringify(m)); loadAdminPayments(); }
-    
-    async function testConnection() {
-        const div = document.getElementById('diagnose-result');
-        div.innerHTML = '<p style="color:#888">⏳ جاري الاختبار...</p>';
-        const result = await callAPI("balance");
-        div.innerHTML = `<pre style="white-space:pre-wrap;font-size:.7rem">${JSON.stringify(result, null, 2)}</pre>`;
-    }
-    
-    function refreshData() { loadAllProducts(); loadAdminDashboard(); showAlert('✅ تم التحديث', '✅'); }
-    
-    // ==================== جسيمات ====================
-    (function() {
-        const canvas = document.getElementById('particles-canvas');
-        const ctx = canvas.getContext('2d');
-        const particles = [];
-        function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
-        resize(); addEventListener('resize', resize);
-        for (let i=0;i<40;i++) particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+.5,dx:(Math.random()-.5)*.4,dy:(Math.random()-.5)*.4});
-        function draw() {
-            ctx.clearRect(0,0,canvas.width,canvas.height);
-            particles.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(0,229,191,'+Math.random()*.2+')';ctx.fill();p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1});
-            requestAnimationFrame(draw);
-        }
-        draw();
-    })();
-    
-    // ==================== بدء التشغيل ====================
-    document.addEventListener('DOMContentLoaded', () => {
-        loadAllProducts();
-        const wa = localStorage.getItem('wa');
-        if (wa) { document.getElementById('whatsapp-btn').href = wa; document.getElementById('whatsapp-btn').classList.add('visible'); }
-        const pid = localStorage.getItem('pid');
-        if (pid) { const el = document.getElementById('player-id'); if (el) el.value = pid; }
+
+    function adminLogout(){isAdmin=false;navigate('home')}
+    function loadAdmin(){document.getElementById('set-margin').value=margin;document.getElementById('set-whatsapp').value=localStorage.getItem('wa')||'';loadAdminPM();loadAdminOrders()}
+    function saveMargin(){margin=parseFloat(document.getElementById('set-margin').value)||20;showAlert('✅','✅')}
+    function saveWA(){const u=document.getElementById('set-whatsapp').value.trim();localStorage.setItem('wa',u);const b=document.getElementById('whatsapp-btn');if(u){b.href=u;b.classList.add('visible')}else b.classList.remove('visible');showAlert('✅','✅')}
+    function loadAdminPM(){const m=JSON.parse(localStorage.getItem('pm')||'[{"name":"سيرياتيل كاش","details":"0987654321"}]');document.getElementById('pm-list').innerHTML=m.map((x,i)=>`<div class="pkg-card"><span>💳 ${x.name} - ${x.details}</span><button class="btn btn-sm" style="background:var(--danger);width:auto;padding:4px 8px" onclick="delPM(${i})">🗑️</button></div>`).join('')}
+    function addPM(){const n=document.getElementById('pay-name').value.trim();const d=document.getElementById('pay-details').value.trim();if(!n||!d)return showAlert('⚠️','⚠️');const m=JSON.parse(localStorage.getItem('pm')||'[]');m.push({name:n,details:d});localStorage.setItem('pm',JSON.stringify(m));loadAdminPM();showAlert('✅','✅')}
+    function delPM(i){const m=JSON.parse(localStorage.getItem('pm')||'[]');m.splice(i,1);localStorage.setItem('pm',JSON.stringify(m));loadAdminPM()}
+    function loadAdminOrders(){const o=JSON.parse(localStorage.getItem('orders')||'[]');const d=document.getElementById('admin-orders');if(!o.length){d.innerHTML='<p style="color:#888">لا توجد طلبات</p>';return}d.innerHTML=o.map(x=>`<div class="pkg-card"><div><b>📦 ${x.plan}</b><br><small>👤 ${x.player} | 💰 ${x.price.toLocaleString()}</small></div>${x.status==='pending'?`<div><button class="btn btn-sm" style="background:var(--success);margin:2px" onclick="updOrder(${x.id},'approved')">✅</button><button class="btn btn-sm" style="background:var(--danger);margin:2px" onclick="updOrder(${x.id},'rejected')">❌</button></div>`:`<span class="status-badge badge-${x.status==='approved'?'approved':'rejected'}">${x.status==='approved'?'✅ مكتمل':'❌ مرفوض'}</span>`}</div>`).join('')}
+    function updOrder(id,s){const o=JSON.parse(localStorage.getItem('orders')||'[]');const i=o.findIndex(x=>x.id===id);if(i!==-1){o[i].status=s;localStorage.setItem('orders',JSON.stringify(o))}loadAdminOrders()}
+
+    // بدء التشغيل
+    document.addEventListener('DOMContentLoaded',()=>{
+        loadProducts();
+        const wa=localStorage.getItem('wa');if(wa){document.getElementById('whatsapp-btn').href=wa;document.getElementById('whatsapp-btn').classList.add('visible')}
+        const pid=localStorage.getItem('pid');if(pid)document.getElementById('player-id').value=pid;
     });
     </script>
 </body>
