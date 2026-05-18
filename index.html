@@ -262,7 +262,7 @@
                 <!-- Hero Slider Upload -->
                 <div class="glass p-5 space-y-4 rounded-xl">
                     <h4 class="font-bold text-sm text-neon-gold"><i class="fas fa-panorama ml-1"></i>صور القسم الرئيسي (سلايدر تلقائي)</h4>
-                    <p class="text-xs text-slate-500">ارفع أكثر من صورة لتبدل تلقائياً في الأعلى. (يفضل أبعاد 1920x600 أو مشابه)</p>
+                    <p class="text-xs text-slate-500">ارفع أكثر من صورة لتبدل تلقائياً في الأعلى.</p>
                     <label class="file-label"><i class="fas fa-upload"></i> رفع صورة جديدة للسلايدر<input type="file" accept="image/*" class="hidden" onchange="handleHeroSliderUpload(this)"></label>
                     <div id="heroSliderList" class="space-y-2 max-h-60 overflow-y-auto"></div>
                 </div>
@@ -280,7 +280,7 @@
     </div>
 
     <script>
-    const BASE = 'https://api.psegamestore.com/';
+    const API_BASE = 'https://api.psegamestore.com/';
     const TOKEN = 'a+oPU36Cai03iW6ZuDPH2HRJcHJ6NmZPVUZzdlc1R0s5Q3N4NGc9PQ==';
     const HDR = { 'api-token': TOKEN, 'Content-Type': 'application/json' };
 
@@ -339,14 +339,14 @@
 
     async function handleHeroSliderUpload(input) {
         if (input.files && input.files[0]) {
-            const b64 = await compressImage(input.files[0], 1400); // Higher res for hero
+            const b64 = await compressImage(input.files[0], 1400);
             const s = getSettings();
             if (!s.heroImages) s.heroImages = [];
             s.heroImages.push(b64);
             saveSettings(s);
             renderHeroSliderAdmin();
             toast('تم رفع صورة السلايدر', 'ok');
-            input.value = ''; // Reset input
+            input.value = '';
         }
     }
 
@@ -374,8 +374,25 @@
         `).join('');
     }
 
-    // API Calls
-    async function apiGet(path) { const r = await fetch(BASE + path, { headers: HDR }); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }
+    // API Calls with CORS Proxy for GitHub Pages
+    async function apiGet(path) {
+        const targetUrl = API_BASE + path;
+        // استخدام وسيط CORS لتجاوز حماية المتصفح في GitHub Pages
+        const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(targetUrl);
+        
+        try {
+            const r = await fetch(proxyUrl, { headers: HDR });
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return await r.json();
+        } catch (e) {
+            console.error("Proxy failed, trying direct connection...", e);
+            // محاولة الاتصال المباشر كاحتياط (يعمل إذا كان السيرفر يسمح بـ CORS)
+            const r2 = await fetch(targetUrl, { headers: HDR });
+            if (!r2.ok) throw new Error('HTTP ' + r2.status);
+            return await r2.json();
+        }
+    }
+
     async function fetchProfile() { try { const d = await apiGet('client/api/profile'); document.getElementById('balVal').textContent = parseFloat(d.balance).toFixed(2); } catch { document.getElementById('balVal').textContent = '--'; } }
     async function fetchProducts() { return await apiGet('client/api/products'); }
     async function placeOrder(prodId, params) { return await apiGet('client/api/newOrder/' + prodId + '/params?' + new URLSearchParams(params).toString()); }
@@ -438,7 +455,7 @@
                 slides[currentHeroSlide].classList.remove('active');
                 currentHeroSlide = (currentHeroSlide + 1) % slides.length;
                 slides[currentHeroSlide].classList.add('active');
-            }, 4000); // Change every 4 seconds
+            }, 4000);
         }
     }
 
@@ -536,7 +553,21 @@
         } catch { toast('خطأ في الاتصال', 'err'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> تأكيد وإرسال الطلب'; }
     }
 
-    function showResult(d) { document.getElementById('omForm').classList.add('hidden'); document.getElementById('omResult').classList.remove('hidden'); document.getElementById('resId').textContent=d.order_id; document.getElementById('resPrice').textContent=d.sypPrice||('$'+d.price); const sm={accept:{t:'مقبول',c:'st-accept',i:'fa-circle-check',ic:'text-neon-green',bg:'bg-neon-green/10'},reject:{t:'مرفوض',c:'st-reject',i:'fa-circle-xmark',ic:'text-red-400',bg:'bg-red-500/10'},wait:{t:'قيد الانتظار',c:'st-wait',i:'fa-clock',ic:'text-neon-gold',bg:'bg-neon-gold/10'}}; const s=sm[d.status]||{t:d.status,c:'',i:'fa-question',ic:'text-slate-400',bg:'bg-white/5'}; document.getElementById('resStatus').textContent=s.t;document.getElementById('resStatus').className='font-bold text-sm '+s.c; document.getElementById('resIcon').className='w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 '+s.bg; document.getElementById('resIcon').innerHTML=`<i class="fas ${s.i} text-4xl ${s.ic}"></i>`; document.getElementById('resTitle').textContent=d.status==='accept'?'تم تأكيد الطلب':'قيد المراجعة'; document.getElementById('resMsg').textContent=d.status==='accept'?'سيتم التسليم خلال لحظات':'يرجى الانتظار'; }
+    function showResult(d) { 
+        document.getElementById('omForm').classList.add('hidden'); 
+        document.getElementById('omResult').classList.remove('hidden'); 
+        document.getElementById('resId').textContent=d.order_id; 
+        document.getElementById('resPrice').textContent=d.sypPrice||('$'+d.price); 
+        const sm={accept:{t:'مقبول',c:'st-accept',i:'fa-circle-check',ic:'text-neon-green',bg:'bg-neon-green/10'},reject:{t:'مرفوض',c:'st-reject',i:'fa-circle-xmark',ic:'text-red-400',bg:'bg-red-500/10'},wait:{t:'قيد الانتظار',c:'st-wait',i:'fa-clock',ic:'text-neon-gold',bg:'bg-neon-gold/10'}}; 
+        const s=sm[d.status]||{t:d.status,c:'',i:'fa-question',ic:'text-slate-400',bg:'bg-white/5'}; 
+        document.getElementById('resStatus').textContent=s.t;
+        document.getElementById('resStatus').className='font-bold text-sm '+s.c; 
+        document.getElementById('resIcon').className='w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 '+s.bg; 
+        document.getElementById('resIcon').innerHTML=`<i class="fas ${s.i} text-4xl ${s.ic}"></i>`; 
+        document.getElementById('resTitle').textContent=d.status==='accept'?'تم تأكيد الطلب':'قيد المراجعة'; 
+        document.getElementById('resMsg').textContent=d.status==='accept'?'سيتم التسليم خلال لحظات':'يرجى الانتظار'; 
+    }
+    
     function copyOrderId() { if(!lastOrder)return; navigator.clipboard.writeText(lastOrder.order_id).then(()=>toast('تم نسخ رقم الطلب','ok')).catch(()=>{const t=document.createElement('textarea');t.value=lastOrder.order_id;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);toast('تم النسخ','ok');}); }
 
     // Orders History
