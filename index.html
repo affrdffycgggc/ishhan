@@ -94,7 +94,7 @@
 
     let currentProductData = null;
 
-    // دالة لتصحيح مسارات الصور القادمة من الباك إند
+    // دالة لتصحيح مسارات الصور القادمة من الباك إند لكي تعمل عبر ngrok
     function fixImageUrl(path) {
         if (!path || !path.trim()) return 'https://via.placeholder.com/200x150?text=لا+توجد+صورة';
         if (path.startsWith('http')) return path; // إذا كان رابط كامل
@@ -294,11 +294,17 @@
     async function submitPayment(e) {
         e.preventDefault();
         const shippingId = document.getElementById('selectedShippingId').value;
-        if (!shippingId) { Swal.fire('تنبيه', 'يرجى اختيار طريقة الدفع', 'warning'); return; }
+        if (!shippingId) {
+            Swal.fire('تنبيه', 'يرجى اختيار طريقة الدفع', 'warning');
+            return;
+        }
         const buyerName = document.getElementById('buyerName').value.trim();
         const buyerPhone = document.getElementById('buyerPhone').value.trim();
         const transactionNumber = document.getElementById('transactionNumber').value.trim();
-        if (!buyerName || !buyerPhone || !transactionNumber) { Swal.fire('تنبيه', 'جميع الحقول مطلوبة', 'warning'); return; }
+        if (!buyerName || !buyerPhone || !transactionNumber) {
+            Swal.fire('تنبيه', 'جميع الحقول مطلوبة', 'warning');
+            return;
+        }
 
         const data = {
             product_id: currentProductData.id,
