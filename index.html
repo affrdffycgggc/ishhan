@@ -21,21 +21,21 @@
             --text-muted: #636E72;
             --success: #00B894;
             --shadow-soft: 0 10px 30px rgba(0,0,0,0.06);
-            --shadow-hover: 0 20px 40px rgba(108, 99, 255, 0.15);
+            --shadow-hover: 0 20px 40px rgba(108, 99, 255, 0.2);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: var(--bg-color); font-family: 'Cairo', sans-serif; direction: rtl; color: var(--text-main); overflow-x: hidden; }
 
         /* شريط التواصل */
-        .contact-bar { background: rgba(45, 52, 54, 0.95); backdrop-filter: blur(10px); color: white; padding: 10px 20px; text-align: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.1); }
-        .contact-bar a { color: white; margin: 0 20px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: color 0.3s, transform 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+        .contact-bar { background: rgba(45, 52, 54, 0.95); backdrop-filter: blur(10px); color: white; padding: 12px 20px; text-align: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.1); }
+        .contact-bar a { color: white; margin: 0 15px; text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: color 0.3s, transform 0.3s; display: inline-flex; align-items: center; gap: 8px; }
         .contact-bar a i { font-size: 1.2rem; }
         .contact-bar a:hover { color: var(--primary); transform: translateY(-2px); }
 
         /* الإعلانات */
         .ads-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; border-radius: 25px; overflow: hidden; box-shadow: var(--shadow-soft); }
-        .slick-slide img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 0; }
+        .slick-slide img { width: 100%; max-height: 400px; object-fit: cover; }
         .slick-dots li button:before { font-size: 12px; color: var(--primary); }
 
         /* بطاقات الأقسام والمنتجات */
@@ -43,11 +43,12 @@
             background: var(--card-bg); border-radius: 20px; overflow: hidden; cursor: pointer;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
             margin-bottom: 30px; box-shadow: var(--shadow-soft); text-align: center; border: none; position: relative;
+            transform-style: preserve-3d; will-change: transform;
         }
-        .section-card:hover, .product-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-hover); }
+        .section-card:hover, .product-card:hover { box-shadow: var(--shadow-hover); }
         
         .img-wrapper { height: 200px; overflow: hidden; position: relative; background: #dfe6e9; }
-        .img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
         .section-card:hover .img-wrapper img, .product-card:hover .img-wrapper img { transform: scale(1.1); }
         
         .card-content { padding: 20px; }
@@ -57,60 +58,81 @@
             background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; 
             padding: 10px 25px; border-radius: 50px; font-weight: 700; transition: all 0.3s; margin-top: 15px; 
             box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3); display: inline-flex; align-items: center; gap: 8px;
+            position: relative; overflow: hidden;
         }
         .btn-buy:hover { transform: scale(1.05); box-shadow: 0 8px 20px rgba(108, 99, 255, 0.4); color: white; }
 
         .footer { background: #2D3436; color: #636E72; text-align: center; padding: 30px; margin-top: 60px; font-size: 0.9rem; border-top: 5px solid var(--primary); }
         
-        /* أنماط الصفحات الكاملة */
-        .page-view { display: none; min-height: 100vh; padding: 20px; background: var(--bg-color); animation: fadeIn 0.4s ease-in-out; }
-        .page-view.active-page { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* أنماط الصفحات الكاملة - انتقالات متطورة */
+        .page-view { 
+            display: none; min-height: 100vh; padding: 20px; background: var(--bg-color); 
+            opacity: 0; transform: translateY(30px); transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .page-view.active-page { display: block; opacity: 1; transform: translateY(0); }
 
         .page-header { 
             background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 20px 25px; 
             border-radius: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;
             box-shadow: 0 10px 20px rgba(108, 99, 255, 0.2);
         }
-        .page-header h3 { margin: 0; font-weight: 900; font-size: 1.5rem; }
+        .page-header h3 { margin: 0; font-weight: 900; font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
         .page-header button { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; transition: background 0.3s; display: flex; align-items: center; justify-content: center; }
         .page-header button:hover { background: rgba(255,255,255,0.4); }
         
         /* بطاقات الكميات */
         .variant-card { 
             background: var(--card-bg); border: 2px solid #dfe6e9; border-radius: 20px; padding: 25px; margin-bottom: 20px; 
-            cursor: pointer; transition: all 0.3s; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-soft);
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-soft);
         }
-        .variant-card:hover { border-color: var(--primary); transform: translateX(-5px); box-shadow: var(--shadow-hover); }
-        .variant-card.selected { border-color: var(--primary); background: linear-gradient(to left, #f8f9ff, #ffffff); box-shadow: var(--shadow-hover); }
+        .variant-card:hover { border-color: var(--primary); transform: translateX(-5px) scale(1.01); box-shadow: var(--shadow-hover); }
+        .variant-card.selected { border-color: var(--primary); background: linear-gradient(to left, #f0efff, #ffffff); box-shadow: var(--shadow-hover); }
         .variant-price { font-size: 1.6rem; font-weight: 900; color: var(--success); }
-        .variant-name { font-size: 1.2rem; font-weight: 700; color: var(--text-main); }
+        .variant-name { font-size: 1.2rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; }
 
         /* نموذج الدفع */
         .form-label { font-weight: 700; color: var(--text-main); margin-top: 20px; font-size: 1.1rem; }
         .required:after { content: " *"; color: var(--secondary); font-size: 1.2rem; }
-        .form-control { border-radius: 15px; padding: 15px; border: 2px solid #dfe6e9; font-family: 'Cairo', sans-serif; font-size: 1rem; transition: border-color 0.3s; }
-        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1); }
+        .form-control { border-radius: 15px; padding: 15px; border: 2px solid #dfe6e9; font-family: 'Cairo', sans-serif; font-size: 1rem; transition: border-color 0.3s, box-shadow 0.3s; }
+        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.1); }
         
         .btn-submit-payment { 
             background: linear-gradient(135deg, var(--success), #00a884); color: white; font-size: 1.3rem; padding: 18px; 
             border-radius: 50px; font-weight: 900; margin-top: 40px; width: 100%; transition: all 0.3s; border: none; 
             box-shadow: 0 10px 20px rgba(0, 184, 148, 0.3); display: flex; justify-content: center; align-items: center; gap: 10px;
+            position: relative; overflow: hidden;
         }
         .btn-submit-payment:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0, 184, 148, 0.4); }
         
+        /* طريقة الدفع والمحفظة */
         .payment-method-item { 
             border: 2px solid #dfe6e9; border-radius: 15px; padding: 20px; margin-bottom: 15px; cursor: pointer; 
-            transition: all 0.3s; background: var(--card-bg);
+            transition: all 0.3s; background: var(--card-bg); display: flex; justify-content: space-between; align-items: center;
         }
         .payment-method-item:hover { border-color: var(--primary); }
         .payment-method-item.active { border-color: var(--primary); background: #f8f9ff; box-shadow: 0 5px 15px rgba(108, 99, 255, 0.1); }
         
-        .loading { text-align: center; padding: 60px; color: var(--text-muted); }
+        .wallet-link-btn {
+            background: transparent; color: var(--primary); border: 2px solid var(--primary); padding: 8px 15px;
+            border-radius: 50px; font-weight: 700; text-decoration: none; transition: all 0.3s; font-size: 0.9rem;
+            display: inline-flex; align-items: center; gap: 5px;
+        }
+        .wallet-link-btn:hover { background: var(--primary); color: white; transform: scale(1.05); }
         
+        .loading { text-align: center; padding: 60px; color: var(--text-muted); }
+
+        /* تأثير ظهور العناصر المتدرج */
+        .stagger-item { opacity: 0; transform: translateY(30px); animation: staggerFadeIn 0.6s ease forwards; }
+        @keyframes staggerFadeIn { to { opacity: 1; transform: translateY(0); } }
+
+        /* تأثير الموجة (Ripple) للأزرار */
+        .ripple { position: absolute; background: rgba(255, 255, 255, 0.4); border-radius: 50%; transform: scale(0); animation: rippleEffect 0.6s linear; pointer-events: none; }
+        @keyframes rippleEffect { to { transform: scale(4); opacity: 0; } }
+
         @media (max-width: 768px) { 
             .variant-card { flex-direction: column; text-align: center; gap: 10px; } 
             .contact-bar a { margin: 0 10px; font-size: 0.9rem; }
+            .payment-method-item { flex-direction: column; text-align: center; gap: 15px; }
         }
     </style>
 </head>
@@ -132,23 +154,12 @@
     </div>
 </div>
 
-<!-- صفحة تفاصيل المنتج والكميات -->
-<div id="productDetailPage" class="page-view">
-    <div class="container" style="max-width: 900px;">
-        <div class="page-header">
-            <h3 id="detailPageTitle">المنتج</h3>
-            <button onclick="goBackToShop()"><i class="fas fa-arrow-right"></i></button>
-        </div>
-        <div id="productDetailContent" class="mt-4"></div>
-    </div>
-</div>
-
-<!-- صفحة إتمام الدفع -->
+<!-- صفحة إتمام الدفع المباشر (تشمل اختيار الكمية والدفع) -->
 <div id="checkoutPage" class="page-view">
     <div class="container" style="max-width: 900px;">
         <div class="page-header">
-            <h3><i class="fas fa-credit-card"></i> إتمام الدفع</h3>
-            <button onclick="goBackToProduct()"><i class="fas fa-arrow-right"></i></button>
+            <h3><i class="fas fa-credit-card"></i> إتمام الشراء</h3>
+            <button onclick="goBackToShop()"><i class="fas fa-arrow-right"></i></button>
         </div>
         <div id="checkoutContent" class="mt-4"></div>
     </div>
@@ -159,7 +170,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 
 <script>
-    const API_BASE = "https://unbegrudged-direfully-nu.ngrok-free.dev"; // غيّر الرابط لرابطك ngrok
+    const API_BASE = "https://unbegrudged-direfully-nu.ngrok-free.dev"; // غيّر الرابط لرابطك
     const ngrokHeaders = { 'ngrok-skip-browser-warning': '69420' };
     let currentProductData = null;
     let selectedVariantId = null;
@@ -172,13 +183,52 @@
     }
 
     function showPage(pageId) {
-        document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active-page'));
-        document.getElementById(pageId).classList.add('active-page');
+        document.querySelectorAll('.page-view').forEach(p => {
+            p.classList.remove('active-page');
+            p.style.opacity = '0'; // إعادة تعيين التأثير
+        });
+        const targetPage = document.getElementById(pageId);
+        targetPage.classList.add('active-page');
+        // تأخير بسيط لتفعيل الانتقال السلس
+        setTimeout(() => { targetPage.style.opacity = '1'; targetPage.style.transform = 'translateY(0)'; }, 50);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function goBackToShop() { showPage('mainShopPage'); }
-    function goBackToProduct() { showPage('productDetailPage'); }
+
+    // تأثير الموجة (Ripple) للأزرار
+    function createRipple(event) {
+        const btn = event.currentTarget;
+        const circle = document.createElement('span');
+        const diameter = Math.max(btn.clientWidth, btn.clientHeight);
+        const radius = diameter / 2;
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${event.clientX - btn.getBoundingClientRect().left - radius}px`;
+        circle.style.top = `${event.clientY - btn.getBoundingClientRect().top - radius}px`;
+        circle.classList.add('ripple');
+        const ripple = btn.querySelector('.ripple');
+        if (ripple) ripple.remove();
+        btn.appendChild(circle);
+    }
+
+    // تأثير الميلان ثلاثي الأبعاد للبطاقات
+    function init3DTilt() {
+        document.querySelectorAll('.section-card, .product-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 15; // سرعة الدوران
+                const rotateY = (centerX - x) / 15;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+            });
+        });
+    }
 
     async function loadContacts() {
         try {
@@ -217,8 +267,8 @@
             const sections = await resp.json(); const container = document.getElementById('sectionsContainer');
             if (!sections.length) { container.innerHTML = '<div class="col-12 text-center"><h4>لا توجد أقسام حالياً</h4></div>'; return; }
             let html = '';
-            sections.forEach(sec => {
-                html += `<div class="col-lg-3 col-md-4 col-sm-6">
+            sections.forEach((sec, index) => {
+                html += `<div class="col-lg-3 col-md-4 col-sm-6 stagger-item" style="animation-delay: ${index * 0.1}s">
                             <div class="section-card" onclick="showSection(${sec.id})">
                                 <div class="img-wrapper"><img src="${fixImageUrl(sec.image)}" alt="${sec.name}"></div>
                                 <div class="card-content"><h3>${sec.name}</h3></div>
@@ -226,6 +276,7 @@
                          </div>`;
             });
             container.innerHTML = html;
+            init3DTilt();
         } catch(e) { container.innerHTML = '<div class="col-12 text-danger text-center">فشل تحميل الأقسام</div>'; }
     }
 
@@ -234,51 +285,103 @@
             const resp = await fetch(`${API_BASE}/api/sections/${sectionId}`, { headers: ngrokHeaders });
             const data = await resp.json();
             if (data.error) { Swal.fire({ icon: 'error', title: 'خطأ', text: 'القسم غير موجود' }); return; }
-            let content = `<div class="text-center mb-4"><h4 style="color:var(--primary); font-weight:900;">${data.section.name}</h4></div>`;
+            
+            let content = `<div class="text-center mb-4"><h4 style="color:var(--primary); font-weight:900;">${data.section.name}</h4></div><div class="row">`;
             if (data.products && data.products.length) {
-                content += `<div class="row">`;
-                data.products.forEach(prod => {
-                    content += `<div class="col-lg-3 col-md-4 col-sm-6">
-                                    <div class="product-card" onclick="showProductVariants(${prod.id})">
+                data.products.forEach((prod, index) => {
+                    content += `<div class="col-lg-3 col-md-4 col-sm-6 stagger-item" style="animation-delay: ${index * 0.1}s">
+                                    <div class="product-card" onclick="openDirectCheckout(${prod.id})">
                                         <div class="img-wrapper"><img src="${fixImageUrl(prod.images)}" alt="${prod.name}"></div>
                                         <div class="card-content">
                                             <h3>${prod.name}</h3>
-                                            <button class="btn-buy"><i class="fas fa-cart-plus"></i> شراء</button>
+                                            <button class="btn-buy" onclick="event.stopPropagation(); openDirectCheckout(${prod.id})"><i class="fas fa-bolt"></i> شراء فوري</button>
                                         </div>
                                     </div>
                                 </div>`;
                 });
-                content += `</div>`;
-            } else { content += `<p class="text-center text-muted" style="font-size:1.2rem;">لا توجد منتجات في هذا القسم بعد.</p>`; }
-            Swal.fire({ html: content, width: '90%', showConfirmButton: false, showCloseButton: true, customClass: { popup: 'animated fadeIn' } });
+            } else { content += `<div class="col-12"><p class="text-center text-muted" style="font-size:1.2rem;">لا توجد منتجات في هذا القسم بعد.</p></div>`; }
+            content += `</div>`;
+            Swal.fire({ html: content, width: '90%', showConfirmButton: false, showCloseButton: true, customClass: { popup: 'animated fadeInDown' } });
+            setTimeout(init3DTilt, 200); // تفعيل التأثير داخل النافذة
         } catch(e) { Swal.fire('خطأ', 'فشل التحميل', 'error'); }
     }
 
-    async function showProductVariants(productId) {
+    // الدالة الجديدة: فتح صفحة الدفع مباشرة عند الضغط على المنتج
+    async function openDirectCheckout(productId) {
         Swal.close();
         try {
             const resp = await fetch(`${API_BASE}/api/product/${productId}`, { headers: ngrokHeaders });
             const product = await resp.json();
             if (product.error) { Swal.fire({ icon: 'error', title: 'خطأ' }); return; }
+            
             currentProductData = product;
-            document.getElementById('detailPageTitle').innerText = product.name;
-            
-            let html = `<div class="text-center mb-5"><p style="font-size:1.2rem; color:var(--text-muted);">${product.description || 'اختر الكمية المناسبة للمتابعة'}</p></div><h4 class="mb-4" style="font-weight:800; border-right:5px solid var(--primary); padding-right:15px;">الكميات المتاحة:</h4>`;
-            
+            selectedVariantId = null;
+            selectedVariantPrice = 0;
+
+            const shippingResp = await fetch(`${API_BASE}/api/shipping`, { headers: ngrokHeaders });
+            const shippingMethods = await shippingResp.json();
+
+            let variantsHtml = '';
             if (product.variants && product.variants.length > 0) {
                 product.variants.forEach(v => {
-                    html += `<div class="variant-card" data-variant-id="${v.id}" onclick="selectVariant(this, ${v.id}, ${v.price})">
+                    variantsHtml += `<div class="variant-card" data-variant-id="${v.id}" onclick="selectVariant(this, ${v.id}, ${v.price})">
                                 <div class="variant-name"><i class="fas fa-gem" style="color:var(--primary); margin-left:10px;"></i> ${v.name}</div>
                                 <div class="variant-price">${v.price > 0 ? v.price + ' ل.س' : 'سيحدد لاحقاً'}</div>
                              </div>`;
                 });
-                html += `<button class="btn-submit-payment" id="proceedToCheckoutBtn" onclick="goToCheckout()" style="display:none; margin-top:30px;"><i class="fas fa-lock"></i> متابعة للدفع الآمن</button>`;
             } else {
-                html += `<div class="alert alert-warning text-center">غير متوفر حالياً</div>`;
+                variantsHtml = `<div class="alert alert-warning text-center">غير متوفر حالياً</div>`;
             }
+
+            let shippingHtml = '';
+            shippingMethods.forEach(m => {
+                // نفصل رابط المحفظة هنا، بافتراض أن الباك إند يرسل m.wallet_link
+                const walletLink = m.wallet_link || m.note || '#'; // احتياطياً نستخدم note إذا لم يكن هناك حقل خاص
+                const isNoteLink = m.note && m.note.startsWith('http');
+
+                shippingHtml += `<div class="payment-method-item" data-method-id="${m.id}" onclick="selectPaymentMethod(this, ${m.id})">
+                                    <div style="flex:1">
+                                        <i class="fas fa-wallet" style="color:var(--primary); margin-left:10px;"></i> <strong>${m.name}</strong>
+                                        ${!isNoteLink && m.note ? `<br><small class="text-muted" style="margin-right:30px;">${m.note}</small>` : ''}
+                                    </div>
+                                    <a href="${walletLink}" target="_blank" class="wallet-link-btn" onclick="event.stopPropagation();">
+                                        <i class="fas fa-external-link-alt"></i> رابط المحفظة
+                                    </a>
+                                 </div>`;
+            });
+
+            const html = `
+                <div class="text-center mb-4 p-4" style="background:var(--card-bg); border-radius:20px; box-shadow: var(--shadow-soft);">
+                    <h4 style="font-weight:900; font-size:1.5rem;">${product.name}</h4>
+                    <p style="color:var(--text-muted); margin:0;">${product.description || ''}</p>
+                </div>
+
+                <h4 class="mb-3" style="font-weight:800; border-right:5px solid var(--primary); padding-right:15px;">1. اختر الكمية:</h4>
+                ${variantsHtml}
+                
+                <div id="checkoutFormSection" style="display:none; opacity:0; transition: opacity 0.5s;">
+                    <h4 class="mb-3 mt-5" style="font-weight:800; border-right:5px solid var(--success); padding-right:15px;">2. اختر طريقة الدفع:</h4>
+                    <div class="mb-4">${shippingHtml}<input type="hidden" id="selectedShippingId" value=""></div>
+
+                    <h4 class="mb-3 mt-5" style="font-weight:800; border-right:5px solid var(--secondary); padding-right:15px;">3. أدخل بيانات التحويل:</h4>
+                    <form id="paymentForm">
+                        <div class="mb-4">
+                            <label class="form-label required">رقم الجوال</label>
+                            <input type="tel" id="buyerPhone" class="form-control" required placeholder="مثال: 09xxxxxxxx">
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label required">رقم العملية (رقم التحويل)</label>
+                            <input type="text" id="transactionNumber" class="form-control" required placeholder="أدخل رقم العملية من البنك أو المحفظة">
+                            <div class="form-text mt-2" style="font-size:0.9rem;">* يرجى إدخال رقم العملية الصحيح لتأكيد طلبك فوراً.</div>
+                        </div>
+                        <button type="submit" class="btn-submit-payment" onclick="createRipple(event)"><i class="fas fa-paper-plane"></i> تأكيد الدفع</button>
+                    </form>
+                </div>
+            `;
             
-            document.getElementById('productDetailContent').innerHTML = html;
-            showPage('productDetailPage');
+            document.getElementById('checkoutContent').innerHTML = html;
+            showPage('checkoutPage');
+            document.getElementById('paymentForm').addEventListener('submit', submitPayment);
         } catch(e) { Swal.fire('خطأ', 'فشل تحميل المنتج', 'error'); }
     }
 
@@ -287,52 +390,15 @@
         selectedVariantPrice = vPrice;
         document.querySelectorAll('.variant-card').forEach(el => el.classList.remove('selected'));
         element.classList.add('selected');
-        document.getElementById('proceedToCheckoutBtn').style.display = 'flex';
-    };
-
-    async function goToCheckout() {
-        if (!selectedVariantId) { Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'اختر الكمية أولاً' }); return; }
         
-        try {
-            const resp = await fetch(`${API_BASE}/api/shipping`, { headers: ngrokHeaders });
-            const shippingMethods = await resp.json();
-            
-            let shippingHtml = '';
-            shippingMethods.forEach(m => {
-                shippingHtml += `<div class="payment-method-item" data-method-id="${m.id}" onclick="selectPaymentMethod(this, ${m.id})">
-                                    <i class="fas fa-wallet" style="color:var(--primary); margin-left:10px;"></i> <strong>${m.name}</strong><br><small class="text-muted" style="margin-right:30px;">${m.note || ''}</small>
-                                 </div>`;
-            });
-
-            const html = `
-                <div class="text-center mb-5 p-4" style="background:var(--card-bg); border-radius:20px; box-shadow: var(--shadow-soft);">
-                    <h4 style="font-weight:800;">${currentProductData.name}</h4>
-                    <h3 class="mt-3" style="color:var(--success); font-weight:900; font-size:2rem;">المبلغ: ${selectedVariantPrice > 0 ? selectedVariantPrice + ' ل.س' : 'سيحدد لاحقاً'}</h3>
-                </div>
-                <form id="paymentForm">
-                    <div class="mb-4">
-                        <label class="form-label required">طريقة الدفع</label>
-                        ${shippingHtml}
-                        <input type="hidden" id="selectedShippingId" value="">
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label required">رقم الجوال</label>
-                        <input type="tel" id="buyerPhone" class="form-control" required placeholder="مثال: 09xxxxxxxx" style="font-size:1.1rem;">
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label required">رقم العملية (رقم التحويل)</label>
-                        <input type="text" id="transactionNumber" class="form-control" required placeholder="أدخل رقم العملية من البنك أو المحفظة" style="font-size:1.1rem;">
-                        <div class="form-text mt-2" style="font-size:0.9rem;">* يرجى إدخال رقم العملية الصحيح لتأكيد طلبك فوراً.</div>
-                    </div>
-                    <button type="submit" class="btn-submit-payment"><i class="fas fa-paper-plane"></i> تأكيد الدفع</button>
-                </form>
-            `;
-            
-            document.getElementById('checkoutContent').innerHTML = html;
-            showPage('checkoutPage');
-            document.getElementById('paymentForm').addEventListener('submit', submitPayment);
-        } catch(e) { Swal.fire('خطأ', 'فشل تحميل طرق الدفع', 'error'); }
-    }
+        // إظهار قسم طريقة الدفع والبيانات بانسيابية
+        const formSection = document.getElementById('checkoutFormSection');
+        formSection.style.display = 'block';
+        setTimeout(() => { formSection.style.opacity = '1'; }, 100);
+        
+        // التمرير إلى قسم الدفع
+        formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
 
     window.selectPaymentMethod = function(element, mId) {
         document.getElementById('selectedShippingId').value = mId;
@@ -344,6 +410,7 @@
         e.preventDefault();
         const shippingId = document.getElementById('selectedShippingId').value;
         if (!shippingId) { Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'اختر طريقة الدفع' }); return; }
+        if (!selectedVariantId) { Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'اختر الكمية أولاً' }); return; }
         
         const buyerPhone = document.getElementById('buyerPhone').value.trim();
         const transactionNumber = document.getElementById('transactionNumber').value.trim();
@@ -353,7 +420,7 @@
             product_id: currentProductData.id,
             variant_id: selectedVariantId,
             shipping_method_id: parseInt(shippingId),
-            buyer_name: "عميل موقع", // تم الحذف من الواجهة وإضافته تلقائياً للقاعدة
+            buyer_name: "عميل موقع",
             buyer_phone: buyerPhone,
             transaction_number: transactionNumber,
             paid_price: selectedVariantPrice
