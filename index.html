@@ -84,13 +84,26 @@
 
 <script>
     // ================== رابط API (ngrok) ==================
+    // غيّر هذا الرابط في كل مرة تشغل فيها ngrok من جديد
     const API_BASE = "https://unbegrudged-direfully-nu.ngrok-free.dev";
     
+    // هيدر ضروري جداً لتجاوز صفحة التحذير الخاصة بـ ngrok لكي يعمل الجافاسكربت
+    const ngrokHeaders = {
+        'ngrok-skip-browser-warning': '69420'
+    };
+
     let currentProductData = null;
+
+    // دالة لتصحيح مسارات الصور القادمة من الباك إند
+    function fixImageUrl(path) {
+        if (!path || !path.trim()) return 'https://via.placeholder.com/200x150?text=لا+توجد+صورة';
+        if (path.startsWith('http')) return path; // إذا كان رابط كامل
+        return `${API_BASE}/${path}`; // دمج رابط ngrok مع مسار uploads
+    }
 
     async function loadContacts() {
         try {
-            const resp = await fetch(`${API_BASE}/settings`);
+            const resp = await fetch(`${API_BASE}/api/settings`, { headers: ngrokHeaders });
             const data = await resp.json();
             let html = '';
             if (data.whatsapp) html += `<a href="https://wa.me/${data.whatsapp}" target="_blank"><i class="fab fa-whatsapp"></i> واتساب</a>`;
@@ -103,7 +116,7 @@
 
     async function loadAds() {
         try {
-            const resp = await fetch(`${API_BASE}/ads`);
+            const resp = await fetch(`${API_BASE}/api/ads`, { headers: ngrokHeaders });
             const ads = await resp.json();
             const container = document.getElementById('adsContainer');
             if (!ads.length) { container.innerHTML = ''; return; }
@@ -112,10 +125,10 @@
                 if (ad.type === 'animated') {
                     const images = ad.images.split(',');
                     images.forEach(img => {
-                        html += `<div><a href="${ad.link || '#'}" target="_blank"><img src="${img.trim()}" alt="إعلان"></a></div>`;
+                        html += `<div><a href="${ad.link || '#'}" target="_blank"><img src="${fixImageUrl(img.trim())}" alt="إعلان"></a></div>`;
                     });
                 } else {
-                    html += `<div class="static-ad"><a href="${ad.link || '#'}" target="_blank"><img src="${ad.images}" alt="إعلان"></a></div>`;
+                    html += `<div class="static-ad"><a href="${ad.link || '#'}" target="_blank"><img src="${fixImageUrl(ad.images)}" alt="إعلان"></a></div>`;
                 }
             });
             html += '</div>';
@@ -126,16 +139,15 @@
 
     async function loadSections() {
         try {
-            const resp = await fetch(`${API_BASE}/sections?parent=0`);
+            const resp = await fetch(`${API_BASE}/api/sections?parent=0`, { headers: ngrokHeaders });
             const sections = await resp.json();
             const container = document.getElementById('sectionsContainer');
             if (!sections.length) { container.innerHTML = '<div class="col-12 text-center">لا توجد أقسام</div>'; return; }
             let html = '';
             sections.forEach(sec => {
-                const img = sec.image && sec.image.trim() ? sec.image : 'https://via.placeholder.com/200x150?text=قسم';
                 html += `<div class="col-md-3 col-sm-6">
                             <div class="section-card" onclick="showSection(${sec.id})">
-                                <img src="${img}" alt="${sec.name}">
+                                <img src="${fixImageUrl(sec.image)}" alt="${sec.name}">
                                 <h3>${sec.name}</h3>
                             </div>
                          </div>`;
@@ -146,17 +158,16 @@
 
     async function showSection(sectionId) {
         try {
-            const resp = await fetch(`${API_BASE}/sections/${sectionId}`);
+            const resp = await fetch(`${API_BASE}/api/sections/${sectionId}`, { headers: ngrokHeaders });
             const data = await resp.json();
             if (data.error) { Swal.fire('خطأ', 'القسم غير موجود', 'error'); return; }
             let content = `<div style="text-align:center;"><h3>📁 ${data.section.name}</h3>`;
             if (data.subs && data.subs.length) {
                 content += `<hr><h5>الأقسام الفرعية:</h5><div class="row" style="justify-content:center;">`;
                 data.subs.forEach(sub => {
-                    const img = sub.image && sub.image.trim() ? sub.image : 'https://via.placeholder.com/100';
                     content += `<div class="col-4 col-md-3" style="margin-bottom:15px;">
                                     <div style="background:#f8f9fa; border-radius:12px; padding:8px; cursor:pointer;" onclick="showSection(${sub.id})">
-                                        <img src="${img}" style="width:100%; height:100px; object-fit:cover; border-radius:8px;">
+                                        <img src="${fixImageUrl(sub.image)}" style="width:100%; height:100px; object-fit:cover; border-radius:8px;">
                                         <div style="margin-top:5px;">${sub.name}</div>
                                     </div>
                                 </div>`;
@@ -167,7 +178,7 @@
                 content += `<hr><h5>المنتجات:</h5><div class="row">`;
                 data.products.forEach(prod => {
                     let imgs = prod.images ? prod.images.split(',') : [];
-                    let firstImg = imgs[0] && imgs[0].trim() ? imgs[0].trim() : 'https://via.placeholder.com/150';
+                    let firstImg = fixImageUrl(imgs[0]);
                     content += `<div class="col-6 col-md-3">
                                     <div class="product-card" onclick="showPaymentModal(${prod.id})">
                                         <img src="${firstImg}" alt="${prod.name}">
@@ -179,7 +190,7 @@
                 });
                 content += `</div>`;
             }
-            if ((!data.subs || data.subs.length===0) && (!data.products || data.products.length===0)) {
+            if ((!data.subs || !data.subs.length) && (!data.products || !data.products.length)) {
                 content += `<p class="text-muted">لا توجد منتجات أو أقسام فرعية.</p>`;
             }
             content += `</div>`;
@@ -196,8 +207,8 @@
     async function showPaymentModal(productId) {
         try {
             const [productRes, shippingRes] = await Promise.all([
-                fetch(`${API_BASE}/product/${productId}`),
-                fetch(`${API_BASE}/shipping`)
+                fetch(`${API_BASE}/api/product/${productId}`, { headers: ngrokHeaders }),
+                fetch(`${API_BASE}/api/shipping`, { headers: ngrokHeaders })
             ]);
             const product = await productRes.json();
             const shippingMethods = await shippingRes.json();
@@ -208,13 +219,13 @@
             if (product.images) {
                 const imgs = product.images.split(',');
                 if (imgs.length === 1) {
-                    imagesHtml = `<img src="${imgs[0].trim()}" style="width:100%; max-height:300px; object-fit:contain; border-radius:16px;">`;
+                    imagesHtml = `<img src="${fixImageUrl(imgs[0].trim())}" style="width:100%; max-height:300px; object-fit:contain; border-radius:16px;">`;
                 } else {
                     imagesHtml = `<div id="paymentCarousel" class="carousel slide" data-bs-ride="carousel">
                                     <div class="carousel-inner">`;
                     imgs.forEach((img, idx) => {
                         imagesHtml += `<div class="carousel-item ${idx===0?'active':''}">
-                                            <img src="${img.trim()}" class="d-block w-100" style="max-height:300px; object-fit:contain;">
+                                            <img src="${fixImageUrl(img.trim())}" class="d-block w-100" style="max-height:300px; object-fit:contain;">
                                         </div>`;
                     });
                     imagesHtml += `</div>
@@ -283,17 +294,11 @@
     async function submitPayment(e) {
         e.preventDefault();
         const shippingId = document.getElementById('selectedShippingId').value;
-        if (!shippingId) {
-            Swal.fire('تنبيه', 'يرجى اختيار طريقة الدفع', 'warning');
-            return;
-        }
+        if (!shippingId) { Swal.fire('تنبيه', 'يرجى اختيار طريقة الدفع', 'warning'); return; }
         const buyerName = document.getElementById('buyerName').value.trim();
         const buyerPhone = document.getElementById('buyerPhone').value.trim();
         const transactionNumber = document.getElementById('transactionNumber').value.trim();
-        if (!buyerName || !buyerPhone || !transactionNumber) {
-            Swal.fire('تنبيه', 'جميع الحقول مطلوبة', 'warning');
-            return;
-        }
+        if (!buyerName || !buyerPhone || !transactionNumber) { Swal.fire('تنبيه', 'جميع الحقول مطلوبة', 'warning'); return; }
 
         const data = {
             product_id: currentProductData.id,
@@ -308,9 +313,9 @@
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري الإرسال...';
 
         try {
-            const resp = await fetch(`${API_BASE}/checkout`, {
+            const resp = await fetch(`${API_BASE}/api/checkout`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { ...ngrokHeaders, 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
             const result = await resp.json();
