@@ -27,18 +27,15 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: var(--bg-color); font-family: 'Cairo', sans-serif; direction: rtl; color: var(--text-main); overflow-x: hidden; }
 
-        /* شريط التواصل */
         .contact-bar { background: rgba(45, 52, 54, 0.95); backdrop-filter: blur(10px); color: white; padding: 12px 20px; text-align: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.1); }
         .contact-bar a { color: white; margin: 0 15px; text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: color 0.3s, transform 0.3s; display: inline-flex; align-items: center; gap: 8px; }
         .contact-bar a i { font-size: 1.2rem; }
         .contact-bar a:hover { color: var(--primary); transform: translateY(-2px); }
 
-        /* الإعلانات */
         .ads-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; border-radius: 25px; overflow: hidden; box-shadow: var(--shadow-soft); }
         .slick-slide img { width: 100%; max-height: 400px; object-fit: cover; }
         .slick-dots li button:before { font-size: 12px; color: var(--primary); }
 
-        /* بطاقات الأقسام والمنتجات - نظام الخلفيات الشاملة */
         .section-card, .product-card {
             background-color: var(--card-bg); border-radius: 20px; overflow: hidden; cursor: pointer;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
@@ -48,7 +45,6 @@
             background-size: cover; background-position: center; background-repeat: no-repeat;
         }
         
-        /* طبقة التدرج اللوني فوق الخلفية لإظهار النص */
         .card-bg-overlay {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: linear-gradient(to top, rgba(0,0,0,0.85) 10%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%);
@@ -72,7 +68,6 @@
         }
         .btn-buy:hover { background: white; color: var(--primary); border-color: white; transform: scale(1.05); }
 
-        /* أنماط للبطاقات التي لا تملك خلفية (احتياطي) */
         .no-bg { background: var(--card-bg); justify-content: center; }
         .no-bg .card-bg-overlay { display: none; }
         .no-bg .card-content { color: var(--text-main); text-shadow: none; }
@@ -81,7 +76,6 @@
 
         .footer { background: #2D3436; color: #636E72; text-align: center; padding: 30px; margin-top: 60px; font-size: 0.9rem; border-top: 5px solid var(--primary); }
         
-        /* أنماط الصفحات */
         .page-view { 
             display: none; min-height: 100vh; padding: 20px; background: var(--bg-color); 
             opacity: 0; transform: translateY(30px); transition: opacity 0.5s ease, transform 0.5s ease;
@@ -97,19 +91,17 @@
         .page-header button { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; transition: background 0.3s; display: flex; align-items: center; justify-content: center; }
         .page-header button:hover { background: rgba(255,255,255,0.4); }
         
-        /* رأس صفحة الدفع مع خلفية المنتج */
         .checkout-product-header {
             min-height: 300px; border-radius: 20px; position: relative; overflow: hidden;
             display: flex; align-items: center; justify-content: center; text-align: center;
             background-size: cover; background-position: center; margin-bottom: 30px;
-            box-shadow: var(--shadow-soft);
+            box-shadow: var(--shadow-soft); background-color: var(--primary);
         }
         .checkout-product-header .overlay { position: absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(108,99,255,0.4)); }
         .checkout-product-header .content { position: relative; z-index: 2; color: white; padding: 20px; }
         .checkout-product-header h2 { font-weight: 900; font-size: 2.5rem; text-shadow: 0 3px 6px rgba(0,0,0,0.5); }
         .checkout-product-header p { color: #eee; font-size: 1.2rem; }
 
-        /* بطاقات الكميات */
         .variant-card { 
             background: var(--card-bg); border: 2px solid #dfe6e9; border-radius: 20px; padding: 25px; margin-bottom: 20px; 
             cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-soft);
@@ -119,7 +111,6 @@
         .variant-price { font-size: 1.6rem; font-weight: 900; color: var(--success); }
         .variant-name { font-size: 1.2rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; }
 
-        /* نموذج الدفع */
         .form-label { font-weight: 700; color: var(--text-main); margin-top: 20px; font-size: 1.1rem; }
         .required:after { content: " *"; color: var(--secondary); font-size: 1.2rem; }
         .form-control { border-radius: 15px; padding: 15px; border: 2px solid #dfe6e9; font-family: 'Cairo', sans-serif; font-size: 1rem; transition: border-color 0.3s, box-shadow 0.3s; }
@@ -133,7 +124,6 @@
         }
         .btn-submit-payment:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0, 184, 148, 0.4); }
         
-        /* طريقة الدفع والمحفظة */
         .payment-method-item { 
             border: 2px solid #dfe6e9; border-radius: 15px; padding: 20px; margin-bottom: 15px; cursor: pointer; 
             transition: all 0.3s; background: var(--card-bg); display: flex; justify-content: space-between; align-items: center;
@@ -149,12 +139,8 @@
         .wallet-link-btn:hover { background: var(--primary); color: white; transform: scale(1.05); }
         
         .loading { text-align: center; padding: 60px; color: var(--text-muted); }
-
-        /* تأثير ظهور العناصر المتدرج */
         .stagger-item { opacity: 0; transform: translateY(30px); animation: staggerFadeIn 0.6s ease forwards; }
         @keyframes staggerFadeIn { to { opacity: 1; transform: translateY(0); } }
-
-        /* تأثير الموجة (Ripple) للأزرار */
         .ripple { position: absolute; background: rgba(255, 255, 255, 0.4); border-radius: 50%; transform: scale(0); animation: rippleEffect 0.6s linear; pointer-events: none; }
         @keyframes rippleEffect { to { transform: scale(4); opacity: 0; } }
 
@@ -170,7 +156,6 @@
 
 <div class="contact-bar" id="contactBar"><i class="fas fa-spinner fa-pulse"></i> جاري التحميل...</div>
 
-<!-- الصفحة الرئيسية -->
 <div id="mainShopPage" class="page-view active-page">
     <div class="ads-container" id="adsContainer"></div>
     <div class="container mt-4">
@@ -182,7 +167,6 @@
     <div class="footer"><p>جميع الحقوق محفوظة &copy; 2025 - متجر الألعاب والبرامج</p></div>
 </div>
 
-<!-- صفحة إتمام الدفع المباشر -->
 <div id="checkoutPage" class="page-view">
     <div class="container" style="max-width: 900px;">
         <div class="page-header">
@@ -237,7 +221,6 @@
         btn.appendChild(circle);
     }
 
-    // تأثير الميلان ثلاثي الأبعاد للبطاقات
     function init3DTilt() {
         document.querySelectorAll('.section-card, .product-card').forEach(card => {
             card.addEventListener('mousemove', (e) => {
@@ -290,6 +273,7 @@
     async function loadSections() {
         try {
             const resp = await fetch(`${API_BASE}/api/sections?parent=0`, { headers: ngrokHeaders });
+            if (!resp.ok) throw new Error('Server Error');
             const sections = await resp.json(); const container = document.getElementById('sectionsContainer');
             if (!sections.length) { container.innerHTML = '<div class="col-12 text-center"><h4>لا توجد أقسام حالياً</h4></div>'; return; }
             let html = '';
@@ -307,19 +291,28 @@
             });
             container.innerHTML = html;
             init3DTilt();
-        } catch(e) { container.innerHTML = '<div class="col-12 text-danger text-center">فشل تحميل الأقسام</div>'; }
+        } catch(e) { 
+            container.innerHTML = `<div class="col-12 text-danger text-center">
+                <h4>فشل الاتصال بالسيرفر</h4>
+                <p>تأكد من تشغيل كود البايثون بشكل صحيح وأن رابط الـ ngrok محدث في الكود.</p>
+            </div>`; 
+        }
     }
 
     async function showSection(sectionId) {
         try {
             const resp = await fetch(`${API_BASE}/api/sections/${sectionId}`, { headers: ngrokHeaders });
+            if (!resp.ok) {
+                const errText = await resp.text();
+                console.error("Backend Error Details:", errText);
+                throw new Error("قاعدة البيانات أو السيرفر يحتاج تحديث، احذف ملف shop.db وأعد تشغيل البايثون");
+            }
             const data = await resp.json();
             if (data.error) { Swal.fire({ icon: 'error', title: 'خطأ', text: 'القسم غير موجود' }); return; }
             
             let content = `<div class="text-center mb-4"><h4 style="color:var(--primary); font-weight:900;">${data.section.name}</h4></div><div class="row">`;
             if (data.products && data.products.length) {
                 data.products.forEach((prod, index) => {
-                    // نستخدم background_image إذا وجدت، وإلا نستخدم images كخلفية بديلة
                     const pBgUrl = fixImageUrl(prod.background_image || prod.images);
                     const pBgStyle = pBgUrl ? `background-image: url('${pBgUrl}')` : '';
                     const pBgClass = pBgUrl ? '' : 'no-bg';
@@ -338,14 +331,16 @@
             content += `</div>`;
             Swal.fire({ html: content, width: '90%', showConfirmButton: false, showCloseButton: true, customClass: { popup: 'animated fadeInDown' } });
             setTimeout(init3DTilt, 200); 
-        } catch(e) { Swal.fire('خطأ', 'فشل التحميل', 'error'); }
+        } catch(e) { 
+            Swal.fire('خطأ في السيرفر', e.message, 'error'); 
+        }
     }
 
-    // فتح صفحة الدفع مباشرة
     async function openDirectCheckout(productId) {
         Swal.close();
         try {
             const resp = await fetch(`${API_BASE}/api/product/${productId}`, { headers: ngrokHeaders });
+            if (!resp.ok) throw new Error("فشل تحميل بيانات المنتج، تأكد من تحديث قاعدة البيانات");
             const product = await resp.json();
             if (product.error) { Swal.fire({ icon: 'error', title: 'خطأ' }); return; }
             
@@ -384,7 +379,6 @@
                                  </div>`;
             });
 
-            // إضافة الخلفية للمنتج في صفحة الدفع
             const pBgUrl = fixImageUrl(product.background_image || product.images);
             const pBgStyle = pBgUrl ? `background-image: url('${pBgUrl}')` : '';
             const pBgClass = pBgUrl ? '' : 'no-bg';
@@ -424,7 +418,7 @@
             document.getElementById('checkoutContent').innerHTML = html;
             showPage('checkoutPage');
             document.getElementById('paymentForm').addEventListener('submit', submitPayment);
-        } catch(e) { Swal.fire('خطأ', 'فشل تحميل المنتج', 'error'); }
+        } catch(e) { Swal.fire('خطأ', e.message, 'error'); }
     }
 
     window.selectVariant = function(element, vId, vPrice) {
