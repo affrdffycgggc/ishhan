@@ -14,66 +14,47 @@
         body { background: #f5f7fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; direction: rtl; }
         .contact-bar { background: linear-gradient(135deg, #1e2a3a, #0f1724); color: white; padding: 12px 20px; text-align: center; position: sticky; top: 0; z-index: 1000; }
         .contact-bar a { color: #25D366; margin: 0 15px; text-decoration: none; font-weight: bold; font-size: 1.1rem; transition: 0.3s; }
-        .contact-bar a.telegram { color: #0088cc; }
-        .contact-bar a.email { color: #f39c12; }
-        .contact-bar a.phone { color: #e67e22; }
-        .contact-bar a:hover { opacity: 0.8; text-decoration: underline; }
+        .contact-bar a:hover { opacity: 0.8; }
         .ads-container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
         .slick-slide img { width: 100%; max-height: 350px; object-fit: cover; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .static-ad { text-align: center; margin: 10px 0; }
-        .static-ad img { max-width: 100%; border-radius: 20px; }
         .section-card, .product-card { background: white; border-radius: 16px; overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; padding: 15px; }
         .section-card:hover, .product-card:hover { transform: translateY(-5px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
         .section-card img, .product-card img { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; }
         .section-card h3, .product-card h3 { margin-top: 12px; font-size: 1.2rem; font-weight: bold; color: #2c3e50; }
-        .product-price { color: #27ae60; font-weight: bold; font-size: 1.3rem; margin: 8px 0; }
         .btn-buy { background: #27ae60; color: white; border: none; padding: 6px 18px; border-radius: 30px; font-weight: bold; transition: 0.2s; }
         .btn-buy:hover { background: #2ecc71; transform: scale(1.02); }
         .footer { background: #1e2a3a; color: #ccc; text-align: center; padding: 20px; margin-top: 50px; font-size: 0.9rem; }
         .payment-modal .modal-content { border-radius: 24px; overflow: hidden; }
         .payment-modal .modal-header { background: #2c3e50; color: white; border-bottom: none; padding: 20px; }
         .payment-modal .modal-body { padding: 25px; max-height: 80vh; overflow-y: auto; }
-        .product-images-carousel { margin-bottom: 20px; border-radius: 16px; overflow: hidden; }
-        .carousel-inner img { max-height: 300px; object-fit: contain; background: #f8f9fa; padding: 10px; }
         .form-label { font-weight: 600; color: #2c3e50; margin-top: 10px; }
         .required:after { content: " *"; color: red; }
         .btn-submit-payment { background: #27ae60; color: white; font-size: 1.1rem; padding: 12px; border-radius: 40px; font-weight: bold; margin-top: 20px; width: 100%; transition: 0.2s; }
-        .payment-method-item { border: 1px solid #dee2e6; border-radius: 12px; padding: 10px; margin-bottom: 8px; transition: 0.1s; cursor: pointer; }
+        .variant-item { border: 1px solid #dee2e6; border-radius: 12px; padding: 10px; margin-bottom: 8px; transition: 0.1s; cursor: pointer; display: flex; justify-content: space-between; }
+        .variant-item.active { border-color: #27ae60; background: #e9f7ef; }
+        .payment-method-item { border: 1px solid #dee2e6; border-radius: 12px; padding: 10px; margin-bottom: 8px; cursor: pointer; }
         .payment-method-item.active { border-color: #27ae60; background: #e9f7ef; }
-        @media (max-width: 768px) { .section-card img, .product-card img { height: 120px; } .contact-bar a { margin: 0 8px; font-size: 0.9rem; } }
         .loading { text-align: center; padding: 40px; color: #7f8c8d; }
     </style>
 </head>
 <body>
 
-<div class="contact-bar" id="contactBar">
-    <i class="fas fa-spinner fa-pulse"></i> جاري تحميل بيانات التواصل...
-</div>
-
+<div class="contact-bar" id="contactBar"><i class="fas fa-spinner fa-pulse"></i> جاري التحميل...</div>
 <div class="ads-container" id="adsContainer"></div>
-
 <div class="container mt-4">
-    <h2 class="text-center mb-4" style="color: #2c3e50;"><i class="fas fa-folder-open"></i> الأقسام الرئيسية</h2>
-    <div class="row" id="sectionsContainer">
-        <div class="col-12 loading"><i class="fas fa-spinner fa-pulse"></i> جاري تحميل الأقسام...</div>
-    </div>
+    <h2 class="text-center mb-4" style="color: #2c3e50;"><i class="fas fa-folder-open"></i> الأقسام</h2>
+    <div class="row" id="sectionsContainer"><div class="col-12 loading"><i class="fas fa-spinner fa-pulse"></i></div></div>
 </div>
+<div class="footer"><p>جميع الحقوق محفوظة &copy; 2025</p></div>
 
-<div class="footer">
-    <p>جميع الحقوق محفوظة &copy; 2025 متجر الألعاب والبرامج</p>
-</div>
-
-<!-- مودال الدفع -->
-<div class="modal fade payment-modal" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+<div class="modal fade payment-modal" id="paymentModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="paymentModalLabel"><i class="fas fa-credit-card"></i> إتمام عملية الشراء</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title"><i class="fas fa-credit-card"></i> إتمام الشراء</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body" id="paymentModalBody">
-                <div class="text-center"><i class="fas fa-spinner fa-pulse"></i> جاري تحميل بيانات الدفع...</div>
-            </div>
+            <div class="modal-body" id="paymentModalBody"><div class="text-center"><i class="fas fa-spinner fa-pulse"></i></div></div>
         </div>
     </div>
 </div>
@@ -83,120 +64,74 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 
 <script>
-    // ================== رابط API (ngrok) ==================
-    // غيّر هذا الرابط في كل مرة تشغل فيها ngrok من جديد
-    const API_BASE = "https://unbegrudged-direfully-nu.ngrok-free.dev";
-    
-    // هيدر ضروري جداً لتجاوز صفحة التحذير الخاصة بـ ngrok لكي يعمل الجافاسكربت
-    const ngrokHeaders = {
-        'ngrok-skip-browser-warning': '69420'
-    };
-
+    const API_BASE = "https://unbegrudged-direfully-nu.ngrok-free.dev"; // غيّر الرابط
+    const ngrokHeaders = { 'ngrok-skip-browser-warning': '69420' };
     let currentProductData = null;
 
-    // دالة لتصحيح مسارات الصور القادمة من الباك إند لكي تعمل عبر ngrok
     function fixImageUrl(path) {
-        if (!path || !path.trim()) return 'https://via.placeholder.com/200x150?text=لا+توجد+صورة';
-        if (path.startsWith('http')) return path; // إذا كان رابط كامل
-        return `${API_BASE}/${path}`; // دمج رابط ngrok مع مسار uploads
+        if (!path || !path.trim()) return 'https://via.placeholder.com/200x150?text=صورة';
+        if (path.startsWith('http')) return path;
+        return `${API_BASE}/${path}`;
     }
 
     async function loadContacts() {
         try {
             const resp = await fetch(`${API_BASE}/api/settings`, { headers: ngrokHeaders });
-            const data = await resp.json();
-            let html = '';
-            if (data.whatsapp) html += `<a href="https://wa.me/${data.whatsapp}" target="_blank"><i class="fab fa-whatsapp"></i> واتساب</a>`;
-            if (data.telegram) html += `<a href="https://t.me/${data.telegram}" target="_blank" class="telegram"><i class="fab fa-telegram"></i> تلغرام</a>`;
-            if (data.contact_email) html += `<a href="mailto:${data.contact_email}" class="email"><i class="fas fa-envelope"></i> بريد</a>`;
-            if (data.contact_phone) html += `<a href="tel:${data.contact_phone}" class="phone"><i class="fas fa-phone-alt"></i> هاتف</a>`;
-            document.getElementById('contactBar').innerHTML = html || 'لا توجد معلومات تواصل';
-        } catch(e) { console.error(e); document.getElementById('contactBar').innerHTML = '⚠️ لا يمكن الاتصال بالخادم'; }
+            const data = await resp.json(); let html = '';
+            if (data.whatsapp) html += `<a href="https://wa.me/${data.whatsapp}"><i class="fab fa-whatsapp"></i> واتساب</a>`;
+            if (data.telegram) html += `<a href="https://t.me/${data.telegram}" class="telegram" style="color:#0088cc"><i class="fab fa-telegram"></i> تلغرام</a>`;
+            document.getElementById('contactBar').innerHTML = html || 'لا توجد بيانات';
+        } catch(e) { document.getElementById('contactBar').innerHTML = '⚠️ خطأ بالخادم'; }
     }
 
     async function loadAds() {
         try {
             const resp = await fetch(`${API_BASE}/api/ads`, { headers: ngrokHeaders });
-            const ads = await resp.json();
-            const container = document.getElementById('adsContainer');
+            const ads = await resp.json(); const container = document.getElementById('adsContainer');
             if (!ads.length) { container.innerHTML = ''; return; }
             let html = '<div class="ads-slider">';
-            ads.forEach(ad => {
-                if (ad.type === 'animated') {
-                    const images = ad.images.split(',');
-                    images.forEach(img => {
-                        html += `<div><a href="${ad.link || '#'}" target="_blank"><img src="${fixImageUrl(img.trim())}" alt="إعلان"></a></div>`;
-                    });
-                } else {
-                    html += `<div class="static-ad"><a href="${ad.link || '#'}" target="_blank"><img src="${fixImageUrl(ad.images)}" alt="إعلان"></a></div>`;
-                }
-            });
-            html += '</div>';
-            container.innerHTML = html;
-            $('.ads-slider').slick({ rtl: true, autoplay: true, autoplaySpeed: 4000, dots: true, infinite: true, slidesToShow: 1 });
-        } catch(e) { console.error(e); }
+            ads.forEach(ad => { html += `<div><a href="${ad.link || '#'}"><img src="${fixImageUrl(ad.images)}" alt="إعلان"></a></div>`; });
+            html += '</div>'; container.innerHTML = html;
+            $('.ads-slider').slick({ rtl: true, autoplay: true, autoplaySpeed: 4000, dots: true });
+        } catch(e) {}
     }
 
     async function loadSections() {
         try {
             const resp = await fetch(`${API_BASE}/api/sections?parent=0`, { headers: ngrokHeaders });
-            const sections = await resp.json();
-            const container = document.getElementById('sectionsContainer');
+            const sections = await resp.json(); const container = document.getElementById('sectionsContainer');
             if (!sections.length) { container.innerHTML = '<div class="col-12 text-center">لا توجد أقسام</div>'; return; }
             let html = '';
             sections.forEach(sec => {
-                html += `<div class="col-md-3 col-sm-6">
-                            <div class="section-card" onclick="showSection(${sec.id})">
-                                <img src="${fixImageUrl(sec.image)}" alt="${sec.name}">
-                                <h3>${sec.name}</h3>
-                            </div>
-                         </div>`;
+                html += `<div class="col-md-3 col-sm-6"><div class="section-card" onclick="showSection(${sec.id})"><img src="${fixImageUrl(sec.image)}" alt="${sec.name}"><h3>${sec.name}</h3></div></div>`;
             });
             container.innerHTML = html;
-        } catch(e) { console.error(e); container.innerHTML = '<div class="col-12 text-danger">خطأ في تحميل الأقسام</div>'; }
+        } catch(e) { container.innerHTML = '<div class="col-12 text-danger">خطأ</div>'; }
     }
 
     async function showSection(sectionId) {
         try {
             const resp = await fetch(`${API_BASE}/api/sections/${sectionId}`, { headers: ngrokHeaders });
             const data = await resp.json();
-            if (data.error) { Swal.fire('خطأ', 'القسم غير موجود', 'error'); return; }
             let content = `<div style="text-align:center;"><h3>📁 ${data.section.name}</h3>`;
-            if (data.subs && data.subs.length) {
-                content += `<hr><h5>الأقسام الفرعية:</h5><div class="row" style="justify-content:center;">`;
-                data.subs.forEach(sub => {
-                    content += `<div class="col-4 col-md-3" style="margin-bottom:15px;">
-                                    <div style="background:#f8f9fa; border-radius:12px; padding:8px; cursor:pointer;" onclick="showSection(${sub.id})">
-                                        <img src="${fixImageUrl(sub.image)}" style="width:100%; height:100px; object-fit:cover; border-radius:8px;">
-                                        <div style="margin-top:5px;">${sub.name}</div>
-                                    </div>
-                                </div>`;
-                });
-                content += `</div>`;
-            }
             if (data.products && data.products.length) {
-                content += `<hr><h5>المنتجات:</h5><div class="row">`;
+                content += `<hr><div class="row">`;
                 data.products.forEach(prod => {
-                    let imgs = prod.images ? prod.images.split(',') : [];
-                    let firstImg = fixImageUrl(imgs[0]);
-                    content += `<div class="col-6 col-md-3">
-                                    <div class="product-card" onclick="showPaymentModal(${prod.id})">
-                                        <img src="${firstImg}" alt="${prod.name}">
-                                        <h3>${prod.name}</h3>
-                                        <p class="product-price">${prod.price} $</p>
-                                        <button class="btn-buy"><i class="fas fa-shopping-cart"></i> شراء</button>
-                                    </div>
-                                </div>`;
+                    content += `<div class="col-6 col-md-3"><div class="product-card" onclick="showPaymentModal(${prod.id})"><h3>${prod.name}</h3><button class="btn-buy"><i class="fas fa-shopping-cart"></i> شراء</button></div></div>`;
                 });
                 content += `</div>`;
-            }
-            if ((!data.subs || !data.subs.length) && (!data.products || !data.products.length)) {
-                content += `<p class="text-muted">لا توجد منتجات أو أقسام فرعية.</p>`;
-            }
+            } else { content += `<p class="text-muted">لا توجد منتجات.</p>`; }
             content += `</div>`;
             Swal.fire({ title: data.section.name, html: content, width: '90%', confirmButtonText: 'إغلاق' });
-        } catch(e) { Swal.fire('خطأ', 'فشل تحميل القسم', 'error'); }
+        } catch(e) { Swal.fire('خطأ', 'فشل التحميل', 'error'); }
     }
+
+    window.selectVariant = function(variantId, price) {
+        document.getElementById('selectedVariantId').value = variantId;
+        document.getElementById('displayPrice').innerText = price > 0 ? `${price} $` : 'سعر غير محدد';
+        document.querySelectorAll('.variant-item').forEach(el => el.classList.remove('active'));
+        document.querySelector(`.variant-item[data-variant-id="${variantId}"]`).classList.add('active');
+    };
 
     window.selectPaymentMethod = function(methodId) {
         document.getElementById('selectedShippingId').value = methodId;
@@ -212,140 +147,85 @@
             ]);
             const product = await productRes.json();
             const shippingMethods = await shippingRes.json();
-            if (product.error) { Swal.fire('خطأ', 'المنتج غير موجود', 'error'); return; }
             currentProductData = product;
 
-            let imagesHtml = '';
-            if (product.images) {
-                const imgs = product.images.split(',');
-                if (imgs.length === 1) {
-                    imagesHtml = `<img src="${fixImageUrl(imgs[0].trim())}" style="width:100%; max-height:300px; object-fit:contain; border-radius:16px;">`;
-                } else {
-                    imagesHtml = `<div id="paymentCarousel" class="carousel slide" data-bs-ride="carousel">
-                                    <div class="carousel-inner">`;
-                    imgs.forEach((img, idx) => {
-                        imagesHtml += `<div class="carousel-item ${idx===0?'active':''}">
-                                            <img src="${fixImageUrl(img.trim())}" class="d-block w-100" style="max-height:300px; object-fit:contain;">
-                                        </div>`;
-                    });
-                    imagesHtml += `</div>
-                                    <button class="carousel-control-prev" type="button" data-bs-target="#paymentCarousel" data-bs-slide="prev">
-                                        <span class="carousel-control-prev-icon" style="background-color:#000; border-radius:50%;"></span>
-                                    </button>
-                                    <button class="carousel-control-next" type="button" data-bs-target="#paymentCarousel" data-bs-slide="next">
-                                        <span class="carousel-control-next-icon" style="background-color:#000; border-radius:50%;"></span>
-                                    </button>
-                                </div>`;
-                }
+            let variantsHtml = `<div class="mb-3"><label class="form-label required">اختر الكمية</label><div id="variantsList">`;
+            if (product.variants && product.variants.length > 0) {
+                product.variants.forEach(v => {
+                    variantsHtml += `<div class="variant-item" data-variant-id="${v.id}" onclick="selectVariant(${v.id}, ${v.price})">
+                                        <div><strong>${v.name}</strong></div>
+                                        <div class="text-success font-weight-bold">${v.price > 0 ? v.price + ' $' : 'سيحدد لاحقاً'}</div>
+                                    </div>`;
+                });
             } else {
-                imagesHtml = `<img src="https://via.placeholder.com/300" style="width:100%; border-radius:16px;">`;
+                variantsHtml += `<p class="text-danger">لا توجد كميات متاحة لهذا المنتج حالياً.</p>`;
             }
+            variantsHtml += `</div><input type="hidden" id="selectedVariantId" value=""></div>`;
 
             let paymentMethodsHtml = `<div class="mb-3"><label class="form-label required">طريقة الدفع</label>`;
             shippingMethods.forEach(m => {
-                paymentMethodsHtml += `<div class="payment-method-item" data-method-id="${m.id}" onclick="selectPaymentMethod(${m.id})">
-                                        <div><strong>${m.name}</strong></div>
-                                        <div class="small text-muted">${m.note || ''}</div>
-                                    </div>`;
+                paymentMethodsHtml += `<div class="payment-method-item" data-method-id="${m.id}" onclick="selectPaymentMethod(${m.id})"><strong>${m.name}</strong></div>`;
             });
             paymentMethodsHtml += `</div><input type="hidden" id="selectedShippingId" value="">`;
 
             const modalBodyHtml = `
-                <div class="product-images-carousel">${imagesHtml}</div>
-                <div class="payment-info">
+                <div class="payment-info text-center mb-4">
                     <h4>${product.name}</h4>
-                    <p>${product.description || 'لا يوجد وصف للمنتج'}</p>
-                    <h3 class="text-success">السعر: ${product.price} $</h3>
+                    <p>${product.description || ''}</p>
+                    <h3 class="text-success">السعر: <span id="displayPrice">اختر الكمية</span></h3>
                 </div>
                 <form id="paymentForm">
-                    <div class="mb-3">
-                        <label class="form-label required">الاسم الكامل</label>
-                        <input type="text" id="buyerName" class="form-control" required placeholder="أدخل اسمك الثلاثي">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label required">رقم الجوال</label>
-                        <input type="tel" id="buyerPhone" class="form-control" required placeholder="مثال: 05xxxxxxxx">
-                    </div>
+                    ${variantsHtml}
                     ${paymentMethodsHtml}
-                    <div class="mb-3">
-                        <label class="form-label required">رقم العملية (رقم التحويل)</label>
-                        <input type="text" id="transactionNumber" class="form-control" required placeholder="أدخل رقم العملية من البنك أو المحفظة">
-                        <div class="form-text">يرجى إدخال رقم العملية الصحيح لتأكيد طلبك.</div>
-                    </div>
-                    <button type="submit" class="btn-submit-payment"><i class="fas fa-check-circle"></i> تأكيد الدفع وإتمام الشراء</button>
+                    <div class="mb-3"><label class="form-label required">الاسم الكامل</label><input type="text" id="buyerName" class="form-control" required></div>
+                    <div class="mb-3"><label class="form-label required">رقم الجوال</label><input type="tel" id="buyerPhone" class="form-control" required></div>
+                    <div class="mb-3"><label class="form-label required">رقم العملية</label><input type="text" id="transactionNumber" class="form-control" required></div>
+                    <button type="submit" class="btn-submit-payment"><i class="fas fa-check-circle"></i> تأكيد الدفع</button>
                 </form>
             `;
 
             document.getElementById('paymentModalBody').innerHTML = modalBodyHtml;
-            const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
-            modal.show();
-
-            const carouselElem = document.querySelector('#paymentCarousel');
-            if (carouselElem && typeof bootstrap !== 'undefined') {
-                new bootstrap.Carousel(carouselElem, { interval: false });
-            }
+            new bootstrap.Modal(document.getElementById('paymentModal')).show();
             document.getElementById('paymentForm').addEventListener('submit', submitPayment);
-        } catch(e) {
-            console.error(e);
-            Swal.fire('خطأ', 'فشل تحميل بيانات الدفع', 'error');
-        }
+        } catch(e) { Swal.fire('خطأ', 'فشل تحميل البيانات', 'error'); }
     }
 
     async function submitPayment(e) {
         e.preventDefault();
+        const variantId = document.getElementById('selectedVariantId').value;
         const shippingId = document.getElementById('selectedShippingId').value;
-        if (!shippingId) {
-            Swal.fire('تنبيه', 'يرجى اختيار طريقة الدفع', 'warning');
-            return;
-        }
-        const buyerName = document.getElementById('buyerName').value.trim();
-        const buyerPhone = document.getElementById('buyerPhone').value.trim();
-        const transactionNumber = document.getElementById('transactionNumber').value.trim();
-        if (!buyerName || !buyerPhone || !transactionNumber) {
-            Swal.fire('تنبيه', 'جميع الحقول مطلوبة', 'warning');
-            return;
-        }
+        if (!variantId) { Swal.fire('تنبيه', 'يرجى اختيار الكمية', 'warning'); return; }
+        if (!shippingId) { Swal.fire('تنبيه', 'يرجى اختيار طريقة الدفع', 'warning'); return; }
+        
+        const selectedVariant = currentProductData.variants.find(v => v.id == variantId);
+        const paidPrice = selectedVariant ? selectedVariant.price : 0;
 
         const data = {
             product_id: currentProductData.id,
+            variant_id: parseInt(variantId),
             shipping_method_id: parseInt(shippingId),
-            buyer_name: buyerName,
-            buyer_phone: buyerPhone,
-            transaction_number: transactionNumber
+            buyer_name: document.getElementById('buyerName').value.trim(),
+            buyer_phone: document.getElementById('buyerPhone').value.trim(),
+            transaction_number: document.getElementById('transactionNumber').value.trim(),
+            paid_price: paidPrice
         };
 
         const submitBtn = e.target.querySelector('button[type="submit"]');
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري الإرسال...';
+        submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري الإرسال...';
 
         try {
             const resp = await fetch(`${API_BASE}/api/checkout`, {
-                method: 'POST',
-                headers: { ...ngrokHeaders, 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                method: 'POST', headers: { ...ngrokHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify(data)
             });
             const result = await resp.json();
             if (resp.ok) {
-                Swal.fire('تم الاستلام', result.message || 'تم استلام طلبك، سيتم التحقق من رقم العملية وتفعيل الطلب قريباً.', 'success');
-                const modal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
-                modal.hide();
-            } else {
-                Swal.fire('خطأ', result.error || 'حدث خطأ أثناء الإرسال', 'error');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> تأكيد الدفع وإتمام الشراء';
-            }
-        } catch(err) {
-            Swal.fire('خطأ', 'فشل الاتصال بالخادم', 'error');
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> تأكيد الدفع وإتمام الشراء';
-        }
+                Swal.fire('تم الاستلام', result.message, 'success');
+                bootstrap.Modal.getInstance(document.getElementById('paymentModal')).hide();
+            } else { Swal.fire('خطأ', result.error, 'error'); submitBtn.disabled = false; submitBtn.innerHTML = 'تأكيد الدفع'; }
+        } catch(err) { Swal.fire('خطأ', 'فشل الاتصال', 'error'); submitBtn.disabled = false; submitBtn.innerHTML = 'تأكيد الدفع'; }
     }
 
-    window.addEventListener('load', () => {
-        loadContacts();
-        loadAds();
-        loadSections();
-    });
+    window.addEventListener('load', () => { loadContacts(); loadAds(); loadSections(); });
 </script>
 </body>
 </html>
