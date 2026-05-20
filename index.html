@@ -13,49 +13,73 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #f5f7fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; direction: rtl; }
         .contact-bar { background: linear-gradient(135deg, #1e2a3a, #0f1724); color: white; padding: 12px 20px; text-align: center; position: sticky; top: 0; z-index: 1000; }
-        .contact-bar a { color: #25D366; margin: 0 15px; text-decoration: none; font-weight: bold; font-size: 1.1rem; transition: 0.3s; }
-        .contact-bar a:hover { opacity: 0.8; }
+        .contact-bar a { color: #25D366; margin: 0 15px; text-decoration: none; font-weight: bold; font-size: 1.1rem; }
+        .contact-bar a.telegram { color: #0088cc; }
         .ads-container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
         .slick-slide img { width: 100%; max-height: 350px; object-fit: cover; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .section-card, .product-card { background: white; border-radius: 16px; overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; padding: 15px; }
         .section-card:hover, .product-card:hover { transform: translateY(-5px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
         .section-card img, .product-card img { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; }
         .section-card h3, .product-card h3 { margin-top: 12px; font-size: 1.2rem; font-weight: bold; color: #2c3e50; }
-        .btn-buy { background: #27ae60; color: white; border: none; padding: 6px 18px; border-radius: 30px; font-weight: bold; transition: 0.2s; }
+        .btn-buy { background: #27ae60; color: white; border: none; padding: 8px 20px; border-radius: 30px; font-weight: bold; transition: 0.2s; margin-top: 10px; }
         .btn-buy:hover { background: #2ecc71; transform: scale(1.02); }
         .footer { background: #1e2a3a; color: #ccc; text-align: center; padding: 20px; margin-top: 50px; font-size: 0.9rem; }
-        .payment-modal .modal-content { border-radius: 24px; overflow: hidden; }
-        .payment-modal .modal-header { background: #2c3e50; color: white; border-bottom: none; padding: 20px; }
-        .payment-modal .modal-body { padding: 25px; max-height: 80vh; overflow-y: auto; }
-        .form-label { font-weight: 600; color: #2c3e50; margin-top: 10px; }
+        
+        /* أنماط الصفحات الكاملة */
+        .page-view { display: none; min-height: 100vh; padding: 20px; background: #f5f7fa; }
+        .page-view.active-page { display: block; }
+        .page-header { background: #2c3e50; color: white; padding: 15px 20px; border-radius: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .page-header button { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+        
+        .variant-card { background: white; border: 2px solid #e0e0e0; border-radius: 16px; padding: 20px; margin-bottom: 15px; cursor: pointer; transition: 0.2s; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .variant-card:hover { border-color: #27ae60; transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
+        .variant-card.selected { border-color: #27ae60; background: #e9f7ef; }
+        .variant-price { font-size: 1.5rem; font-weight: bold; color: #27ae60; }
+        .variant-name { font-size: 1.2rem; font-weight: bold; color: #2c3e50; }
+
+        .form-label { font-weight: 600; color: #2c3e50; margin-top: 15px; }
         .required:after { content: " *"; color: red; }
-        .btn-submit-payment { background: #27ae60; color: white; font-size: 1.1rem; padding: 12px; border-radius: 40px; font-weight: bold; margin-top: 20px; width: 100%; transition: 0.2s; }
-        .variant-item { border: 1px solid #dee2e6; border-radius: 12px; padding: 10px; margin-bottom: 8px; transition: 0.1s; cursor: pointer; display: flex; justify-content: space-between; }
-        .variant-item.active { border-color: #27ae60; background: #e9f7ef; }
-        .payment-method-item { border: 1px solid #dee2e6; border-radius: 12px; padding: 10px; margin-bottom: 8px; cursor: pointer; }
+        .btn-submit-payment { background: #27ae60; color: white; font-size: 1.2rem; padding: 15px; border-radius: 40px; font-weight: bold; margin-top: 30px; width: 100%; transition: 0.2s; border: none; }
+        .btn-submit-payment:hover { background: #2ecc71; }
+        .payment-method-item { border: 2px solid #dee2e6; border-radius: 12px; padding: 15px; margin-bottom: 10px; cursor: pointer; transition: 0.1s; }
         .payment-method-item.active { border-color: #27ae60; background: #e9f7ef; }
+        
         .loading { text-align: center; padding: 40px; color: #7f8c8d; }
     </style>
 </head>
 <body>
 
 <div class="contact-bar" id="contactBar"><i class="fas fa-spinner fa-pulse"></i> جاري التحميل...</div>
-<div class="ads-container" id="adsContainer"></div>
-<div class="container mt-4">
-    <h2 class="text-center mb-4" style="color: #2c3e50;"><i class="fas fa-folder-open"></i> الأقسام</h2>
-    <div class="row" id="sectionsContainer"><div class="col-12 loading"><i class="fas fa-spinner fa-pulse"></i></div></div>
-</div>
-<div class="footer"><p>جميع الحقوق محفوظة &copy; 2025</p></div>
 
-<div class="modal fade payment-modal" id="paymentModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="fas fa-credit-card"></i> إتمام الشراء</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="paymentModalBody"><div class="text-center"><i class="fas fa-spinner fa-pulse"></i></div></div>
+<!-- الصفحة الرئيسية -->
+<div id="mainShopPage" class="page-view active-page">
+    <div class="ads-container" id="adsContainer"></div>
+    <div class="container mt-4">
+        <h2 class="text-center mb-4" style="color: #2c3e50;"><i class="fas fa-folder-open"></i> الأقسام</h2>
+        <div class="row" id="sectionsContainer"><div class="col-12 loading"><i class="fas fa-spinner fa-pulse"></i></div></div>
+    </div>
+    <div class="footer"><p>جميع الحقوق محفوظة &copy; 2025</p></div>
+</div>
+
+<!-- صفحة تفاصيل المنتج والكميات -->
+<div id="productDetailPage" class="page-view">
+    <div class="container" style="max-width: 800px;">
+        <div class="page-header">
+            <h3 id="detailPageTitle">المنتج</h3>
+            <button onclick="goBackToShop()"><i class="fas fa-times"></i></button>
         </div>
+        <div id="productDetailContent" class="mt-4"></div>
+    </div>
+</div>
+
+<!-- صفحة إتمام الدفع -->
+<div id="checkoutPage" class="page-view">
+    <div class="container" style="max-width: 800px;">
+        <div class="page-header">
+            <h3><i class="fas fa-credit-card"></i> إتمام الدفع</h3>
+            <button onclick="goBackToProduct()"><i class="fas fa-arrow-right"></i></button>
+        </div>
+        <div id="checkoutContent" class="mt-4"></div>
     </div>
 </div>
 
@@ -67,6 +91,8 @@
     const API_BASE = "https://unbegrudged-direfully-nu.ngrok-free.dev"; // غيّر الرابط
     const ngrokHeaders = { 'ngrok-skip-browser-warning': '69420' };
     let currentProductData = null;
+    let selectedVariantId = null;
+    let selectedVariantPrice = 0;
 
     function fixImageUrl(path) {
         if (!path || !path.trim()) return 'https://via.placeholder.com/200x150?text=صورة';
@@ -74,14 +100,23 @@
         return `${API_BASE}/${path}`;
     }
 
+    function showPage(pageId) {
+        document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active-page'));
+        document.getElementById(pageId).classList.add('active-page');
+        window.scrollTo(0, 0);
+    }
+
+    function goBackToShop() { showPage('mainShopPage'); }
+    function goBackToProduct() { showPage('productDetailPage'); }
+
     async function loadContacts() {
         try {
             const resp = await fetch(`${API_BASE}/api/settings`, { headers: ngrokHeaders });
             const data = await resp.json(); let html = '';
             if (data.whatsapp) html += `<a href="https://wa.me/${data.whatsapp}"><i class="fab fa-whatsapp"></i> واتساب</a>`;
-            if (data.telegram) html += `<a href="https://t.me/${data.telegram}" class="telegram" style="color:#0088cc"><i class="fab fa-telegram"></i> تلغرام</a>`;
-            document.getElementById('contactBar').innerHTML = html || 'لا توجد بيانات';
-        } catch(e) { document.getElementById('contactBar').innerHTML = '⚠️ خطأ بالخادم'; }
+            if (data.telegram) html += `<a href="https://t.me/${data.telegram}" class="telegram"><i class="fab fa-telegram"></i> تلغرام</a>`;
+            document.getElementById('contactBar').innerHTML = html || '';
+        } catch(e) { document.getElementById('contactBar').innerHTML = '⚠️ خطأ'; }
     }
 
     async function loadAds() {
@@ -113,11 +148,12 @@
         try {
             const resp = await fetch(`${API_BASE}/api/sections/${sectionId}`, { headers: ngrokHeaders });
             const data = await resp.json();
+            if (data.error) { Swal.fire('خطأ', 'القسم غير موجود', 'error'); return; }
             let content = `<div style="text-align:center;"><h3>📁 ${data.section.name}</h3>`;
             if (data.products && data.products.length) {
                 content += `<hr><div class="row">`;
                 data.products.forEach(prod => {
-                    content += `<div class="col-6 col-md-3"><div class="product-card" onclick="showPaymentModal(${prod.id})"><h3>${prod.name}</h3><button class="btn-buy"><i class="fas fa-shopping-cart"></i> شراء</button></div></div>`;
+                    content += `<div class="col-6 col-md-3"><div class="product-card" onclick="showProductVariants(${prod.id})"><h3>${prod.name}</h3><button class="btn-buy"><i class="fas fa-shopping-cart"></i> شراء</button></div></div>`;
                 });
                 content += `</div>`;
             } else { content += `<p class="text-muted">لا توجد منتجات.</p>`; }
@@ -126,88 +162,115 @@
         } catch(e) { Swal.fire('خطأ', 'فشل التحميل', 'error'); }
     }
 
-    window.selectVariant = function(variantId, price) {
-        document.getElementById('selectedVariantId').value = variantId;
-        document.getElementById('displayPrice').innerText = price > 0 ? `${price} $` : 'سعر غير محدد';
-        document.querySelectorAll('.variant-item').forEach(el => el.classList.remove('active'));
-        document.querySelector(`.variant-item[data-variant-id="${variantId}"]`).classList.add('active');
-    };
-
-    window.selectPaymentMethod = function(methodId) {
-        document.getElementById('selectedShippingId').value = methodId;
-        document.querySelectorAll('.payment-method-item').forEach(el => el.classList.remove('active'));
-        document.querySelector(`.payment-method-item[data-method-id="${methodId}"]`).classList.add('active');
-    };
-
-    async function showPaymentModal(productId) {
+    // فتح صفحة الكميات والتفاصيل
+    async function showProductVariants(productId) {
+        Swal.close(); // إغلاق نافذة الأقسام
         try {
-            const [productRes, shippingRes] = await Promise.all([
-                fetch(`${API_BASE}/api/product/${productId}`, { headers: ngrokHeaders }),
-                fetch(`${API_BASE}/api/shipping`, { headers: ngrokHeaders })
-            ]);
-            const product = await productRes.json();
-            const shippingMethods = await shippingRes.json();
+            const resp = await fetch(`${API_BASE}/api/product/${productId}`, { headers: ngrokHeaders });
+            const product = await resp.json();
+            if (product.error) { Swal.fire('خطأ', 'المنتج غير موجود', 'error'); return; }
             currentProductData = product;
-
-            let variantsHtml = `<div class="mb-3"><label class="form-label required">اختر الكمية</label><div id="variantsList">`;
+            document.getElementById('detailPageTitle').innerText = product.name;
+            
+            let html = `<div class="text-center mb-4"><p style="font-size:1.1rem;">${product.description || ''}</p></div><h4 class="mb-3">اختر الكمية:</h4>`;
+            
             if (product.variants && product.variants.length > 0) {
                 product.variants.forEach(v => {
-                    variantsHtml += `<div class="variant-item" data-variant-id="${v.id}" onclick="selectVariant(${v.id}, ${v.price})">
-                                        <div><strong>${v.name}</strong></div>
-                                        <div class="text-success font-weight-bold">${v.price > 0 ? v.price + ' $' : 'سيحدد لاحقاً'}</div>
-                                    </div>`;
+                    html += `<div class="variant-card" data-variant-id="${v.id}" onclick="selectVariant(this, ${v.id}, ${v.price})">
+                                <div class="variant-name">${v.name}</div>
+                                <div class="variant-price">${v.price > 0 ? v.price + ' ل.س' : 'سيحدد لاحقاً'}</div>
+                             </div>`;
                 });
+                html += `<button class="btn-submit-payment" id="proceedToCheckoutBtn" onclick="goToCheckout()" style="display:none; margin-top:20px;"><i class="fas fa-check-circle"></i> متابعة للدفع</button>`;
             } else {
-                variantsHtml += `<p class="text-danger">لا توجد كميات متاحة لهذا المنتج حالياً.</p>`;
+                html += `<p class="text-danger text-center">لا توجد كميات متاحة حالياً.</p>`;
             }
-            variantsHtml += `</div><input type="hidden" id="selectedVariantId" value=""></div>`;
+            
+            document.getElementById('productDetailContent').innerHTML = html;
+            showPage('productDetailPage');
+        } catch(e) { Swal.fire('خطأ', 'فشل تحميل المنتج', 'error'); }
+    }
 
-            let paymentMethodsHtml = `<div class="mb-3"><label class="form-label required">طريقة الدفع</label>`;
+    window.selectVariant = function(element, vId, vPrice) {
+        selectedVariantId = vId;
+        selectedVariantPrice = vPrice;
+        document.querySelectorAll('.variant-card').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+        document.getElementById('proceedToCheckoutBtn').style.display = 'block';
+    };
+
+    // الانتقال لصفحة الدفع
+    async function goToCheckout() {
+        if (!selectedVariantId) { Swal.fire('تنبيه', 'اختر الكمية أولاً', 'warning'); return; }
+        
+        try {
+            const resp = await fetch(`${API_BASE}/api/shipping`, { headers: ngrokHeaders });
+            const shippingMethods = await resp.json();
+            
+            let shippingHtml = '';
             shippingMethods.forEach(m => {
-                paymentMethodsHtml += `<div class="payment-method-item" data-method-id="${m.id}" onclick="selectPaymentMethod(${m.id})"><strong>${m.name}</strong></div>`;
+                shippingHtml += `<div class="payment-method-item" data-method-id="${m.id}" onclick="selectPaymentMethod(this, ${m.id})">
+                                    <strong>${m.name}</strong><br><small class="text-muted">${m.note || ''}</small>
+                                 </div>`;
             });
-            paymentMethodsHtml += `</div><input type="hidden" id="selectedShippingId" value="">`;
 
-            const modalBodyHtml = `
-                <div class="payment-info text-center mb-4">
-                    <h4>${product.name}</h4>
-                    <p>${product.description || ''}</p>
-                    <h3 class="text-success">السعر: <span id="displayPrice">اختر الكمية</span></h3>
+            const html = `
+                <div class="text-center mb-4" style="background:white; padding:20px; border-radius:16px;">
+                    <h4>${currentProductData.name}</h4>
+                    <h3 class="text-success">المبلغ المطلوب: ${selectedVariantPrice > 0 ? selectedVariantPrice + ' ل.س' : 'سيحدد لاحقاً'}</h3>
                 </div>
                 <form id="paymentForm">
-                    ${variantsHtml}
-                    ${paymentMethodsHtml}
-                    <div class="mb-3"><label class="form-label required">الاسم الكامل</label><input type="text" id="buyerName" class="form-control" required></div>
-                    <div class="mb-3"><label class="form-label required">رقم الجوال</label><input type="tel" id="buyerPhone" class="form-control" required></div>
-                    <div class="mb-3"><label class="form-label required">رقم العملية</label><input type="text" id="transactionNumber" class="form-control" required></div>
-                    <button type="submit" class="btn-submit-payment"><i class="fas fa-check-circle"></i> تأكيد الدفع</button>
+                    <div class="mb-3">
+                        <label class="form-label required">طريقة الدفع</label>
+                        ${shippingHtml}
+                        <input type="hidden" id="selectedShippingId" value="">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required">الاسم الكامل</label>
+                        <input type="text" id="buyerName" class="form-control" required placeholder="أدخل اسمك الثلاثي">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required">رقم الجوال</label>
+                        <input type="tel" id="buyerPhone" class="form-control" required placeholder="مثال: 09xxxxxxxx">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required">رقم العملية (رقم التحويل)</label>
+                        <input type="text" id="transactionNumber" class="form-control" required placeholder="أدخل رقم العملية من البنك أو المحفظة">
+                    </div>
+                    <button type="submit" class="btn-submit-payment"><i class="fas fa-paper-plane"></i> تأكيد الدفع وإرسال الطلب</button>
                 </form>
             `;
-
-            document.getElementById('paymentModalBody').innerHTML = modalBodyHtml;
-            new bootstrap.Modal(document.getElementById('paymentModal')).show();
+            
+            document.getElementById('checkoutContent').innerHTML = html;
+            showPage('checkoutPage');
             document.getElementById('paymentForm').addEventListener('submit', submitPayment);
-        } catch(e) { Swal.fire('خطأ', 'فشل تحميل البيانات', 'error'); }
+        } catch(e) { Swal.fire('خطأ', 'فشل تحميل طرق الدفع', 'error'); }
     }
+
+    window.selectPaymentMethod = function(element, mId) {
+        document.getElementById('selectedShippingId').value = mId;
+        document.querySelectorAll('.payment-method-item').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+    };
 
     async function submitPayment(e) {
         e.preventDefault();
-        const variantId = document.getElementById('selectedVariantId').value;
         const shippingId = document.getElementById('selectedShippingId').value;
-        if (!variantId) { Swal.fire('تنبيه', 'يرجى اختيار الكمية', 'warning'); return; }
-        if (!shippingId) { Swal.fire('تنبيه', 'يرجى اختيار طريقة الدفع', 'warning'); return; }
+        if (!shippingId) { Swal.fire('تنبيه', 'اختر طريقة الدفع', 'warning'); return; }
         
-        const selectedVariant = currentProductData.variants.find(v => v.id == variantId);
-        const paidPrice = selectedVariant ? selectedVariant.price : 0;
+        const buyerName = document.getElementById('buyerName').value.trim();
+        const buyerPhone = document.getElementById('buyerPhone').value.trim();
+        const transactionNumber = document.getElementById('transactionNumber').value.trim();
+        if (!buyerName || !buyerPhone || !transactionNumber) { Swal.fire('تنبيه', 'جميع الحقول مطلوبة', 'warning'); return; }
 
         const data = {
             product_id: currentProductData.id,
-            variant_id: parseInt(variantId),
+            variant_id: selectedVariantId,
             shipping_method_id: parseInt(shippingId),
-            buyer_name: document.getElementById('buyerName').value.trim(),
-            buyer_phone: document.getElementById('buyerPhone').value.trim(),
-            transaction_number: document.getElementById('transactionNumber').value.trim(),
-            paid_price: paidPrice
+            buyer_name: buyerName,
+            buyer_phone: buyerPhone,
+            transaction_number: transactionNumber,
+            paid_price: selectedVariantPrice
         };
 
         const submitBtn = e.target.querySelector('button[type="submit"]');
@@ -219,8 +282,7 @@
             });
             const result = await resp.json();
             if (resp.ok) {
-                Swal.fire('تم الاستلام', result.message, 'success');
-                bootstrap.Modal.getInstance(document.getElementById('paymentModal')).hide();
+                Swal.fire('تم الاستلام', result.message, 'success').then(() => { goBackToShop(); });
             } else { Swal.fire('خطأ', result.error, 'error'); submitBtn.disabled = false; submitBtn.innerHTML = 'تأكيد الدفع'; }
         } catch(err) { Swal.fire('خطأ', 'فشل الاتصال', 'error'); submitBtn.disabled = false; submitBtn.innerHTML = 'تأكيد الدفع'; }
     }
