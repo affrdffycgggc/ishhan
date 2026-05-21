@@ -11,160 +11,77 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        :root {
-            --primary: #6C63FF;
-            --primary-dark: #5A52D5;
-            --secondary: #FF6584;
-            --bg-color: #F4F7F6;
-            --card-bg: #FFFFFF;
-            --text-main: #2D3436;
-            --text-muted: #636E72;
-            --success: #00B894;
-            --shadow-soft: 0 10px 30px rgba(0,0,0,0.08);
-            --shadow-hover: 0 20px 40px rgba(108, 99, 255, 0.25);
-        }
-
+        :root { --primary: #6C63FF; --primary-dark: #5A52D5; --secondary: #FF6584; --bg-color: #F4F7F6; --card-bg: #FFFFFF; --text-main: #2D3436; --success: #00B894; --shadow-soft: 0 10px 30px rgba(0,0,0,0.08); --shadow-hover: 0 20px 40px rgba(108, 99, 255, 0.25); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: var(--bg-color); font-family: 'Cairo', sans-serif; direction: rtl; color: var(--text-main); overflow-x: hidden; }
-
-        .contact-bar { background: rgba(45, 52, 54, 0.95); backdrop-filter: blur(10px); color: white; padding: 12px 20px; text-align: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.1); }
-        .contact-bar a { color: white; margin: 0 15px; text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: color 0.3s, transform 0.3s; display: inline-flex; align-items: center; gap: 8px; }
-        .contact-bar a i { font-size: 1.2rem; }
-        .contact-bar a:hover { color: var(--primary); transform: translateY(-2px); }
-
+        .contact-bar { background: rgba(45, 52, 54, 0.95); backdrop-filter: blur(10px); color: white; padding: 12px 20px; text-align: center; position: sticky; top: 0; z-index: 1000; }
+        .contact-bar a { color: white; margin: 0 15px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
         .ads-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; border-radius: 25px; overflow: hidden; box-shadow: var(--shadow-soft); }
         .slick-slide img { width: 100%; max-height: 400px; object-fit: cover; }
-        .slick-dots li button:before { font-size: 12px; color: var(--primary); }
 
         .section-card, .product-card {
             background-color: var(--card-bg); border-radius: 20px; overflow: hidden; cursor: pointer;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
-            margin-bottom: 30px; box-shadow: var(--shadow-soft); text-align: center; border: none; position: relative;
-            transform-style: preserve-3d; will-change: transform; min-height: 280px;
-            display: flex; flex-direction: column; justify-content: flex-end;
+            transition: transform 0.4s, box-shadow 0.4s; margin-bottom: 30px; box-shadow: var(--shadow-soft); text-align: center; border: none; position: relative;
+            min-height: 280px; display: flex; flex-direction: column; justify-content: flex-end;
             background-size: cover; background-position: center; background-repeat: no-repeat;
         }
-        
-        .card-bg-overlay {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.85) 10%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%);
-            z-index: 1; transition: background 0.4s;
-        }
-        .section-card:hover .card-bg-overlay, .product-card:hover .card-bg-overlay {
-            background: linear-gradient(to top, rgba(108, 99, 255, 0.95) 10%, rgba(108, 99, 255, 0.5) 50%, rgba(0,0,0,0.1) 100%);
-        }
-
+        .card-bg-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, rgba(0,0,0,0.85) 10%, rgba(0,0,0,0) 100%); z-index: 1; transition: background 0.4s; }
+        .section-card:hover .card-bg-overlay, .product-card:hover .card-bg-overlay { background: linear-gradient(to top, rgba(108, 99, 255, 0.95) 10%, rgba(0,0,0,0.1) 100%); }
         .section-card:hover, .product-card:hover { box-shadow: var(--shadow-hover); }
-        
-        .card-content { 
-            padding: 25px 20px; position: relative; z-index: 2; color: white;
-        }
+        .card-content { padding: 25px 20px; position: relative; z-index: 2; color: white; }
         .card-content h3 { font-size: 1.4rem; font-weight: 800; margin: 0; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-        
-        .btn-buy { 
-            background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); color: white; border: 2px solid rgba(255,255,255,0.8); 
-            padding: 10px 25px; border-radius: 50px; font-weight: 700; transition: all 0.3s; margin-top: 15px; 
-            display: inline-flex; align-items: center; gap: 8px; position: relative; overflow: hidden;
-        }
-        .btn-buy:hover { background: white; color: var(--primary); border-color: white; transform: scale(1.05); }
-
+        .btn-buy { background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); color: white; border: 2px solid rgba(255,255,255,0.8); padding: 10px 25px; border-radius: 50px; font-weight: 700; margin-top: 15px; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-buy:hover { background: white; color: var(--primary); }
         .no-bg { background: var(--card-bg); justify-content: center; }
         .no-bg .card-bg-overlay { display: none; }
         .no-bg .card-content { color: var(--text-main); text-shadow: none; }
-        .no-bg .btn-buy { background: var(--primary); border-color: var(--primary); color: white; backdrop-filter: none; }
-        .no-bg .btn-buy:hover { background: var(--primary-dark); }
+        .no-bg .btn-buy { background: var(--primary); border-color: var(--primary); color: white; }
 
-        .footer { background: #2D3436; color: #636E72; text-align: center; padding: 30px; margin-top: 60px; font-size: 0.9rem; border-top: 5px solid var(--primary); }
+        .site-bg-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background-size: cover; background-position: center; z-index: -1; filter: blur(10px) brightness(0.5); transform: scale(1.1); }
         
-        .page-view { 
-            display: none; min-height: 100vh; padding: 20px; background: var(--bg-color); 
-            opacity: 0; transform: translateY(30px); transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-        .page-view.active-page { display: block; opacity: 1; transform: translateY(0); }
-
-        .page-header { 
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 20px 25px; 
-            border-radius: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 10px 20px rgba(108, 99, 255, 0.2);
-        }
+        .footer { background: #2D3436; color: #636E72; text-align: center; padding: 30px; margin-top: 60px; border-top: 5px solid var(--primary); }
+        .page-view { display: none; min-height: 100vh; padding: 20px; opacity: 0; transition: opacity 0.5s; }
+        .page-view.active-page { display: block; opacity: 1; }
+        .page-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 20px 25px; border-radius: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
         .page-header h3 { margin: 0; font-weight: 900; font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
-        .page-header button { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; transition: background 0.3s; display: flex; align-items: center; justify-content: center; }
-        .page-header button:hover { background: rgba(255,255,255,0.4); }
+        .page-header button { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         
-        .checkout-product-header {
-            min-height: 300px; border-radius: 20px; position: relative; overflow: hidden;
-            display: flex; align-items: center; justify-content: center; text-align: center;
-            background-size: cover; background-position: center; margin-bottom: 30px;
-            box-shadow: var(--shadow-soft); background-color: var(--primary);
-        }
+        .checkout-product-header { min-height: 300px; border-radius: 20px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center; background-size: cover; background-position: center; margin-bottom: 30px; background-color: var(--primary); }
         .checkout-product-header .overlay { position: absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(108,99,255,0.4)); }
         .checkout-product-header .content { position: relative; z-index: 2; color: white; padding: 20px; }
         .checkout-product-header h2 { font-weight: 900; font-size: 2.5rem; text-shadow: 0 3px 6px rgba(0,0,0,0.5); }
-        .checkout-product-header p { color: #eee; font-size: 1.2rem; }
 
-        .variant-card { 
-            background: var(--card-bg); border: 2px solid #dfe6e9; border-radius: 20px; padding: 25px; margin-bottom: 20px; 
-            cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-soft);
-        }
-        .variant-card:hover { border-color: var(--primary); transform: translateX(-5px) scale(1.01); box-shadow: var(--shadow-hover); }
-        .variant-card.selected { border-color: var(--primary); background: linear-gradient(to left, #f0efff, #ffffff); box-shadow: var(--shadow-hover); }
+        .variant-card { background: var(--card-bg); border: 2px solid #dfe6e9; border-radius: 20px; padding: 25px; margin-bottom: 20px; cursor: pointer; transition: all 0.3s; display: flex; justify-content: space-between; align-items: center; }
+        .variant-card:hover { border-color: var(--primary); }
+        .variant-card.selected { border-color: var(--primary); background: linear-gradient(to left, #f0efff, #ffffff); }
         .variant-price { font-size: 1.6rem; font-weight: 900; color: var(--success); }
-        .variant-name { font-size: 1.2rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; }
 
-        .form-label { font-weight: 700; color: var(--text-main); margin-top: 20px; font-size: 1.1rem; }
-        .required:after { content: " *"; color: var(--secondary); font-size: 1.2rem; }
-        .form-control { border-radius: 15px; padding: 15px; border: 2px solid #dfe6e9; font-family: 'Cairo', sans-serif; font-size: 1rem; transition: border-color 0.3s, box-shadow 0.3s; }
+        .form-control { border-radius: 15px; padding: 15px; border: 2px solid #dfe6e9; }
         .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.1); }
+        .btn-submit-payment { background: linear-gradient(135deg, var(--success), #00a884); color: white; font-size: 1.3rem; padding: 18px; border-radius: 50px; font-weight: 900; margin-top: 40px; width: 100%; border: none; display: flex; justify-content: center; align-items: center; gap: 10px; }
         
-        .btn-submit-payment { 
-            background: linear-gradient(135deg, var(--success), #00a884); color: white; font-size: 1.3rem; padding: 18px; 
-            border-radius: 50px; font-weight: 900; margin-top: 40px; width: 100%; transition: all 0.3s; border: none; 
-            box-shadow: 0 10px 20px rgba(0, 184, 148, 0.3); display: flex; justify-content: center; align-items: center; gap: 10px;
-            position: relative; overflow: hidden;
-        }
-        .btn-submit-payment:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0, 184, 148, 0.4); }
-        
-        .payment-method-item { 
-            border: 2px solid #dfe6e9; border-radius: 15px; padding: 20px; margin-bottom: 15px; cursor: pointer; 
-            transition: all 0.3s; background: var(--card-bg); display: flex; justify-content: space-between; align-items: center;
-        }
-        .payment-method-item:hover { border-color: var(--primary); }
-        .payment-method-item.active { border-color: var(--primary); background: #f8f9ff; box-shadow: 0 5px 15px rgba(108, 99, 255, 0.1); }
-        
-        .wallet-link-btn {
-            background: transparent; color: var(--primary); border: 2px solid var(--primary); padding: 8px 15px;
-            border-radius: 50px; font-weight: 700; text-decoration: none; transition: all 0.3s; font-size: 0.9rem;
-            display: inline-flex; align-items: center; gap: 5px;
-        }
-        .wallet-link-btn:hover { background: var(--primary); color: white; transform: scale(1.05); }
-        
-        .loading { text-align: center; padding: 60px; color: var(--text-muted); }
+        .payment-method-item { border: 2px solid #dfe6e9; border-radius: 15px; padding: 20px; margin-bottom: 15px; cursor: pointer; background: var(--card-bg); display: flex; justify-content: space-between; align-items: center; }
+        .payment-method-item.active { border-color: var(--primary); background: #f8f9ff; }
+        .wallet-link-btn { background: transparent; color: var(--primary); border: 2px solid var(--primary); padding: 8px 15px; border-radius: 50px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
+        .wallet-link-btn:hover { background: var(--primary); color: white; }
+
         .stagger-item { opacity: 0; transform: translateY(30px); animation: staggerFadeIn 0.6s ease forwards; }
         @keyframes staggerFadeIn { to { opacity: 1; transform: translateY(0); } }
-        .ripple { position: absolute; background: rgba(255, 255, 255, 0.4); border-radius: 50%; transform: scale(0); animation: rippleEffect 0.6s linear; pointer-events: none; }
-        @keyframes rippleEffect { to { transform: scale(4); opacity: 0; } }
-
-        @media (max-width: 768px) { 
-            .variant-card { flex-direction: column; text-align: center; gap: 10px; } 
-            .contact-bar a { margin: 0 10px; font-size: 0.9rem; }
-            .payment-method-item { flex-direction: column; text-align: center; gap: 15px; }
-            .checkout-product-header h2 { font-size: 1.8rem; }
-        }
+        @media (max-width: 768px) { .variant-card, .payment-method-item { flex-direction: column; text-align: center; gap: 15px; } }
     </style>
 </head>
 <body>
 
-<div class="contact-bar" id="contactBar"><i class="fas fa-spinner fa-pulse"></i> جاري التحميل...</div>
+<div id="siteBgOverlay" class="site-bg-overlay"></div>
+<div class="contact-bar" id="contactBar"></div>
 
 <div id="mainShopPage" class="page-view active-page">
     <div class="ads-container" id="adsContainer"></div>
     <div class="container mt-4">
-        <h2 class="text-center mb-5" style="color: var(--text-main); font-weight: 900; font-size: 2.2rem;">
-            <i class="fas fa-rocket" style="color: var(--primary);"></i> تصفح الأقسام
-        </h2>
-        <div class="row" id="sectionsContainer"><div class="col-12 loading"><i class="fas fa-spinner fa-pulse fa-3x"></i></div></div>
+        <h2 class="text-center mb-5" style="font-weight: 900;"><i class="fas fa-rocket" style="color: var(--primary);"></i> تصفح الأقسام</h2>
+        <div class="row" id="sectionsContainer"><div class="col-12 text-center"><i class="fas fa-spinner fa-pulse fa-3x"></i></div></div>
     </div>
-    <div class="footer"><p>جميع الحقوق محفوظة &copy; 2025 - متجر الألعاب والبرامج</p></div>
+    <div class="footer"><p>جميع الحقوق محفوظة &copy; 2025</p></div>
 </div>
 
 <div id="checkoutPage" class="page-view">
@@ -182,73 +99,36 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 
 <script>
-    const API_BASE = "https://unbegrudged-direfully-nu.ngrok-free.dev"; // غيّر الرابط لرابطك
+    const API_BASE = "https://unbegrudged-direfully-nu.ngrok-free.dev"; // ضع رابطك
     const ngrokHeaders = { 'ngrok-skip-browser-warning': '69420' };
-    let currentProductData = null;
-    let selectedVariantId = null;
-    let selectedVariantPrice = 0;
+    let currentProductData = null; let selectedVariantId = null; let selectedVariantPrice = 0;
 
     function fixImageUrl(path) {
-        if (!path || !path.trim()) return ''; // نرجع نص فاضي إذا ما في صورة
+        if (!path || !path.trim()) return ''; 
         if (path.startsWith('http')) return path;
         return `${API_BASE}/${path}`;
     }
 
     function showPage(pageId) {
-        document.querySelectorAll('.page-view').forEach(p => {
-            p.classList.remove('active-page');
-            p.style.opacity = '0';
-        });
-        const targetPage = document.getElementById(pageId);
-        targetPage.classList.add('active-page');
-        setTimeout(() => { targetPage.style.opacity = '1'; targetPage.style.transform = 'translateY(0)'; }, 50);
+        document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active-page'));
+        document.getElementById(pageId).classList.add('active-page');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
     function goBackToShop() { showPage('mainShopPage'); }
 
-    function createRipple(event) {
-        const btn = event.currentTarget;
-        const circle = document.createElement('span');
-        const diameter = Math.max(btn.clientWidth, btn.clientHeight);
-        const radius = diameter / 2;
-        circle.style.width = circle.style.height = `${diameter}px`;
-        circle.style.left = `${event.clientX - btn.getBoundingClientRect().left - radius}px`;
-        circle.style.top = `${event.clientY - btn.getBoundingClientRect().top - radius}px`;
-        circle.classList.add('ripple');
-        const ripple = btn.querySelector('.ripple');
-        if (ripple) ripple.remove();
-        btn.appendChild(circle);
-    }
-
-    function init3DTilt() {
-        document.querySelectorAll('.section-card, .product-card').forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const rotateX = (y - centerY) / 20;
-                const rotateY = (centerX - x) / 20;
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
-            });
-        });
-    }
-
-    async function loadContacts() {
+    async function loadSettingsAndContacts() {
         try {
             const resp = await fetch(`${API_BASE}/api/settings`, { headers: ngrokHeaders });
-            const data = await resp.json(); let html = '';
+            const data = await resp.json(); 
+            let html = '';
             if (data.whatsapp) html += `<a href="https://wa.me/${data.whatsapp}"><i class="fab fa-whatsapp" style="color:#25D366"></i> واتساب</a>`;
             if (data.telegram) html += `<a href="https://t.me/${data.telegram}"><i class="fab fa-telegram" style="color:#0088cc"></i> تلغرام</a>`;
-            if (data.contact_email) html += `<a href="mailto:${data.contact_email}"><i class="fas fa-envelope" style="color:#f39c12"></i> بريد</a>`;
-            if (data.contact_phone) html += `<a href="tel:${data.contact_phone}"><i class="fas fa-phone-alt" style="color:#e67e22"></i> هاتف</a>`;
             document.getElementById('contactBar').innerHTML = html || '';
-        } catch(e) { document.getElementById('contactBar').innerHTML = '⚠️ خطأ في الاتصال'; }
+            if (data.bot_background) {
+                const bgUrl = fixImageUrl(data.bot_background);
+                document.getElementById('siteBgOverlay').style.backgroundImage = `url('${bgUrl}')`;
+            }
+        } catch(e) {}
     }
 
     async function loadAds() {
@@ -258,179 +138,119 @@
             if (!ads.length) { container.innerHTML = ''; return; }
             let html = '<div class="ads-slider">';
             ads.forEach(ad => {
-                if (ad.type === 'animated') {
-                    const images = ad.images.split(',');
-                    images.forEach(img => { html += `<div><a href="${ad.link || '#'}" target="_blank"><img src="${fixImageUrl(img.trim())}" alt="إعلان"></a></div>`; });
-                } else {
-                    html += `<div><a href="${ad.link || '#'}" target="_blank"><img src="${fixImageUrl(ad.images)}" alt="إعلان"></a></div>`;
-                }
+                if (ad.type === 'animated') { ad.images.split(',').forEach(img => { html += `<div><a href="${ad.link || '#'}"><img src="${fixImageUrl(img.trim())}" alt="إعلان"></a></div>`; }); } 
+                else { html += `<div><a href="${ad.link || '#'}"><img src="${fixImageUrl(ad.images)}" alt="إعلان"></a></div>`; }
             });
             html += '</div>'; container.innerHTML = html;
-            $('.ads-slider').slick({ rtl: true, autoplay: true, autoplaySpeed: 3000, dots: true, fade: true, cssEase: 'linear' });
+            $('.ads-slider').slick({ rtl: true, autoplay: true, autoplaySpeed: 3000, dots: true, fade: true });
         } catch(e) {}
     }
 
     async function loadSections() {
         try {
             const resp = await fetch(`${API_BASE}/api/sections?parent=0`, { headers: ngrokHeaders });
-            if (!resp.ok) throw new Error('Server Error');
             const sections = await resp.json(); const container = document.getElementById('sectionsContainer');
-            if (!sections.length) { container.innerHTML = '<div class="col-12 text-center"><h4>لا توجد أقسام حالياً</h4></div>'; return; }
             let html = '';
             sections.forEach((sec, index) => {
                 const bgUrl = fixImageUrl(sec.image);
-                const bgStyle = bgUrl ? `background-image: url('${bgUrl}')` : '';
-                const bgClass = bgUrl ? '' : 'no-bg';
-                
                 html += `<div class="col-lg-3 col-md-4 col-sm-6 stagger-item" style="animation-delay: ${index * 0.1}s">
-                            <div class="section-card ${bgClass}" style="${bgStyle}" onclick="showSection(${sec.id})">
+                            <div class="section-card ${bgUrl ? '' : 'no-bg'}" style="${bgUrl ? `background-image: url('${bgUrl}')` : ''}" onclick="showSection(${sec.id})">
                                 <div class="card-bg-overlay"></div>
                                 <div class="card-content"><h3>${sec.name}</h3></div>
-                            </div>
-                         </div>`;
+                            </div></div>`;
             });
-            container.innerHTML = html;
-            init3DTilt();
-        } catch(e) { 
-            container.innerHTML = `<div class="col-12 text-danger text-center">
-                <h4>فشل الاتصال بالسيرفر</h4>
-                <p>تأكد من تشغيل كود البايثون بشكل صحيح وأن رابط الـ ngrok محدث في الكود.</p>
-            </div>`; 
-        }
+            container.innerHTML = html || '<div class="col-12 text-center"><h4>لا توجد أقسام</h4></div>';
+        } catch(e) { document.getElementById('sectionsContainer').innerHTML = '<div class="col-12 text-danger text-center">فشل الاتصال</div>'; }
     }
 
     async function showSection(sectionId) {
         try {
             const resp = await fetch(`${API_BASE}/api/sections/${sectionId}`, { headers: ngrokHeaders });
-            if (!resp.ok) {
-                const errText = await resp.text();
-                console.error("Backend Error Details:", errText);
-                throw new Error("قاعدة البيانات أو السيرفر يحتاج تحديث، احذف ملف shop.db وأعد تشغيل البايثون");
-            }
+            if (!resp.ok) throw new Error();
             const data = await resp.json();
-            if (data.error) { Swal.fire({ icon: 'error', title: 'خطأ', text: 'القسم غير موجود' }); return; }
-            
             let content = `<div class="text-center mb-4"><h4 style="color:var(--primary); font-weight:900;">${data.section.name}</h4></div><div class="row">`;
+            if (data.subs && data.subs.length > 0) {
+                data.subs.forEach((sub, index) => {
+                    const bgUrl = fixImageUrl(sub.image);
+                    content += `<div class="col-lg-3 col-md-4 col-sm-6 stagger-item" style="animation-delay: ${index * 0.1}s">
+                                    <div class="section-card ${bgUrl ? '' : 'no-bg'}" style="${bgUrl ? `background-image: url('${bgUrl}')` : ''}" onclick="showSection(${sub.id})">
+                                        <div class="card-bg-overlay"></div>
+                                        <div class="card-content"><h3>${sub.name}</h3></div>
+                                    </div></div>`;
+                });
+            }
             if (data.products && data.products.length) {
                 data.products.forEach((prod, index) => {
                     const pBgUrl = fixImageUrl(prod.background_image || prod.images);
-                    const pBgStyle = pBgUrl ? `background-image: url('${pBgUrl}')` : '';
-                    const pBgClass = pBgUrl ? '' : 'no-bg';
-
                     content += `<div class="col-lg-3 col-md-4 col-sm-6 stagger-item" style="animation-delay: ${index * 0.1}s">
-                                    <div class="product-card ${pBgClass}" style="${pBgStyle}" onclick="openDirectCheckout(${prod.id})">
+                                    <div class="product-card ${pBgUrl ? '' : 'no-bg'}" style="${pBgUrl ? `background-image: url('${pBgUrl}')` : ''}" onclick="openDirectCheckout(${prod.id})">
                                         <div class="card-bg-overlay"></div>
                                         <div class="card-content">
                                             <h3>${prod.name}</h3>
-                                            <button class="btn-buy" onclick="event.stopPropagation(); openDirectCheckout(${prod.id})"><i class="fas fa-bolt"></i> شراء فوري</button>
-                                        </div>
-                                    </div>
-                                </div>`;
+                                            <button class="btn-buy" onclick="event.stopPropagation(); openDirectCheckout(${prod.id})"><i class="fas fa-bolt"></i> شراء</button>
+                                        </div></div></div>`;
                 });
-            } else { content += `<div class="col-12"><p class="text-center text-muted" style="font-size:1.2rem;">لا توجد منتجات في هذا القسم بعد.</p></div>`; }
+            } else if (!data.subs || !data.subs.length) { content += `<div class="col-12"><p class="text-center text-muted">لا توجد منتجات بعد.</p></div>`; }
             content += `</div>`;
-            Swal.fire({ html: content, width: '90%', showConfirmButton: false, showCloseButton: true, customClass: { popup: 'animated fadeInDown' } });
-            setTimeout(init3DTilt, 200); 
-        } catch(e) { 
-            Swal.fire('خطأ في السيرفر', e.message, 'error'); 
-        }
+            Swal.fire({ html: content, width: '90%', showConfirmButton: false, showCloseButton: true });
+        } catch(e) { Swal.fire('خطأ', 'فشل التحميل', 'error'); }
     }
 
     async function openDirectCheckout(productId) {
         Swal.close();
         try {
             const resp = await fetch(`${API_BASE}/api/product/${productId}`, { headers: ngrokHeaders });
-            if (!resp.ok) throw new Error("فشل تحميل بيانات المنتج، تأكد من تحديث قاعدة البيانات");
+            if (!resp.ok) throw new Error();
             const product = await resp.json();
-            if (product.error) { Swal.fire({ icon: 'error', title: 'خطأ' }); return; }
-            
-            currentProductData = product;
-            selectedVariantId = null;
-            selectedVariantPrice = 0;
+            currentProductData = product; selectedVariantId = null; selectedVariantPrice = 0;
 
             const shippingResp = await fetch(`${API_BASE}/api/shipping`, { headers: ngrokHeaders });
             const shippingMethods = await shippingResp.json();
 
             let variantsHtml = '';
             if (product.variants && product.variants.length > 0) {
-                product.variants.forEach(v => {
-                    variantsHtml += `<div class="variant-card" data-variant-id="${v.id}" onclick="selectVariant(this, ${v.id}, ${v.price})">
-                                <div class="variant-name"><i class="fas fa-gem" style="color:var(--primary); margin-left:10px;"></i> ${v.name}</div>
-                                <div class="variant-price">${v.price > 0 ? v.price + ' ل.س' : 'سيحدد لاحقاً'}</div>
-                             </div>`;
-                });
-            } else {
-                variantsHtml = `<div class="alert alert-warning text-center">غير متوفر حالياً</div>`;
-            }
+                product.variants.forEach(v => { variantsHtml += `<div class="variant-card" onclick="selectVariant(this, ${v.id}, ${v.price})"><div style="font-weight:700;"><i class="fas fa-gem" style="color:var(--primary);"></i> ${v.name}</div><div class="variant-price">${v.price > 0 ? v.price + ' ل.س' : 'سيحدد'}</div></div>`; });
+            } else { variantsHtml = `<div class="alert alert-warning text-center">غير متوفر</div>`; }
 
             let shippingHtml = '';
             shippingMethods.forEach(m => {
                 const walletLink = m.wallet_link || (m.note && m.note.startsWith('http') ? m.note : '#');
-                const isNoteLink = m.note && m.note.startsWith('http');
-                
-                shippingHtml += `<div class="payment-method-item" data-method-id="${m.id}" onclick="selectPaymentMethod(this, ${m.id})">
-                                    <div style="flex:1">
-                                        <i class="fas fa-wallet" style="color:var(--primary); margin-left:10px;"></i> <strong>${m.name}</strong>
-                                        ${!isNoteLink && m.note ? `<br><small class="text-muted" style="margin-right:30px;">${m.note}</small>` : ''}
-                                    </div>
-                                    <a href="${walletLink}" target="_blank" class="wallet-link-btn" onclick="event.stopPropagation();">
-                                        <i class="fas fa-external-link-alt"></i> رابط المحفظة
-                                    </a>
+                shippingHtml += `<div class="payment-method-item" onclick="selectPaymentMethod(this, ${m.id})">
+                                    <div><i class="fas fa-wallet" style="color:var(--primary);"></i> <strong>${m.name}</strong></div>
+                                    <a href="${walletLink}" target="_blank" class="wallet-link-btn" onclick="event.stopPropagation();"><i class="fas fa-external-link-alt"></i> المحفظة</a>
                                  </div>`;
             });
 
             const pBgUrl = fixImageUrl(product.background_image || product.images);
-            const pBgStyle = pBgUrl ? `background-image: url('${pBgUrl}')` : '';
-            const pBgClass = pBgUrl ? '' : 'no-bg';
-
             const html = `
-                <div class="checkout-product-header ${pBgClass}" style="${pBgStyle}">
-                    <div class="overlay"></div>
-                    <div class="content">
-                        <h2>${product.name}</h2>
-                        <p>${product.description || ''}</p>
-                    </div>
+                <div class="checkout-product-header ${pBgUrl ? '' : 'no-bg'}" style="${pBgUrl ? `background-image: url('${pBgUrl}')` : ''}">
+                    <div class="overlay"></div><div class="content"><h2>${product.name}</h2><p>${product.description || ''}</p></div>
                 </div>
-
-                <h4 class="mb-3" style="font-weight:800; border-right:5px solid var(--primary); padding-right:15px;">1. اختر الكمية:</h4>
+                <h4 class="mb-3" style="border-right:5px solid var(--primary); padding-right:15px;">1. اختر الكمية:</h4>
                 ${variantsHtml}
-                
                 <div id="checkoutFormSection" style="display:none; opacity:0; transition: opacity 0.5s;">
-                    <h4 class="mb-3 mt-5" style="font-weight:800; border-right:5px solid var(--success); padding-right:15px;">2. اختر طريقة الدفع:</h4>
+                    <h4 class="mb-3 mt-5" style="border-right:5px solid var(--success); padding-right:15px;">2. طريقة الدفع:</h4>
                     <div class="mb-4">${shippingHtml}<input type="hidden" id="selectedShippingId" value=""></div>
-
-                    <h4 class="mb-3 mt-5" style="font-weight:800; border-right:5px solid var(--secondary); padding-right:15px;">3. أدخل بيانات التحويل:</h4>
+                    <h4 class="mb-3 mt-5" style="border-right:5px solid var(--secondary); padding-right:15px;">3. بيانات التحويل:</h4>
                     <form id="paymentForm">
-                        <div class="mb-4">
-                            <label class="form-label required">رقم الجوال</label>
-                            <input type="tel" id="buyerPhone" class="form-control" required placeholder="مثال: 09xxxxxxxx">
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label required">رقم العملية (رقم التحويل)</label>
-                            <input type="text" id="transactionNumber" class="form-control" required placeholder="أدخل رقم العملية من البنك أو المحفظة">
-                            <div class="form-text mt-2" style="font-size:0.9rem;">* يرجى إدخال رقم العملية الصحيح لتأكيد طلبك فوراً.</div>
-                        </div>
-                        <button type="submit" class="btn-submit-payment" onclick="createRipple(event)"><i class="fas fa-paper-plane"></i> تأكيد الدفع</button>
+                        <label class="form-label" style="font-weight:700;">رقم الجوال *</label><input type="tel" id="buyerPhone" class="form-control mb-3" required placeholder="09xxxxxxxx">
+                        <label class="form-label" style="font-weight:700;">رقم العملية *</label><input type="text" id="transactionNumber" class="form-control" required placeholder="رقم التحويل">
+                        <button type="submit" class="btn-submit-payment"><i class="fas fa-paper-plane"></i> تأكيد الدفع</button>
                     </form>
-                </div>
-            `;
-            
+                </div>`;
             document.getElementById('checkoutContent').innerHTML = html;
             showPage('checkoutPage');
             document.getElementById('paymentForm').addEventListener('submit', submitPayment);
-        } catch(e) { Swal.fire('خطأ', e.message, 'error'); }
+        } catch(e) { Swal.fire('خطأ', 'فشل تحميل المنتج', 'error'); }
     }
 
     window.selectVariant = function(element, vId, vPrice) {
-        selectedVariantId = vId;
-        selectedVariantPrice = vPrice;
+        selectedVariantId = vId; selectedVariantPrice = vPrice;
         document.querySelectorAll('.variant-card').forEach(el => el.classList.remove('selected'));
         element.classList.add('selected');
-        
         const formSection = document.getElementById('checkoutFormSection');
-        formSection.style.display = 'block';
-        setTimeout(() => { formSection.style.opacity = '1'; }, 100);
-        formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        formSection.style.display = 'block'; setTimeout(() => formSection.style.opacity = '1', 100);
+        formSection.scrollIntoView({ behavior: 'smooth' });
     };
 
     window.selectPaymentMethod = function(element, mId) {
@@ -441,39 +261,18 @@
 
     async function submitPayment(e) {
         e.preventDefault();
-        const shippingId = document.getElementById('selectedShippingId').value;
-        if (!shippingId) { Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'اختر طريقة الدفع' }); return; }
-        if (!selectedVariantId) { Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'اختر الكمية أولاً' }); return; }
-        
-        const buyerPhone = document.getElementById('buyerPhone').value.trim();
-        const transactionNumber = document.getElementById('transactionNumber').value.trim();
-        if (!buyerPhone || !transactionNumber) { Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'جميع الحقول مطلوبة' }); return; }
-
-        const data = {
-            product_id: currentProductData.id,
-            variant_id: selectedVariantId,
-            shipping_method_id: parseInt(shippingId),
-            buyer_name: "عميل موقع",
-            buyer_phone: buyerPhone,
-            transaction_number: transactionNumber,
-            paid_price: selectedVariantPrice
-        };
-
-        const submitBtn = e.target.querySelector('button[type="submit"]');
-        submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري المعالجة...';
-
+        if (!document.getElementById('selectedShippingId').value || !selectedVariantId) { Swal.fire('تنبيه', 'اختر الكمية وطريقة الدفع', 'warning'); return; }
+        const data = { product_id: currentProductData.id, variant_id: selectedVariantId, shipping_method_id: parseInt(document.getElementById('selectedShippingId').value), buyer_name: "عميل", buyer_phone: document.getElementById('buyerPhone').value.trim(), transaction_number: document.getElementById('transactionNumber').value.trim(), paid_price: selectedVariantPrice };
+        const submitBtn = e.target.querySelector('button[type="submit"]'); submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري المعالجة...';
         try {
-            const resp = await fetch(`${API_BASE}/api/checkout`, {
-                method: 'POST', headers: { ...ngrokHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify(data)
-            });
+            const resp = await fetch(`${API_BASE}/api/checkout`, { method: 'POST', headers: { ...ngrokHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
             const result = await resp.json();
-            if (resp.ok) {
-                Swal.fire({ icon: 'success', title: 'تم الاستلام!', text: result.message, confirmButtonColor: '#6C63FF' }).then(() => { goBackToShop(); location.reload(); });
-            } else { Swal.fire({ icon: 'error', title: 'خطأ', text: result.error }); submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> تأكيد الدفع'; }
-        } catch(err) { Swal.fire({ icon: 'error', title: 'خطأ في الاتصال' }); submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> تأكيد الدفع'; }
+            if (resp.ok) { Swal.fire({ icon: 'success', title: 'تم الاستلام!', text: result.message }).then(() => { goBackToShop(); location.reload(); }); } 
+            else { Swal.fire('خطأ', result.error, 'error'); submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> تأكيد الدفع'; }
+        } catch(err) { Swal.fire('خطأ', 'خطأ في الاتصال', 'error'); submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> تأكيد الدفع'; }
     }
 
-    window.addEventListener('load', () => { loadContacts(); loadAds(); loadSections(); });
+    window.addEventListener('load', () => { loadSettingsAndContacts(); loadAds(); loadSections(); });
 </script>
 </body>
 </html>
