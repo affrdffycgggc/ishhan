@@ -19,7 +19,6 @@
         .ads-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; border-radius: 25px; overflow: hidden; box-shadow: var(--shadow-soft); }
         .slick-slide img { width: 100%; max-height: 400px; object-fit: cover; }
 
-        /* بطاقات الأقسام والمنتجات */
         .section-card, .product-card {
             background-color: var(--card-bg); border-radius: 20px; overflow: hidden; cursor: pointer;
             transition: transform 0.4s, box-shadow 0.4s; margin-bottom: 30px; box-shadow: var(--shadow-soft); text-align: center; border: none; position: relative;
@@ -34,7 +33,6 @@
         .btn-buy { background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); color: white; border: 2px solid rgba(255,255,255,0.8); padding: 10px 25px; border-radius: 50px; font-weight: 700; margin-top: 15px; display: inline-flex; align-items: center; gap: 8px; }
         .btn-buy:hover { background: white; color: var(--primary); }
         
-        /* بطاقات بدون خلفية - تم تغييرها لتكون ملونة وليست بيضاء */
         .no-bg { 
             background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important; 
             justify-content: center; 
@@ -43,7 +41,6 @@
         .no-bg .card-content { color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .no-bg .btn-buy { background: rgba(255,255,255,0.3); border-color: rgba(255,255,255,0.8); color: white; backdrop-filter: blur(5px); }
 
-        /* خلفية الموقع */
         .site-bg-overlay { 
             position: fixed; top:0; left:0; width:100%; height:100%; 
             background-size: cover !important; background-position: center !important; z-index: -1; 
@@ -113,8 +110,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 
 <script>
-    // ⚠️ لا داعي لتعديل الرابط هنا إذا كنت تفتح الموقع من رابط ngrok مباشرة، السكربت سيأخذه تلقائياً
-    const API_BASE = window.location.origin; 
+    // ⚠️ هام جداً: قم بنسخ رابط ngrok من موجه الأوامر والصقه هنا
+    const API_BASE = "https://unbegrudged-direfully-nu.ngrok-free.dev"; 
     const ngrokHeaders = { 'ngrok-skip-browser-warning': '69420' };
     let currentProductData = null; let selectedVariantId = null; let selectedVariantPrice = 0;
 
@@ -184,7 +181,6 @@
             const sections = await resp.json(); const container = document.getElementById('sectionsContainer');
             let html = '';
             sections.forEach((sec, index) => {
-                const bgUrl = fixImageUrl(sec.image);
                 html += `<div class="col-lg-3 col-md-4 col-sm-6 stagger-item" style="animation-delay: ${index * 0.1}s">
                             <div class="section-card no-bg" id="sec_${sec.id}" onclick="showSection(${sec.id})">
                                 <div class="card-bg-overlay"></div>
@@ -211,7 +207,6 @@
             if (data.subs && data.subs.length > 0) {
                 hasItems = true;
                 data.subs.forEach((sub, index) => {
-                    const bgUrl = fixImageUrl(sub.image);
                     content += `<div class="col-lg-3 col-md-4 col-sm-6 stagger-item" style="animation-delay: ${index * 0.1}s">
                                     <div class="section-card no-bg" id="sub_${sub.id}" onclick="showSection(${sub.id})">
                                         <div class="card-bg-overlay"></div>
@@ -222,7 +217,6 @@
             if (data.products && data.products.length) {
                 hasItems = true;
                 data.products.forEach((prod, index) => {
-                    const pBgUrl = fixImageUrl(prod.background_image || prod.images);
                     content += `<div class="col-lg-3 col-md-4 col-sm-6 stagger-item" style="animation-delay: ${index * 0.1}s">
                                     <div class="product-card no-bg" id="prod_${prod.id}" onclick="openDirectCheckout(${prod.id})">
                                         <div class="card-bg-overlay"></div>
