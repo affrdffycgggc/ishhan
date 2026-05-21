@@ -33,20 +33,12 @@
         .btn-buy { background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); color: white; border: 2px solid rgba(255,255,255,0.8); padding: 10px 25px; border-radius: 50px; font-weight: 700; margin-top: 15px; display: inline-flex; align-items: center; gap: 8px; }
         .btn-buy:hover { background: white; color: var(--primary); }
         
-        .no-bg { 
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important; 
-            justify-content: center; 
-        }
+        .no-bg { background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important; justify-content: center; }
         .no-bg .card-bg-overlay { display: none !important; }
         .no-bg .card-content { color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .no-bg .btn-buy { background: rgba(255,255,255,0.3); border-color: rgba(255,255,255,0.8); color: white; backdrop-filter: blur(5px); }
+        .no-bg .btn-buy { background: rgba(255,255,255,0.3); border-color: rgba(255,255,255,0.8); color: white; }
 
-        .site-bg-overlay { 
-            position: fixed; top:0; left:0; width:100%; height:100%; 
-            background-size: cover !important; background-position: center !important; z-index: -1; 
-            filter: blur(8px) brightness(0.75); transform: scale(1.1); 
-        }
-        
+        .site-bg-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background-size: cover !important; background-position: center !important; z-index: -1; filter: blur(8px) brightness(0.75); transform: scale(1.1); }
         .footer { background: #2D3436; color: #636E72; text-align: center; padding: 30px; margin-top: 60px; border-top: 5px solid var(--primary); }
         .page-view { display: none; min-height: 100vh; padding: 20px; opacity: 0; transition: opacity 0.5s; }
         .page-view.active-page { display: block; opacity: 1; }
@@ -54,10 +46,7 @@
         .page-header h3 { margin: 0; font-weight: 900; font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
         .page-header button { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         
-        .checkout-product-header { 
-            min-height: 300px; border-radius: 20px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center; 
-            background-size: cover !important; background-position: center !important; margin-bottom: 30px; background-color: var(--primary); 
-        }
+        .checkout-product-header { min-height: 300px; border-radius: 20px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center; background-size: cover !important; background-position: center !important; margin-bottom: 30px; background-color: var(--primary); }
         .checkout-product-header .overlay { position: absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(108,99,255,0.4)); }
         .checkout-product-header .content { position: relative; z-index: 2; color: white; padding: 20px; }
         .checkout-product-header h2 { font-weight: 900; font-size: 2.5rem; text-shadow: 0 3px 6px rgba(0,0,0,0.7); }
@@ -73,13 +62,7 @@
         
         .payment-method-item { border: 2px solid #dfe6e9; border-radius: 15px; padding: 20px; margin-bottom: 15px; cursor: pointer; background: var(--card-bg); display: flex; justify-content: space-between; align-items: center; }
         .payment-method-item.active { border-color: var(--primary); background: #f8f9ff; }
-        
-        /* تعديل زر النسخ */
-        .wallet-link-btn { 
-            background: transparent; color: var(--primary); border: 2px solid var(--primary); padding: 8px 15px; 
-            border-radius: 50px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; 
-            cursor: pointer; transition: all 0.3s;
-        }
+        .wallet-link-btn { background: transparent; color: var(--primary); border: 2px solid var(--primary); padding: 8px 15px; border-radius: 50px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; transition: all 0.3s; }
         .wallet-link-btn:hover { background: var(--primary); color: white; }
         .wallet-link-btn.copied { background: var(--success); border-color: var(--success); color: white; }
 
@@ -131,15 +114,23 @@
         if (!url) { element.classList.add('no-bg'); return; }
         try {
             const resp = await fetch(url, { headers: ngrokHeaders });
-            if (!resp.ok) throw new Error('Image load failed');
+            if (!resp.ok) throw new Error();
             const blob = await resp.blob();
             const objectUrl = URL.createObjectURL(blob);
             element.style.backgroundImage = `url('${objectUrl}')`;
             element.classList.remove('no-bg');
-        } catch(e) {
-            element.classList.add('no-bg');
-            element.style.backgroundImage = 'none';
-        }
+        } catch(e) { element.classList.add('no-bg'); element.style.backgroundImage = 'none'; }
+    }
+
+    // دالة مخصصة لجلب صور الإعلانات وتحويلها لـ Blob لتجاوز حماية ngrok
+    async function fetchImageAsBlob(url) {
+        if (!url) return '';
+        try {
+            const resp = await fetch(url, { headers: ngrokHeaders });
+            if (!resp.ok) throw new Error();
+            const blob = await resp.blob();
+            return URL.createObjectURL(blob);
+        } catch (e) { return url; }
     }
 
     function showPage(pageId) {
@@ -149,28 +140,15 @@
     }
     function goBackToShop() { showPage('mainShopPage'); }
 
-    // دالة نسخ رابط المحفظة للحافظة
     window.copyWalletLink = function(element, url) {
-        event.stopPropagation(); // منع اختيار طريقة الدفع عند الضغط على زر النسخ
-        event.preventDefault();
-
-        if (!url || url === '#') {
-            Swal.fire('تنبيه', 'لم يتم تحديد رابط لهذه المحفظة بعد', 'warning');
-            return;
-        }
-
+        event.stopPropagation(); event.preventDefault();
+        if (!url || url === '#') { Swal.fire('تنبيه', 'لم يتم تحديد رابط لهذه المحفظة بعد', 'warning'); return; }
         navigator.clipboard.writeText(url).then(() => {
             const originalHTML = element.innerHTML;
             element.innerHTML = '<i class="fas fa-check"></i> تم النسخ';
             element.classList.add('copied');
-            
-            setTimeout(() => {
-                element.innerHTML = originalHTML;
-                element.classList.remove('copied');
-            }, 2000);
-        }).catch(err => {
-            Swal.fire('خطأ', 'فشل نسخ الرابط، انسخه يدوياً: ' + url, 'error');
-        });
+            setTimeout(() => { element.innerHTML = originalHTML; element.classList.remove('copied'); }, 2000);
+        }).catch(err => { Swal.fire('خطأ', 'فشل نسخ الرابط، انسخه يدوياً: ' + url, 'error'); });
     };
 
     async function loadSettingsAndContacts() {
@@ -181,10 +159,7 @@
             if (data.whatsapp) html += `<a href="https://wa.me/${data.whatsapp}"><i class="fab fa-whatsapp" style="color:#25D366"></i> واتساب</a>`;
             if (data.telegram) html += `<a href="https://t.me/${data.telegram}"><i class="fab fa-telegram" style="color:#0088cc"></i> تلغرام</a>`;
             document.getElementById('contactBar').innerHTML = html || '';
-            if (data.bot_background) {
-                const bgUrl = fixImageUrl(data.bot_background);
-                applyBgImage(document.getElementById('siteBgOverlay'), bgUrl);
-            }
+            if (data.bot_background) { applyBgImage(document.getElementById('siteBgOverlay'), fixImageUrl(data.bot_background)); }
         } catch(e) {}
     }
 
@@ -194,10 +169,21 @@
             const ads = await resp.json(); const container = document.getElementById('adsContainer');
             if (!ads.length) { container.innerHTML = ''; return; }
             let html = '<div class="ads-slider">';
-            ads.forEach(ad => {
-                if (ad.type === 'animated') { ad.images.split(',').forEach(img => { html += `<div><a href="${ad.link || '#'}"><img src="${fixImageUrl(img.trim())}" alt="إعلان"></a></div>`; }); } 
-                else { html += `<div><a href="${ad.link || '#'}"><img src="${fixImageUrl(ad.images)}" alt="إعلان"></a></div>`; }
-            });
+            for (let ad of ads) {
+                const link = ad.link || '#';
+                if (ad.type === 'animated' && ad.images) {
+                    const images = ad.images.split(',');
+                    for (let img of images) {
+                        const url = fixImageUrl(img.trim());
+                        const blobUrl = await fetchImageAsBlob(url);
+                        html += `<div><a href="${link}"><img src="${blobUrl}" alt="إعلان"></a></div>`;
+                    }
+                } else if (ad.images) {
+                    const url = fixImageUrl(ad.images);
+                    const blobUrl = await fetchImageAsBlob(url);
+                    html += `<div><a href="${link}"><img src="${blobUrl}" alt="إعلان"></a></div>`;
+                }
+            }
             html += '</div>'; container.innerHTML = html;
             $('.ads-slider').slick({ rtl: true, autoplay: true, autoplaySpeed: 3000, dots: true, fade: true });
         } catch(e) {}
@@ -216,7 +202,6 @@
                             </div></div>`;
             });
             container.innerHTML = html || '<div class="col-12 text-center"><h4>لا توجد أقسام</h4></div>';
-            
             sections.forEach(sec => { const bgUrl = fixImageUrl(sec.image); if (bgUrl) applyBgImage(document.getElementById(`sec_${sec.id}`), bgUrl); });
         } catch(e) { document.getElementById('sectionsContainer').innerHTML = '<div class="col-12 text-danger text-center">فشل الاتصال بالسيرفر</div>'; }
     }
@@ -228,7 +213,6 @@
             const data = await resp.json();
             let content = `<div class="text-center mb-4"><h4 style="color:var(--primary); font-weight:900;">${data.section.name}</h4></div><div class="row">`;
             let hasItems = false;
-
             if (data.subs && data.subs.length > 0) {
                 hasItems = true;
                 data.subs.forEach((sub, index) => {
@@ -251,15 +235,11 @@
                                         </div></div></div>`;
                 });
             } 
-            
             if (!hasItems) { content += `<div class="col-12"><p class="text-center text-muted">لا توجد منتجات بعد.</p></div>`; }
             content += `</div>`;
-            
             Swal.fire({ html: content, width: '90%', showConfirmButton: false, showCloseButton: true });
-
             if (data.subs) data.subs.forEach(sub => { const bgUrl = fixImageUrl(sub.image); if (bgUrl) applyBgImage(document.getElementById(`sub_${sub.id}`), bgUrl); });
             if (data.products) data.products.forEach(prod => { const pBgUrl = fixImageUrl(prod.background_image || prod.images); if (pBgUrl) applyBgImage(document.getElementById(`prod_${prod.id}`), pBgUrl); });
-
         } catch(e) { Swal.fire('خطأ', 'فشل التحميل', 'error'); }
     }
 
@@ -270,7 +250,6 @@
             if (!resp.ok) throw new Error();
             const product = await resp.json();
             currentProductData = product; selectedVariantId = null; selectedVariantPrice = 0;
-
             const shippingResp = await fetch(`${API_BASE}/api/shipping`, { headers: ngrokHeaders });
             const shippingMethods = await shippingResp.json();
 
@@ -282,14 +261,8 @@
             let shippingHtml = '';
             shippingMethods.forEach(m => {
                 const walletLink = m.wallet_link || (m.note && m.note.startsWith('http') ? m.note : '');
-                // تم تغيير الرابط إلى زر ينسخ للحافظة
                 let walletBtnHtml = '';
-                if (walletLink) {
-                    walletBtnHtml = `<button type="button" class="wallet-link-btn" onclick="copyWalletLink(this, '${walletLink}')">
-                                        <i class="fas fa-copy"></i> نسخ رابط المحفظة
-                                     </button>`;
-                }
-                
+                if (walletLink) { walletBtnHtml = `<button type="button" class="wallet-link-btn" onclick="copyWalletLink(this, '${walletLink}')"><i class="fas fa-copy"></i> نسخ رابط المحفظة</button>`; }
                 shippingHtml += `<div class="payment-method-item" onclick="selectPaymentMethod(this, ${m.id})">
                                     <div><i class="fas fa-wallet" style="color:var(--primary);"></i> <strong>${m.name}</strong></div>
                                     ${walletBtnHtml}
@@ -306,17 +279,17 @@
                 <div id="checkoutFormSection" style="display:none; opacity:0; transition: opacity 0.5s;">
                     <h4 class="mb-3 mt-5" style="border-right:5px solid var(--success); padding-right:15px;">2. طريقة الدفع:</h4>
                     <div class="mb-4">${shippingHtml}<input type="hidden" id="selectedShippingId" value=""></div>
-                    <h4 class="mb-3 mt-5" style="border-right:5px solid var(--secondary); padding-right:15px;">3. بيانات التحويل:</h4>
+                    <h4 class="mb-3 mt-5" style="border-right:5px solid var(--secondary); padding-right:15px;">3. المعلومات المطلوبة:</h4>
                     <form id="paymentForm">
-                        <label class="form-label" style="font-weight:700;">رقم الجوال *</label><input type="tel" id="buyerPhone" class="form-control mb-3" required placeholder="09xxxxxxxx">
-                        <label class="form-label" style="font-weight:700;">رقم العملية *</label><input type="text" id="transactionNumber" class="form-control" required placeholder="رقم التحويل">
+                        <label class="form-label" style="font-weight:700;">المعلومات المطلوبة *</label>
+                        <textarea id="buyerPhone" class="form-control mb-3" required placeholder="أدخل المعلومات المطلوبة مثل: رقم الحساب، آي دي اللعبة، رقم الهاتف..." rows="3"></textarea>
+                        <label class="form-label" style="font-weight:700;">رقم العملية (رقم التحويل) *</label>
+                        <input type="text" id="transactionNumber" class="form-control" required placeholder="رقم التحويل البنكي">
                         <button type="submit" class="btn-submit-payment"><i class="fas fa-paper-plane"></i> تأكيد الدفع</button>
                     </form>
                 </div>`;
             document.getElementById('checkoutContent').innerHTML = html;
-            
             if (pBgUrl) applyBgImage(document.getElementById('checkout_header_img'), pBgUrl);
-
             showPage('checkoutPage');
             document.getElementById('paymentForm').addEventListener('submit', submitPayment);
         } catch(e) { Swal.fire('خطأ', 'فشل تحميل المنتج', 'error'); }
