@@ -19,25 +19,40 @@
         .ads-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; border-radius: 25px; overflow: hidden; box-shadow: var(--shadow-soft); }
         .slick-slide img { width: 100%; max-height: 400px; object-fit: cover; }
 
+        /* بطاقات الأقسام والمنتجات */
         .section-card, .product-card {
             background-color: var(--card-bg); border-radius: 20px; overflow: hidden; cursor: pointer;
             transition: transform 0.4s, box-shadow 0.4s; margin-bottom: 30px; box-shadow: var(--shadow-soft); text-align: center; border: none; position: relative;
             min-height: 280px; display: flex; flex-direction: column; justify-content: flex-end;
-            background-size: cover; background-position: center; background-repeat: no-repeat;
+            background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important;
         }
-        .card-bg-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, rgba(0,0,0,0.85) 10%, rgba(0,0,0,0) 100%); z-index: 1; transition: background 0.4s; }
-        .section-card:hover .card-bg-overlay, .product-card:hover .card-bg-overlay { background: linear-gradient(to top, rgba(108, 99, 255, 0.95) 10%, rgba(0,0,0,0.1) 100%); }
+        /* تعتيم خفيف وأنيق بدل الأسود الكثيف */
+        .card-bg-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0) 100%);
+            z-index: 1; transition: background 0.4s;
+        }
+        .section-card:hover .card-bg-overlay, .product-card:hover .card-bg-overlay {
+            background: linear-gradient(to top, rgba(108, 99, 255, 0.85) 0%, rgba(108, 99, 255, 0.4) 60%, rgba(0,0,0,0.1) 100%);
+        }
         .section-card:hover, .product-card:hover { box-shadow: var(--shadow-hover); }
         .card-content { padding: 25px 20px; position: relative; z-index: 2; color: white; }
-        .card-content h3 { font-size: 1.4rem; font-weight: 800; margin: 0; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        .card-content h3 { font-size: 1.4rem; font-weight: 800; margin: 0; text-shadow: 0 2px 5px rgba(0,0,0,0.7); }
         .btn-buy { background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); color: white; border: 2px solid rgba(255,255,255,0.8); padding: 10px 25px; border-radius: 50px; font-weight: 700; margin-top: 15px; display: inline-flex; align-items: center; gap: 8px; }
         .btn-buy:hover { background: white; color: var(--primary); }
-        .no-bg { background: var(--card-bg); justify-content: center; }
-        .no-bg .card-bg-overlay { display: none; }
+        
+        /* أنماط البطاقات بدون خلفية (احتياطية) */
+        .no-bg { background: var(--card-bg) !important; justify-content: center; }
+        .no-bg .card-bg-overlay { display: none !important; }
         .no-bg .card-content { color: var(--text-main); text-shadow: none; }
         .no-bg .btn-buy { background: var(--primary); border-color: var(--primary); color: white; }
 
-        .site-bg-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background-size: cover; background-position: center; z-index: -1; filter: blur(10px) brightness(0.5); transform: scale(1.1); }
+        /* خلفية الموقع العامة - تعتيم أقل ووضوح أكثر */
+        .site-bg-overlay { 
+            position: fixed; top:0; left:0; width:100%; height:100%; 
+            background-size: cover !important; background-position: center !important; z-index: -1; 
+            filter: blur(8px) brightness(0.75); transform: scale(1.1); 
+        }
         
         .footer { background: #2D3436; color: #636E72; text-align: center; padding: 30px; margin-top: 60px; border-top: 5px solid var(--primary); }
         .page-view { display: none; min-height: 100vh; padding: 20px; opacity: 0; transition: opacity 0.5s; }
@@ -46,10 +61,14 @@
         .page-header h3 { margin: 0; font-weight: 900; font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
         .page-header button { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         
-        .checkout-product-header { min-height: 300px; border-radius: 20px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center; background-size: cover; background-position: center; margin-bottom: 30px; background-color: var(--primary); }
-        .checkout-product-header .overlay { position: absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(108,99,255,0.4)); }
+        /* صفحة الدفع للمنتج */
+        .checkout-product-header { 
+            min-height: 300px; border-radius: 20px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center; 
+            background-size: cover !important; background-position: center !important; margin-bottom: 30px; background-color: var(--primary); 
+        }
+        .checkout-product-header .overlay { position: absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(108,99,255,0.4)); }
         .checkout-product-header .content { position: relative; z-index: 2; color: white; padding: 20px; }
-        .checkout-product-header h2 { font-weight: 900; font-size: 2.5rem; text-shadow: 0 3px 6px rgba(0,0,0,0.5); }
+        .checkout-product-header h2 { font-weight: 900; font-size: 2.5rem; text-shadow: 0 3px 6px rgba(0,0,0,0.7); }
 
         .variant-card { background: var(--card-bg); border: 2px solid #dfe6e9; border-radius: 20px; padding: 25px; margin-bottom: 20px; cursor: pointer; transition: all 0.3s; display: flex; justify-content: space-between; align-items: center; }
         .variant-card:hover { border-color: var(--primary); }
@@ -99,7 +118,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 
 <script>
-    const API_BASE = "https://unbegrudged-direfully-nu.ngrok-free.dev"; // ضع رابطك
+    const API_BASE = "https://unbegrudged-direfully-nu.ngrok-free.dev"; // ⚠️ تأكد من تعديل هذا الرابط لرابط الـ ngrok الخاص بك
     const ngrokHeaders = { 'ngrok-skip-browser-warning': '69420' };
     let currentProductData = null; let selectedVariantId = null; let selectedVariantPrice = 0;
 
@@ -107,6 +126,24 @@
         if (!path || !path.trim()) return ''; 
         if (path.startsWith('http')) return path;
         return `${API_BASE}/${path}`;
+    }
+
+    // دالة للتأكد من تحميل الصورة، وإذا فشلت تزيل الخلفية السوداء
+    function applyBgImage(element, url) {
+        if (!url) {
+            element.classList.add('no-bg');
+            return;
+        }
+        const img = new Image();
+        img.onload = function() {
+            element.style.backgroundImage = `url('${url}')`;
+            element.classList.remove('no-bg');
+        };
+        img.onerror = function() {
+            element.classList.add('no-bg'); // إزالة السواد إذا الصورة معطلة
+            element.style.backgroundImage = 'none';
+        };
+        img.src = url;
     }
 
     function showPage(pageId) {
@@ -124,9 +161,10 @@
             if (data.whatsapp) html += `<a href="https://wa.me/${data.whatsapp}"><i class="fab fa-whatsapp" style="color:#25D366"></i> واتساب</a>`;
             if (data.telegram) html += `<a href="https://t.me/${data.telegram}"><i class="fab fa-telegram" style="color:#0088cc"></i> تلغرام</a>`;
             document.getElementById('contactBar').innerHTML = html || '';
+            
             if (data.bot_background) {
                 const bgUrl = fixImageUrl(data.bot_background);
-                document.getElementById('siteBgOverlay').style.backgroundImage = `url('${bgUrl}')`;
+                applyBgImage(document.getElementById('siteBgOverlay'), bgUrl);
             }
         } catch(e) {}
     }
@@ -154,12 +192,18 @@
             sections.forEach((sec, index) => {
                 const bgUrl = fixImageUrl(sec.image);
                 html += `<div class="col-lg-3 col-md-4 col-sm-6 stagger-item" style="animation-delay: ${index * 0.1}s">
-                            <div class="section-card ${bgUrl ? '' : 'no-bg'}" style="${bgUrl ? `background-image: url('${bgUrl}')` : ''}" onclick="showSection(${sec.id})">
+                            <div class="section-card ${bgUrl ? '' : 'no-bg'}" id="sec_${sec.id}" onclick="showSection(${sec.id})">
                                 <div class="card-bg-overlay"></div>
                                 <div class="card-content"><h3>${sec.name}</h3></div>
                             </div></div>`;
             });
             container.innerHTML = html || '<div class="col-12 text-center"><h4>لا توجد أقسام</h4></div>';
+            
+            // تطبيق الخلفيات بأمان
+            sections.forEach(sec => {
+                const bgUrl = fixImageUrl(sec.image);
+                if (bgUrl) applyBgImage(document.getElementById(`sec_${sec.id}`), bgUrl);
+            });
         } catch(e) { document.getElementById('sectionsContainer').innerHTML = '<div class="col-12 text-danger text-center">فشل الاتصال</div>'; }
     }
 
@@ -169,30 +213,42 @@
             if (!resp.ok) throw new Error();
             const data = await resp.json();
             let content = `<div class="text-center mb-4"><h4 style="color:var(--primary); font-weight:900;">${data.section.name}</h4></div><div class="row">`;
+            let hasItems = false;
+
             if (data.subs && data.subs.length > 0) {
+                hasItems = true;
                 data.subs.forEach((sub, index) => {
                     const bgUrl = fixImageUrl(sub.image);
                     content += `<div class="col-lg-3 col-md-4 col-sm-6 stagger-item" style="animation-delay: ${index * 0.1}s">
-                                    <div class="section-card ${bgUrl ? '' : 'no-bg'}" style="${bgUrl ? `background-image: url('${bgUrl}')` : ''}" onclick="showSection(${sub.id})">
+                                    <div class="section-card ${bgUrl ? '' : 'no-bg'}" id="sub_${sub.id}" onclick="showSection(${sub.id})">
                                         <div class="card-bg-overlay"></div>
                                         <div class="card-content"><h3>${sub.name}</h3></div>
                                     </div></div>`;
                 });
             }
             if (data.products && data.products.length) {
+                hasItems = true;
                 data.products.forEach((prod, index) => {
                     const pBgUrl = fixImageUrl(prod.background_image || prod.images);
                     content += `<div class="col-lg-3 col-md-4 col-sm-6 stagger-item" style="animation-delay: ${index * 0.1}s">
-                                    <div class="product-card ${pBgUrl ? '' : 'no-bg'}" style="${pBgUrl ? `background-image: url('${pBgUrl}')` : ''}" onclick="openDirectCheckout(${prod.id})">
+                                    <div class="product-card ${pBgUrl ? '' : 'no-bg'}" id="prod_${prod.id}" onclick="openDirectCheckout(${prod.id})">
                                         <div class="card-bg-overlay"></div>
                                         <div class="card-content">
                                             <h3>${prod.name}</h3>
                                             <button class="btn-buy" onclick="event.stopPropagation(); openDirectCheckout(${prod.id})"><i class="fas fa-bolt"></i> شراء</button>
                                         </div></div></div>`;
                 });
-            } else if (!data.subs || !data.subs.length) { content += `<div class="col-12"><p class="text-center text-muted">لا توجد منتجات بعد.</p></div>`; }
+            } 
+            
+            if (!hasItems) { content += `<div class="col-12"><p class="text-center text-muted">لا توجد منتجات بعد.</p></div>`; }
             content += `</div>`;
+            
             Swal.fire({ html: content, width: '90%', showConfirmButton: false, showCloseButton: true });
+
+            // تطبيق الخلفيات بأمان بعد فتح النافذة
+            if (data.subs) data.subs.forEach(sub => { const bgUrl = fixImageUrl(sub.image); if (bgUrl) applyBgImage(document.getElementById(`sub_${sub.id}`), bgUrl); });
+            if (data.products) data.products.forEach(prod => { const pBgUrl = fixImageUrl(prod.background_image || prod.images); if (pBgUrl) applyBgImage(document.getElementById(`prod_${prod.id}`), pBgUrl); });
+
         } catch(e) { Swal.fire('خطأ', 'فشل التحميل', 'error'); }
     }
 
@@ -223,7 +279,7 @@
 
             const pBgUrl = fixImageUrl(product.background_image || product.images);
             const html = `
-                <div class="checkout-product-header ${pBgUrl ? '' : 'no-bg'}" style="${pBgUrl ? `background-image: url('${pBgUrl}')` : ''}">
+                <div class="checkout-product-header ${pBgUrl ? '' : 'no-bg'}" id="checkout_header_img">
                     <div class="overlay"></div><div class="content"><h2>${product.name}</h2><p>${product.description || ''}</p></div>
                 </div>
                 <h4 class="mb-3" style="border-right:5px solid var(--primary); padding-right:15px;">1. اختر الكمية:</h4>
@@ -239,6 +295,10 @@
                     </form>
                 </div>`;
             document.getElementById('checkoutContent').innerHTML = html;
+            
+            // تطبيق خلفية رأس المنتج بأمان
+            if (pBgUrl) applyBgImage(document.getElementById('checkout_header_img'), pBgUrl);
+
             showPage('checkoutPage');
             document.getElementById('paymentForm').addEventListener('submit', submitPayment);
         } catch(e) { Swal.fire('خطأ', 'فشل تحميل المنتج', 'error'); }
