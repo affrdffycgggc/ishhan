@@ -29,7 +29,7 @@
         .ads-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; border-radius: 25px; overflow: hidden; box-shadow: var(--shadow-glow); border: 1px solid var(--card-border); }
         .slick-slide img { width: 100%; max-height: 450px; object-fit: cover; border-radius: 20px; }
         
-        /* تعديل شريط النص المتحرك ليدور بشكل مستمر */
+        /* شريط النص المتحرك */
         .text-ad-banner { background: linear-gradient(135deg, var(--secondary), var(--primary-dark)); padding: 0; text-align: center; color: white; min-height: 80px; display: flex; align-items: center; font-size: 1.5rem; font-weight: 800; text-shadow: 0 2px 10px rgba(0,0,0,0.5); overflow: hidden; position: relative; }
         .text-ad-banner.animated-text { padding: 0; }
         .text-ad-banner.animated-text span { display: inline-block; white-space: nowrap; padding-right: 50px; animation: marquee 10s linear infinite; }
@@ -120,10 +120,10 @@
     const ngrokHeaders = { 'ngrok-skip-browser-warning': '69420' };
     let currentProductData = null; let selectedVariantId = null; let selectedVariantPrice = 0;
 
+    // دالة تصحيح الروابط لتجاوز حظر Ngrok مباشرة وبدون بطء
     function fixImageUrl(path) {
         if (!path || !path.trim()) return ''; 
         if (path.startsWith('http')) {
-            // إضافة متغير تجاوز لروابط ngrok الخارجية
             if (path.includes('ngrok') && !path.includes('ngrok-skip-browser-warning')) {
                 return path + (path.includes('?') ? '&' : '?') + 'ngrok-skip-browser-warning=true';
             }
@@ -132,32 +132,11 @@
         return `${API_BASE}/${path}?ngrok-skip-browser-warning=true`;
     }
 
-    // دالة لتحميل الصور كـ Blob لتخطي حظر Ngrok على الوسائط
-    async function applyBgImage(element, url) {
+    // دالة وضع الخلفية بطريقة سريعة (تسمح للمتصفح بتخزينها مؤقتاً)
+    function applyBgImage(element, url) {
         if (!url) { element.classList.add('no-bg'); return; }
-        try {
-            const resp = await fetch(url.split('?')[0], { headers: ngrokHeaders });
-            if (!resp.ok) throw new Error();
-            const blob = await resp.blob();
-            const objectUrl = URL.createObjectURL(blob);
-            element.style.backgroundImage = `url('${objectUrl}')`;
-            element.classList.remove('no-bg');
-        } catch(e) { element.classList.add('no-bg'); element.style.backgroundImage = 'none'; }
-    }
-
-    // دالة مخصصة لتحميل صور الوسوم <img> عبر Blob
-    async function applyImageSrc(imgElement) {
-        const originalUrl = imgElement.getAttribute('data-src');
-        if (!originalUrl) return;
-        try {
-            const resp = await fetch(originalUrl.split('?')[0], { headers: ngrokHeaders });
-            if (!resp.ok) throw new Error();
-            const blob = await resp.blob();
-            const objectUrl = URL.createObjectURL(blob);
-            imgElement.src = objectUrl;
-        } catch (e) {
-            imgElement.src = 'https://via.placeholder.com/800x400/1a1a2e/00f2ff?text=Image+Load+Error';
-        }
+        element.style.backgroundImage = `url('${url}')`;
+        element.classList.remove('no-bg');
     }
 
     function showPage(pageId) {
@@ -205,7 +184,6 @@
                 const content = ad.content || '';
                 
                 if (ad.type === 'text_animated' && content) {
-                    // استخدام وسم span لتفعيل التمرير الدائري
                     slidesHtml.push(`<div><a href="${link}" style="text-decoration:none;"><div class="text-ad-banner animated-text"><span>${content}</span></div></a></div>`);
                 } else if (ad.type === 'text_static' && content) {
                     slidesHtml.push(`<div><a href="${link}" style="text-decoration:none;"><div class="text-ad-banner"><span>${content}</span></div></a></div>`);
@@ -214,12 +192,11 @@
                     for (let img of images) {
                         if (!img.trim()) continue;
                         const url = fixImageUrl(img.trim());
-                        // نستخدم data-src بدلاً من src مباشرة لتطبيق الـ Blob
-                        slidesHtml.push(`<div><a href="${link}"><img data-src="${url}" src="https://via.placeholder.com/800x400/0b0c15/00f2ff?text=Loading..." alt="إعلان"></a></div>`);
+                        slidesHtml.push(`<div><a href="${link}"><img src="${url}" alt="إعلان" onerror="this.src='https://via.placeholder.com/800x400/1a1a2e/00f2ff?text=Image+Load+Error'"></a></div>`);
                     }
                 } else if (ad.type === 'static' && imgStr) {
                     const url = fixImageUrl(imgStr);
-                    slidesHtml.push(`<div><a href="${link}"><img data-src="${url}" src="https://via.placeholder.com/800x400/0b0c15/00f2ff?text=Loading..." alt="إعلان"></a></div>`);
+                    slidesHtml.push(`<div><a href="${link}"><img src="${url}" alt="إعلان" onerror="this.src='https://via.placeholder.com/800x400/1a1a2e/00f2ff?text=Image+Load+Error'"></a></div>`);
                 }
             }
             
@@ -229,11 +206,6 @@
                     $('.ads-slider').slick('unslick');
                 }
                 $('.ads-slider').slick({ rtl: true, autoplay: true, autoplaySpeed: 3000, dots: true, fade: true, arrows: false });
-                
-                // تحميل صور الإعلانات الأمنية عبر Blob
-                document.querySelectorAll('.ads-slider img[data-src]').forEach(img => {
-                    applyImageSrc(img);
-                });
             } else {
                 container.innerHTML = '';
             }
@@ -326,8 +298,7 @@
                 let qrHtml = '';
                 if (m.qr_image) {
                     const qrUrl = fixImageUrl(m.qr_image);
-                    // استخدام دالة تحميل الـ Blob لصورة الـ QR أيضاً
-                    qrHtml = `<img data-src="${qrUrl}" class="qr-code-img" alt="QR Code" src="https://via.placeholder.com/90/0b0c15/00f2ff?text=QR">`;
+                    qrHtml = `<img src="${qrUrl}" class="qr-code-img" alt="QR Code" onerror="this.style.display='none'">`;
                 }
 
                 shippingHtml += `<div class="payment-method-item" onclick="selectPaymentMethod(this, ${m.id})">
@@ -362,9 +333,7 @@
                 </div>`;
             document.getElementById('checkoutContent').innerHTML = html;
             
-            // تحميل صورة رأس المنتج وصور الـ QR بشكل آمن عبر Blob
             if (pBgUrl) applyBgImage(document.getElementById('checkout_header_img'), pBgUrl);
-            document.querySelectorAll('#checkoutContent img[data-src]').forEach(img => applyImageSrc(img));
             
             showPage('checkoutPage');
             document.getElementById('paymentForm').addEventListener('submit', submitPayment);
