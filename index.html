@@ -110,8 +110,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 
 <script>
-    // ⚠️ هام جداً: قم بنسخ رابط ngrok من موجه الأوامر والصقه هنا
-    const API_BASE = "https://unbegrudged-direfully-nu.ngrok-free.dev"; 
+    const API_BASE = "https://unbegrudged-direfully-nu.ngrok-free.dev"; // ⚠️ ضع رابط ngrok الخاص بك هنا
     const ngrokHeaders = { 'ngrok-skip-browser-warning': '69420' };
     let currentProductData = null; let selectedVariantId = null; let selectedVariantPrice = 0;
 
@@ -121,21 +120,20 @@
         return `${API_BASE}/${path}`;
     }
 
-    function applyBgImage(element, url) {
-        if (!url) {
-            element.classList.add('no-bg');
-            return;
-        }
-        const img = new Image();
-        img.onload = function() {
-            element.style.backgroundImage = `url('${url}')`;
+    // دالة سحرية لتحميل الصور وتجاوز حماية ngrok للخلفيات
+    async function applyBgImage(element, url) {
+        if (!url) { element.classList.add('no-bg'); return; }
+        try {
+            const resp = await fetch(url, { headers: ngrokHeaders });
+            if (!resp.ok) throw new Error('Image load failed');
+            const blob = await resp.blob();
+            const objectUrl = URL.createObjectURL(blob);
+            element.style.backgroundImage = `url('${objectUrl}')`;
             element.classList.remove('no-bg');
-        };
-        img.onerror = function() {
+        } catch(e) {
             element.classList.add('no-bg');
             element.style.backgroundImage = 'none';
-        };
-        img.src = url;
+        }
     }
 
     function showPage(pageId) {
@@ -189,10 +187,7 @@
             });
             container.innerHTML = html || '<div class="col-12 text-center"><h4>لا توجد أقسام</h4></div>';
             
-            sections.forEach(sec => {
-                const bgUrl = fixImageUrl(sec.image);
-                if (bgUrl) applyBgImage(document.getElementById(`sec_${sec.id}`), bgUrl);
-            });
+            sections.forEach(sec => { const bgUrl = fixImageUrl(sec.image); if (bgUrl) applyBgImage(document.getElementById(`sec_${sec.id}`), bgUrl); });
         } catch(e) { document.getElementById('sectionsContainer').innerHTML = '<div class="col-12 text-danger text-center">فشل الاتصال بالسيرفر</div>'; }
     }
 
