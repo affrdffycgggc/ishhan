@@ -73,8 +73,15 @@
         
         .payment-method-item { border: 2px solid #dfe6e9; border-radius: 15px; padding: 20px; margin-bottom: 15px; cursor: pointer; background: var(--card-bg); display: flex; justify-content: space-between; align-items: center; }
         .payment-method-item.active { border-color: var(--primary); background: #f8f9ff; }
-        .wallet-link-btn { background: transparent; color: var(--primary); border: 2px solid var(--primary); padding: 8px 15px; border-radius: 50px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
+        
+        /* تعديل زر النسخ */
+        .wallet-link-btn { 
+            background: transparent; color: var(--primary); border: 2px solid var(--primary); padding: 8px 15px; 
+            border-radius: 50px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; 
+            cursor: pointer; transition: all 0.3s;
+        }
         .wallet-link-btn:hover { background: var(--primary); color: white; }
+        .wallet-link-btn.copied { background: var(--success); border-color: var(--success); color: white; }
 
         .stagger-item { opacity: 0; transform: translateY(30px); animation: staggerFadeIn 0.6s ease forwards; }
         @keyframes staggerFadeIn { to { opacity: 1; transform: translateY(0); } }
@@ -120,7 +127,6 @@
         return `${API_BASE}/${path}`;
     }
 
-    // دالة سحرية لتحميل الصور وتجاوز حماية ngrok للخلفيات
     async function applyBgImage(element, url) {
         if (!url) { element.classList.add('no-bg'); return; }
         try {
@@ -142,6 +148,30 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     function goBackToShop() { showPage('mainShopPage'); }
+
+    // دالة نسخ رابط المحفظة للحافظة
+    window.copyWalletLink = function(element, url) {
+        event.stopPropagation(); // منع اختيار طريقة الدفع عند الضغط على زر النسخ
+        event.preventDefault();
+
+        if (!url || url === '#') {
+            Swal.fire('تنبيه', 'لم يتم تحديد رابط لهذه المحفظة بعد', 'warning');
+            return;
+        }
+
+        navigator.clipboard.writeText(url).then(() => {
+            const originalHTML = element.innerHTML;
+            element.innerHTML = '<i class="fas fa-check"></i> تم النسخ';
+            element.classList.add('copied');
+            
+            setTimeout(() => {
+                element.innerHTML = originalHTML;
+                element.classList.remove('copied');
+            }, 2000);
+        }).catch(err => {
+            Swal.fire('خطأ', 'فشل نسخ الرابط، انسخه يدوياً: ' + url, 'error');
+        });
+    };
 
     async function loadSettingsAndContacts() {
         try {
@@ -251,10 +281,18 @@
 
             let shippingHtml = '';
             shippingMethods.forEach(m => {
-                const walletLink = m.wallet_link || (m.note && m.note.startsWith('http') ? m.note : '#');
+                const walletLink = m.wallet_link || (m.note && m.note.startsWith('http') ? m.note : '');
+                // تم تغيير الرابط إلى زر ينسخ للحافظة
+                let walletBtnHtml = '';
+                if (walletLink) {
+                    walletBtnHtml = `<button type="button" class="wallet-link-btn" onclick="copyWalletLink(this, '${walletLink}')">
+                                        <i class="fas fa-copy"></i> نسخ رابط المحفظة
+                                     </button>`;
+                }
+                
                 shippingHtml += `<div class="payment-method-item" onclick="selectPaymentMethod(this, ${m.id})">
                                     <div><i class="fas fa-wallet" style="color:var(--primary);"></i> <strong>${m.name}</strong></div>
-                                    <a href="${walletLink}" target="_blank" class="wallet-link-btn" onclick="event.stopPropagation();"><i class="fas fa-external-link-alt"></i> المحفظة</a>
+                                    ${walletBtnHtml}
                                  </div>`;
             });
 
