@@ -165,6 +165,12 @@
             border-color: var(--primary); background: rgba(0, 242, 255, 0.1);
             box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
         }
+        /* كود الكمية غير المتوفرة */
+        .variant-card.disabled-card {
+            opacity: 0.4; cursor: not-allowed; border-color: var(--secondary);
+        }
+        .variant-card.disabled-card:hover { background: var(--card-bg); border-color: var(--secondary); }
+        
         .variant-price { font-size: 1.6rem; font-weight: 900; color: var(--success); text-shadow: 0 0 10px rgba(0, 255, 157, 0.3); }
 
         .form-control {
@@ -198,8 +204,8 @@
         .wallet-link-btn.copied { background: var(--success); border-color: var(--success); color: var(--bg-color); }
 
         .qr-code-img { 
-            max-width: 120px; border-radius: 10px; border: 2px solid var(--card-border); 
-            margin-right: 15px; display: none; 
+            max-width: 90px; border-radius: 10px; border: 2px solid var(--card-border); 
+            margin-left: 15px; 
         }
 
         .stagger-item { opacity: 0; transform: translateY(30px); animation: staggerFadeIn 0.6s ease forwards; }
@@ -248,7 +254,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 
 <script>
-    const API_BASE = "https://unbegrudged-direfully-nu.ngrok-free.dev"; // ⚠️ ضع رابط ngrok الخاص بك هنا
+    // ⚠️ تأكد من تغيير الرابط التالي لرابط ngrok الخاص بك في كل مرة تشغل فيها الخادم
+    const API_BASE = "https://unbegrudged-direfully-nu.ngrok-free.dev"; 
     const ngrokHeaders = { 'ngrok-skip-browser-warning': '69420' };
     let currentProductData = null; let selectedVariantId = null; let selectedVariantPrice = 0;
 
@@ -415,9 +422,10 @@
             let variantsHtml = '';
             if (product.variants && product.variants.length > 0) {
                 product.variants.forEach(v => { 
-                    variantsHtml += `<div class="variant-card" onclick="selectVariant(this, ${v.id}, ${v.price})">
+                    const isDisabled = v.price <= 0;
+                    variantsHtml += `<div class="variant-card ${isDisabled ? 'disabled-card' : ''}" onclick="selectVariant(this, ${v.id}, ${v.price})">
                                         <div style="font-weight:700;"><i class="fas fa-gem" style="color:var(--primary);"></i> ${v.name}</div>
-                                        <div class="variant-price">${v.price > 0 ? v.price + ' ل.س' : 'سيحدد لاحقاً'}</div>
+                                        <div class="variant-price">${v.price > 0 ? v.price + ' ل.س' : '<span style="color:var(--secondary);">غير متوفر</span>'}</div>
                                     </div>`; 
                 });
             } else { variantsHtml = `<div class="alert alert-warning text-center">غير متوفر</div>`; }
@@ -429,24 +437,15 @@
                 if (walletLink) { 
                     walletBtnHtml = `<button type="button" class="wallet-link-btn" onclick="copyWalletLink(this, '${walletLink}')"><i class="fas fa-copy"></i> نسخ الرابط</button>`; 
                 }
-                
-                // معالجة صورة QR Code
                 let qrHtml = '';
                 if (m.qr_image) {
                     const qrUrl = fixImageUrl(m.qr_image);
-                    const blobUrl = await fetchImageAsBlob(qrUrl);
-                    if (blobUrl) {
-                        qrHtml = `<img src="${blobUrl}" class="qr-code-img" alt="QR Code" style="display: inline-block;">`;
-                    }
+                    qrHtml = `<img src="${qrUrl}" class="qr-code-img" alt="QR Code" onerror="this.style.display='none'">`;
                 }
 
                 shippingHtml += `<div class="payment-method-item" onclick="selectPaymentMethod(this, ${m.id})">
-                                    <div style="display:flex; align-items:center; gap:10px;">
-                                        <i class="fas fa-wallet fa-2x" style="color:var(--primary);"></i> 
-                                        <div>
-                                            <strong style="display:block;">${m.name}</strong>
-                                            ${m.note ? `<small style="color:var(--text-muted);">${m.note}</small>` : ''}
-                                        </div>
+                                    <div><i class="fas fa-wallet" style="color:var(--primary);"></i> <strong>${m.name}</strong>
+                                        ${m.note ? `<br><small style="color:var(--text-muted);">${m.note}</small>` : ''}
                                     </div>
                                     <div style="display:flex; align-items:center; gap:10px;">
                                         ${qrHtml}
@@ -482,6 +481,10 @@
     }
 
     window.selectVariant = function(element, vId, vPrice) {
+        if (vPrice <= 0) {
+            Swal.fire('غير متوفر', 'هذه الكمية غير متوفرة حالياً، يرجى اختيار كمية أخرى', 'warning');
+            return;
+        }
         selectedVariantId = vId; selectedVariantPrice = vPrice;
         document.querySelectorAll('.variant-card').forEach(el => el.classList.remove('selected'));
         element.classList.add('selected');
