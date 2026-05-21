@@ -120,23 +120,55 @@
     const ngrokHeaders = { 'ngrok-skip-browser-warning': '69420' };
     let currentProductData = null; let selectedVariantId = null; let selectedVariantPrice = 0;
 
-    // دالة تصحيح الروابط لتجاوز حظر Ngrok مباشرة وبدون بطء
+    // ===== نظام التخزين المؤقت (Cache) لتسريع فتح الصور بشكل كبير =====
+    const imageUrlCache = {}; 
+
     function fixImageUrl(path) {
         if (!path || !path.trim()) return ''; 
-        if (path.startsWith('http')) {
-            if (path.includes('ngrok') && !path.includes('ngrok-skip-browser-warning')) {
-                return path + (path.includes('?') ? '&' : '?') + 'ngrok-skip-browser-warning=true';
-            }
-            return path;
-        }
-        return `${API_BASE}/${path}?ngrok-skip-browser-warning=true`;
+        if (path.startsWith('http')) return path;
+        return `${API_BASE}/${path}`;
     }
 
-    // دالة وضع الخلفية بطريقة سريعة (تسمح للمتصفح بتخزينها مؤقتاً)
-    function applyBgImage(element, url) {
+    // دالة جلب الصور وتحويلها لـ Blob مع نظام تخزين مؤقت فائق السرعة
+    async function getSecureUrl(url) {
+        if (!url) return '';
+        if (imageUrlCache[url]) return imageUrlCache[url]; // إرجاع الصورة فوراً إذا تم تحميلها مسبقاً
+        
+        try {
+            const resp = await fetch(url, { headers: ngrokHeaders });
+            if (!resp.ok) throw new Error('Network response was not ok');
+            const blob = await resp.blob();
+            const objectUrl = URL.createObjectURL(blob);
+            imageUrlCache[url] = objectUrl; // حفظ في الذاكرة المؤقتة
+            return objectUrl;
+        } catch (e) {
+            console.error('Failed to fetch image:', url, e);
+            return '';
+        }
+    }
+
+    // دالة وضع الخلفيات
+    async function applyBgImage(element, url) {
         if (!url) { element.classList.add('no-bg'); return; }
-        element.style.backgroundImage = `url('${url}')`;
-        element.classList.remove('no-bg');
+        const objectUrl = await getSecureUrl(url);
+        if (objectUrl) {
+            element.style.backgroundImage = `url('${objectUrl}')`;
+            element.classList.remove('no-bg');
+        } else {
+            element.classList.add('no-bg');
+        }
+    }
+
+    // دالة معالجة صور وسوم img
+    async function applyImageSrc(imgElement) {
+        const url = imgElement.getAttribute('data-src');
+        if (!url) return;
+        const objectUrl = await getSecureUrl(url);
+        if (objectUrl) {
+            imgElement.src = objectUrl;
+        } else {
+            imgElement.src = 'https://via.placeholder.com/800x400/0b0c15/00f2ff?text=Error';
+        }
     }
 
     function showPage(pageId) {
@@ -192,11 +224,11 @@
                     for (let img of images) {
                         if (!img.trim()) continue;
                         const url = fixImageUrl(img.trim());
-                        slidesHtml.push(`<div><a href="${link}"><img src="${url}" alt="إعلان" onerror="this.src='https://via.placeholder.com/800x400/1a1a2e/00f2ff?text=Image+Load+Error'"></a></div>`);
+                        slidesHtml.push(`<div><a href="${link}"><img data-src="${url}" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="إعلان"></a></div>`);
                     }
                 } else if (ad.type === 'static' && imgStr) {
                     const url = fixImageUrl(imgStr);
-                    slidesHtml.push(`<div><a href="${link}"><img src="${url}" alt="إعلان" onerror="this.src='https://via.placeholder.com/800x400/1a1a2e/00f2ff?text=Image+Load+Error'"></a></div>`);
+                    slidesHtml.push(`<div><a href="${link}"><img data-src="${url}" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="إعلان"></a></div>`);
                 }
             }
             
@@ -206,6 +238,9 @@
                     $('.ads-slider').slick('unslick');
                 }
                 $('.ads-slider').slick({ rtl: true, autoplay: true, autoplaySpeed: 3000, dots: true, fade: true, arrows: false });
+                
+                // تحميل الصور عبر النظام الآمن
+                document.querySelectorAll('.ads-slider img[data-src]').forEach(img => applyImageSrc(img));
             } else {
                 container.innerHTML = '';
             }
@@ -298,7 +333,7 @@
                 let qrHtml = '';
                 if (m.qr_image) {
                     const qrUrl = fixImageUrl(m.qr_image);
-                    qrHtml = `<img src="${qrUrl}" class="qr-code-img" alt="QR Code" onerror="this.style.display='none'">`;
+                    qrHtml = `<img data-src="${qrUrl}" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="qr-code-img" alt="QR Code">`;
                 }
 
                 shippingHtml += `<div class="payment-method-item" onclick="selectPaymentMethod(this, ${m.id})">
@@ -333,7 +368,9 @@
                 </div>`;
             document.getElementById('checkoutContent').innerHTML = html;
             
+            // تحميل جميع الصور في صفحة الدفع عبر النظام الآمن والسريع
             if (pBgUrl) applyBgImage(document.getElementById('checkout_header_img'), pBgUrl);
+            document.querySelectorAll('#checkoutContent img[data-src]').forEach(img => applyImageSrc(img));
             
             showPage('checkoutPage');
             document.getElementById('paymentForm').addEventListener('submit', submitPayment);
