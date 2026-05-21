@@ -107,40 +107,29 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 
 <script>
-    // ⚠️ تأكد من تغيير الرابط التالي لرابط ngrok الخاص بك
+    // ⚠️⚠️⚠️ تأكد من تغيير الرابط التالي لرابط ngrok الخاص بك ⚠️⚠️⚠️
     const API_BASE = "https://unbegrudged-direfully-nu.ngrok-free.dev"; 
+    
     const ngrokHeaders = { 'ngrok-skip-browser-warning': '69420' };
     let currentProductData = null; let selectedVariantId = null; let selectedVariantPrice = 0;
 
     function fixImageUrl(path) {
         if (!path || !path.trim()) return ''; 
         if (path.startsWith('http')) return path;
-        return `${API_BASE}/${path}`;
+        // إضافة متغير لتجاوز صفحة تحذير ngrok عند تحميل الصور مباشرة
+        return `${API_BASE}/${path}?ngrok-skip-browser-warning=true`;
     }
 
     async function applyBgImage(element, url) {
         if (!url) { element.classList.add('no-bg'); return; }
         try {
-            const resp = await fetch(url, { headers: ngrokHeaders });
+            const resp = await fetch(url.split('?')[0], { headers: ngrokHeaders });
             if (!resp.ok) throw new Error();
             const blob = await resp.blob();
             const objectUrl = URL.createObjectURL(blob);
             element.style.backgroundImage = `url('${objectUrl}')`;
             element.classList.remove('no-bg');
         } catch(e) { element.classList.add('no-bg'); element.style.backgroundImage = 'none'; }
-    }
-
-    async function fetchImageAsBlob(url) {
-        if (!url) return '';
-        try {
-            const resp = await fetch(url, { headers: ngrokHeaders });
-            if (!resp.ok) throw new Error();
-            const blob = await resp.blob();
-            return URL.createObjectURL(blob);
-        } catch (e) { 
-            console.error("Failed to fetch image as blob:", url);
-            return url; // أرجع الرابط الأصلي إذا فشل الـ blob
-        }
     }
 
     function showPage(pageId) {
@@ -178,14 +167,10 @@
             const resp = await fetch(`${API_BASE}/api/ads`, { headers: ngrokHeaders });
             if (!resp.ok) throw new Error('Network response was not ok');
             const ads = await resp.json();
-            
-            console.log("Ads data from API:", ads); // طباعة الإعلانات في الكونسول للتحقق
-            
             const container = document.getElementById('adsContainer');
             if (!ads || ads.length === 0) { container.innerHTML = ''; return; }
             
             let slidesHtml = [];
-            
             for (let ad of ads) {
                 const link = ad.link || '#';
                 const imgStr = ad.images || '';
@@ -200,20 +185,16 @@
                     for (let img of images) {
                         if (!img.trim()) continue;
                         const url = fixImageUrl(img.trim());
-                        const blobUrl = await fetchImageAsBlob(url);
-                        // إضافة onerror لمعرفة هل الصورة معطلة أم لا
-                        slidesHtml.push(`<div><a href="${link}"><img src="${blobUrl}" alt="إعلان" onerror="this.src='https://via.placeholder.com/800x400?text=Image+Load+Error'"></a></div>`);
+                        slidesHtml.push(`<div><a href="${link}"><img src="${url}" alt="إعلان" onerror="this.src='https://via.placeholder.com/800x400/1a1a2e/00f2ff?text=Image+Load+Error'"></a></div>`);
                     }
                 } else if (ad.type === 'static' && imgStr) {
                     const url = fixImageUrl(imgStr);
-                    const blobUrl = await fetchImageAsBlob(url);
-                    slidesHtml.push(`<div><a href="${link}"><img src="${blobUrl}" alt="إعلان" onerror="this.src='https://via.placeholder.com/800x400?text=Image+Load+Error'"></a></div>`);
+                    slidesHtml.push(`<div><a href="${link}"><img src="${url}" alt="إعلان" onerror="this.src='https://via.placeholder.com/800x400/1a1a2e/00f2ff?text=Image+Load+Error'"></a></div>`);
                 }
             }
             
             if (slidesHtml.length > 0) {
                 container.innerHTML = `<div class="ads-slider">${slidesHtml.join('')}</div>`;
-                // إزالة السلايدر القديم إذا كان يعمل لتجنب التكرار
                 if ($('.ads-slider').hasClass('slick-initialized')) {
                     $('.ads-slider').slick('unslick');
                 }
@@ -221,9 +202,7 @@
             } else {
                 container.innerHTML = '';
             }
-        } catch(e) { 
-            console.error("Ad load error:", e); 
-        }
+        } catch(e) { console.error("Ad load error:", e); }
     }
 
     async function loadSections() {
