@@ -359,8 +359,12 @@
                     <div class="mb-4">${shippingHtml}<input type="hidden" id="selectedShippingId" value=""></div>
                     <h4 class="mb-3 mt-5" style="border-right:4px solid var(--secondary); padding-right:15px; font-weight:900;">3. المعلومات المطلوبة:</h4>
                     <form id="paymentForm">
-                        <label class="form-label" style="font-weight:700;">المعلومات المطلوبة *</label>
+                        <label class="form-label" style="font-weight:700;">الاسم الكامل *</label>
+                        <input type="text" id="buyerName" class="form-control mb-3" required placeholder="أدخل اسمك الكامل">
+                        
+                        <label class="form-label" style="font-weight:700;">معلومات الحساب / الآي دي *</label>
                         <textarea id="buyerPhone" class="form-control mb-3" required placeholder="أدخل المعلومات المطلوبة مثل: رقم الحساب، آي دي اللعبة، رقم الهاتف..." rows="3"></textarea>
+                        
                         <label class="form-label" style="font-weight:700;">رقم العملية (رقم التحويل) *</label>
                         <input type="text" id="transactionNumber" class="form-control" required placeholder="رقم التحويل البنكي">
                         <button type="submit" class="btn-submit-payment"><i class="fas fa-paper-plane"></i> تأكيد الدفع</button>
@@ -402,7 +406,8 @@
         const data = { 
             product_id: currentProductData.id, variant_id: selectedVariantId, 
             shipping_method_id: parseInt(document.getElementById('selectedShippingId').value), 
-            buyer_name: "عميل", buyer_phone: document.getElementById('buyerPhone').value.trim(), 
+            buyer_name: document.getElementById('buyerName').value.trim(), 
+            buyer_phone: document.getElementById('buyerPhone').value.trim(), 
             transaction_number: document.getElementById('transactionNumber').value.trim(), 
             paid_price: selectedVariantPrice 
         };
