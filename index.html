@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- سكربت للتعرف على مستخدم تليغرام -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -30,12 +29,10 @@
         .contact-bar a:hover { color: var(--primary); }
         .ads-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; border-radius: 25px; overflow: hidden; box-shadow: var(--shadow-glow); border: 1px solid var(--card-border); }
         .slick-slide img { width: 100%; max-height: 450px; object-fit: cover; border-radius: 20px; }
-        
         .text-ad-banner { background: linear-gradient(135deg, var(--secondary), var(--primary-dark)); padding: 0; text-align: center; color: white; min-height: 80px; display: flex; align-items: center; font-size: 1.5rem; font-weight: 800; text-shadow: 0 2px 10px rgba(0,0,0,0.5); overflow: hidden; position: relative; }
         .text-ad-banner.animated-text { padding: 0; }
         .text-ad-banner.animated-text span { display: inline-block; white-space: nowrap; padding-right: 50px; animation: marquee 10s linear infinite; }
         @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-
         .section-card, .product-card { background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 25px; overflow: hidden; cursor: pointer; transition: transform 0.4s, box-shadow 0.4s, border-color 0.4s; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; position: relative; min-height: 280px; display: flex; flex-direction: column; justify-content: flex-end; background-size: cover !important; background-position: center !important; backdrop-filter: blur(5px); }
         .card-bg-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, rgba(11,12,21,0.95) 0%, rgba(11,12,21,0.4) 60%, rgba(0,0,0,0) 100%); z-index: 1; transition: background 0.4s; }
         .section-card:hover, .product-card:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: var(--shadow-hover); }
@@ -63,7 +60,6 @@
         .variant-card:hover { border-color: var(--primary); background: rgba(0, 242, 255, 0.05); }
         .variant-card.selected { border-color: var(--primary); background: rgba(0, 242, 255, 0.1); box-shadow: 0 0 20px rgba(0, 242, 255, 0.2); }
         .variant-card.disabled-card { opacity: 0.4; cursor: not-allowed; border-color: var(--secondary); }
-        .variant-card.disabled-card:hover { background: var(--card-bg); border-color: var(--secondary); }
         .variant-price { font-size: 1.6rem; font-weight: 900; color: var(--success); text-shadow: 0 0 10px rgba(0, 255, 157, 0.3); }
         .form-control { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); border-radius: 15px; padding: 15px; color: white; }
         .form-control:focus { background: rgba(255,255,255,0.08); border-color: var(--primary); box-shadow: 0 0 0 4px rgba(0, 242, 255, 0.1); color: white; }
@@ -114,59 +110,27 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 
 <script>
-    const API_BASE = "https://unbegrudged-direfully-nu.ngrok-free.dev"; 
-    const ngrokHeaders = { 'ngrok-skip-browser-warning': '69420' };
     let currentProductData = null; let selectedVariantId = null; let selectedVariantPrice = 0;
 
-    // ===== نظام إنشاء الحساب التلقائي =====
     function getBuyerId() {
-        // 1. التحقق مما إذا كان المستخدم يتصفح من داخل تليغرام
         if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
             return 'tg_' + Telegram.WebApp.initDataUnsafe.user.id;
         }
-        // 2. إذا كان يتصفح من المتصفح العادي، ننشئ معرف ونخزنه محلياً
         let deviceId = localStorage.getItem('shop_device_id');
-        if (!deviceId) {
-            deviceId = 'web_' + Math.random().toString(36).substr(2, 9);
-            localStorage.setItem('shop_device_id', deviceId);
-        }
+        if (!deviceId) { deviceId = 'web_' + Math.random().toString(36).substr(2, 9); localStorage.setItem('shop_device_id', deviceId); }
         return deviceId;
     }
+    const BUYER_ID = getBuyerId(); 
 
-    const BUYER_ID = getBuyerId(); // معرف المستخدم الحالي
-
-    const imageUrlCache = {}; 
     function fixImageUrl(path) {
         if (!path || !path.trim()) return ''; 
         if (path.startsWith('http')) return path;
-        return `${API_BASE}/${path}`;
+        return `/${path}`; // استخدام المسار النسبي لأن الموقع على نفس السيرفر
     }
 
-    async function getSecureUrl(url) {
-        if (!url) return '';
-        if (imageUrlCache[url]) return imageUrlCache[url]; 
-        try {
-            const resp = await fetch(url, { headers: ngrokHeaders });
-            if (!resp.ok) throw new Error('Network response was not ok');
-            const blob = await resp.blob();
-            const objectUrl = URL.createObjectURL(blob);
-            imageUrlCache[url] = objectUrl; 
-            return objectUrl;
-        } catch (e) { return ''; }
-    }
-
-    async function applyBgImage(element, url) {
+    function applyBgImage(element, url) {
         if (!url) { element.classList.add('no-bg'); return; }
-        const objectUrl = await getSecureUrl(url);
-        if (objectUrl) { element.style.backgroundImage = `url('${objectUrl}')`; element.classList.remove('no-bg'); }
-        else { element.classList.add('no-bg'); }
-    }
-
-    async function applyImageSrc(imgElement) {
-        const url = imgElement.getAttribute('data-src');
-        if (!url) return;
-        const objectUrl = await getSecureUrl(url);
-        if (objectUrl) imgElement.src = objectUrl;
+        element.style.backgroundImage = `url('${url}')`; element.classList.remove('no-bg');
     }
 
     function showPage(pageId) {
@@ -181,20 +145,18 @@
         if (!url || url === '#') { Swal.fire('تنبيه', 'لم يتم تحديد رابط لهذه المحفظة بعد', 'warning'); return; }
         navigator.clipboard.writeText(url).then(() => {
             const originalHTML = element.innerHTML;
-            element.innerHTML = '<i class="fas fa-check"></i> تم النسخ';
-            element.classList.add('copied');
+            element.innerHTML = '<i class="fas fa-check"></i> تم النسخ'; element.classList.add('copied');
             setTimeout(() => { element.innerHTML = originalHTML; element.classList.remove('copied'); }, 2000);
         }).catch(err => { Swal.fire('خطأ', 'فشل نسخ الرابط، انسخه يدوياً: ' + url, 'error'); });
     };
 
     async function loadSettingsAndContacts() {
         try {
-            const resp = await fetch(`${API_BASE}/api/settings`, { headers: ngrokHeaders });
+            const resp = await fetch('/api/settings'); // مسار نسبي
             const data = await resp.json(); 
             let html = '';
             if (data.whatsapp) html += `<a href="https://wa.me/${data.whatsapp}"><i class="fab fa-whatsapp" style="color:#25D366"></i> واتساب</a>`;
             if (data.telegram) html += `<a href="https://t.me/${data.telegram}"><i class="fab fa-telegram" style="color:#0088cc"></i> تلغرام</a>`;
-            // إضافة زر طلباتي
             html += `<a href="#" onclick="showMyOrders(); return false;"><i class="fas fa-box" style="color:var(--success)"></i> طلباتي</a>`;
             document.getElementById('contactBar').innerHTML = html || '';
             if (data.bot_background) { applyBgImage(document.getElementById('siteBgOverlay'), fixImageUrl(data.bot_background)); }
@@ -203,7 +165,7 @@
 
     async function showMyOrders() {
         try {
-            const resp = await fetch(`${API_BASE}/api/my_orders?buyer_id=${BUYER_ID}`, { headers: ngrokHeaders });
+            const resp = await fetch(`/api/my_orders?buyer_id=${BUYER_ID}`);
             const orders = await resp.json();
             let htmlContent = '';
             if (orders.length === 0) {
@@ -214,16 +176,7 @@
                     if(o.status === 'pending') { statusText = '⏳ قيد المراجعة'; statusClass = 'status-pending'; }
                     else if(o.status === 'verified') { statusText = '✅ مكتمل'; statusClass = 'status-verified'; }
                     else if(o.status === 'rejected') { statusText = '❌ مرفوض'; statusClass = 'status-rejected'; }
-                    
-                    htmlContent += `
-                        <div class="order-card">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                                <span style="font-weight:900; color:var(--primary);">#${o.id}</span>
-                                <span class="${statusClass}">${statusText}</span>
-                            </div>
-                            <p style="margin:0; font-weight:700;">${o.product_name} - ${o.variant_name}</p>
-                            <p style="margin:0; color:var(--text-muted); font-size:0.9rem;">السعر: ${o.paid_price} ل.س | التاريخ: ${new Date(o.created_at).toLocaleDateString('ar-EG')}</p>
-                        </div>`;
+                    htmlContent += `<div class="order-card"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><span style="font-weight:900; color:var(--primary);">#${o.id}</span><span class="${statusClass}">${statusText}</span></div><p style="margin:0; font-weight:700;">${o.product_name} - ${o.variant_name}</p><p style="margin:0; color:var(--text-muted); font-size:0.9rem;">السعر: ${o.paid_price} ل.س | التاريخ: ${new Date(o.created_at).toLocaleDateString('ar-EG')}</p></div>`;
                 });
             }
             Swal.fire({ title: '📦 طلباتي', html: htmlContent, showConfirmButton: false, showCloseButton: true, width: '500px', background: 'rgba(11,12,21,0.9)', color: '#fff' });
@@ -232,7 +185,7 @@
 
     async function loadAds() {
         try {
-            const resp = await fetch(`${API_BASE}/api/ads`, { headers: ngrokHeaders });
+            const resp = await fetch('/api/ads');
             if (!resp.ok) throw new Error('Network response was not ok');
             const ads = await resp.json();
             const container = document.getElementById('adsContainer');
@@ -246,31 +199,26 @@
                     slidesHtml.push(`<div><a href="${link}" style="text-decoration:none;"><div class="text-ad-banner"><span>${content}</span></div></a></div>`);
                 } else if (ad.type === 'animated' && imgStr) {
                     const images = imgStr.split(',');
-                    for (let img of images) { if (!img.trim()) continue; const url = fixImageUrl(img.trim()); slidesHtml.push(`<div><a href="${link}"><img data-src="${url}" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="إعلان"></a></div>`); }
+                    for (let img of images) { if (!img.trim()) continue; const url = fixImageUrl(img.trim()); slidesHtml.push(`<div><a href="${link}"><img src="${url}" alt="إعلان"></a></div>`); }
                 } else if (ad.type === 'static' && imgStr) {
-                    const url = fixImageUrl(imgStr); slidesHtml.push(`<div><a href="${link}"><img data-src="${url}" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="إعلان"></a></div>`);
+                    const url = fixImageUrl(imgStr); slidesHtml.push(`<div><a href="${link}"><img src="${url}" alt="إعلان"></a></div>`);
                 }
             }
             if (slidesHtml.length > 0) {
                 container.innerHTML = `<div class="ads-slider">${slidesHtml.join('')}</div>`;
                 if ($('.ads-slider').hasClass('slick-initialized')) $('.ads-slider').slick('unslick');
                 $('.ads-slider').slick({ rtl: true, autoplay: true, autoplaySpeed: 3000, dots: true, fade: true, arrows: false });
-                document.querySelectorAll('.ads-slider img[data-src]').forEach(img => applyImageSrc(img));
             } else { container.innerHTML = ''; }
         } catch(e) { console.error("Ad load error:", e); }
     }
 
     async function loadSections() {
         try {
-            const resp = await fetch(`${API_BASE}/api/sections?parent=0`, { headers: ngrokHeaders });
+            const resp = await fetch('/api/sections?parent=0');
             const sections = await resp.json(); const container = document.getElementById('sectionsContainer');
             let html = '';
             sections.forEach((sec, index) => {
-                html += `<div class="col-lg-3 col-md-4 col-sm-6 stagger-item" style="animation-delay: ${index * 0.1}s">
-                            <div class="section-card no-bg" id="sec_${sec.id}" onclick="showSection(${sec.id})">
-                                <div class="card-bg-overlay"></div>
-                                <div class="card-content"><h3>${sec.name}</h3></div>
-                            </div></div>`;
+                html += `<div class="col-lg-3 col-md-4 col-sm-6 stagger-item" style="animation-delay: ${index * 0.1}s"><div class="section-card no-bg" id="sec_${sec.id}" onclick="showSection(${sec.id})"><div class="card-bg-overlay"></div><div class="card-content"><h3>${sec.name}</h3></div></div></div>`;
             });
             container.innerHTML = html || '<div class="col-12 text-center"><h4>لا توجد أقسام</h4></div>';
             sections.forEach(sec => { const bgUrl = fixImageUrl(sec.image); if (bgUrl) applyBgImage(document.getElementById(`sec_${sec.id}`), bgUrl); });
@@ -279,7 +227,7 @@
 
     async function showSection(sectionId) {
         try {
-            const resp = await fetch(`${API_BASE}/api/sections/${sectionId}`, { headers: ngrokHeaders });
+            const resp = await fetch(`/api/sections/${sectionId}`);
             if (!resp.ok) throw new Error();
             const data = await resp.json();
             let content = `<div class="text-center mb-4"><h4 style="color:var(--primary); font-weight:900;">${data.section.name}</h4></div><div class="row">`;
@@ -303,11 +251,11 @@
     async function openDirectCheckout(productId) {
         Swal.close();
         try {
-            const resp = await fetch(`${API_BASE}/api/product/${productId}`, { headers: ngrokHeaders });
+            const resp = await fetch(`/api/product/${productId}`);
             if (!resp.ok) throw new Error();
             const product = await resp.json();
             currentProductData = product; selectedVariantId = null; selectedVariantPrice = 0;
-            const shippingResp = await fetch(`${API_BASE}/api/shipping`, { headers: ngrokHeaders });
+            const shippingResp = await fetch('/api/shipping');
             const shippingMethods = await shippingResp.json();
 
             let variantsHtml = '';
@@ -323,7 +271,7 @@
                 const walletLink = m.wallet_link || ''; let walletBtnHtml = '';
                 if (walletLink) { walletBtnHtml = `<button type="button" class="wallet-link-btn" onclick="copyWalletLink(this, '${walletLink}')"><i class="fas fa-copy"></i> نسخ الرابط</button>`; }
                 let qrHtml = '';
-                if (m.qr_image) { const qrUrl = fixImageUrl(m.qr_image); qrHtml = `<img data-src="${qrUrl}" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="qr-code-img" alt="QR Code">`; }
+                if (m.qr_image) { const qrUrl = fixImageUrl(m.qr_image); qrHtml = `<img src="${qrUrl}" class="qr-code-img" alt="QR Code">`; }
                 shippingHtml += `<div class="payment-method-item" onclick="selectPaymentMethod(this, ${m.id})"><div><i class="fas fa-wallet" style="color:var(--primary);"></i> <strong>${m.name}</strong>${m.note ? `<br><small style="color:var(--text-muted);">${m.note}</small>` : ''}</div><div style="display:flex; align-items:center; gap:10px;">${qrHtml}${walletBtnHtml}</div></div>`;
             }
 
@@ -348,7 +296,6 @@
                 </div>`;
             document.getElementById('checkoutContent').innerHTML = html;
             if (pBgUrl) applyBgImage(document.getElementById('checkout_header_img'), pBgUrl);
-            document.querySelectorAll('#checkoutContent img[data-src]').forEach(img => applyImageSrc(img));
             showPage('checkoutPage');
             document.getElementById('paymentForm').addEventListener('submit', submitPayment);
         } catch(e) { Swal.fire('خطأ', 'فشل تحميل المنتج', 'error'); }
@@ -380,12 +327,12 @@
             buyer_phone: document.getElementById('buyerPhone').value.trim(), 
             transaction_number: document.getElementById('transactionNumber').value.trim(), 
             paid_price: selectedVariantPrice,
-            buyer_id: BUYER_ID // إرسال معرف المستخدم مع الطلب
+            buyer_id: BUYER_ID
         };
         const submitBtn = e.target.querySelector('button[type="submit"]'); 
         submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري المعالجة...';
         try {
-            const resp = await fetch(`${API_BASE}/api/checkout`, { method: 'POST', headers: { ...ngrokHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+            const resp = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
             const result = await resp.json();
             if (resp.ok) { 
                 Swal.fire({ icon: 'success', title: 'تم الاستلام!', text: result.message, background: 'rgba(11,12,21,0.9)', color: '#fff' }).then(() => { goBackToShop(); location.reload(); }); 
