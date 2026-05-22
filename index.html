@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- سكربت للتعرف على مستخدم تليغرام -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
             --primary: #00f2ff; --primary-dark: #00b8c4; --secondary: #bc13fe;
@@ -29,14 +31,10 @@
         .ads-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; border-radius: 25px; overflow: hidden; box-shadow: var(--shadow-glow); border: 1px solid var(--card-border); }
         .slick-slide img { width: 100%; max-height: 450px; object-fit: cover; border-radius: 20px; }
         
-        /* شريط النص المتحرك */
         .text-ad-banner { background: linear-gradient(135deg, var(--secondary), var(--primary-dark)); padding: 0; text-align: center; color: white; min-height: 80px; display: flex; align-items: center; font-size: 1.5rem; font-weight: 800; text-shadow: 0 2px 10px rgba(0,0,0,0.5); overflow: hidden; position: relative; }
         .text-ad-banner.animated-text { padding: 0; }
         .text-ad-banner.animated-text span { display: inline-block; white-space: nowrap; padding-right: 50px; animation: marquee 10s linear infinite; }
-        @keyframes marquee {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
         .section-card, .product-card { background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 25px; overflow: hidden; cursor: pointer; transition: transform 0.4s, box-shadow 0.4s, border-color 0.4s; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; position: relative; min-height: 280px; display: flex; flex-direction: column; justify-content: flex-end; background-size: cover !important; background-position: center !important; backdrop-filter: blur(5px); }
         .card-bg-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, rgba(11,12,21,0.95) 0%, rgba(11,12,21,0.4) 60%, rgba(0,0,0,0) 100%); z-index: 1; transition: background 0.4s; }
@@ -83,6 +81,8 @@
         @media (max-width: 768px) { .variant-card, .payment-method-item { flex-direction: column; text-align: center; gap: 15px; } .checkout-product-header h2 { font-size: 1.8rem; } }
         .swal2-popup { background: rgba(11, 12, 21, 0.95) !important; border: 1px solid var(--card-border) !important; color: var(--text-main) !important; border-radius: 25px !important; }
         .swal2-close { color: var(--text-main) !important; }
+        .order-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 15px; padding: 15px; margin-bottom: 15px; text-align: right; }
+        .status-pending { color: #ffc107; font-weight: bold; } .status-verified { color: #00ff9d; font-weight: bold; } .status-rejected { color: #ff4d4d; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -114,61 +114,59 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 
 <script>
-    // ⚠️⚠️⚠️ تأكد من تغيير الرابط التالي لرابط ngrok الخاص بك ⚠️⚠️⚠️
     const API_BASE = "https://unbegrudged-direfully-nu.ngrok-free.dev"; 
-    
     const ngrokHeaders = { 'ngrok-skip-browser-warning': '69420' };
     let currentProductData = null; let selectedVariantId = null; let selectedVariantPrice = 0;
 
-    // ===== نظام التخزين المؤقت (Cache) لتسريع فتح الصور بشكل كبير =====
-    const imageUrlCache = {}; 
+    // ===== نظام إنشاء الحساب التلقائي =====
+    function getBuyerId() {
+        // 1. التحقق مما إذا كان المستخدم يتصفح من داخل تليغرام
+        if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
+            return 'tg_' + Telegram.WebApp.initDataUnsafe.user.id;
+        }
+        // 2. إذا كان يتصفح من المتصفح العادي، ننشئ معرف ونخزنه محلياً
+        let deviceId = localStorage.getItem('shop_device_id');
+        if (!deviceId) {
+            deviceId = 'web_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('shop_device_id', deviceId);
+        }
+        return deviceId;
+    }
 
+    const BUYER_ID = getBuyerId(); // معرف المستخدم الحالي
+
+    const imageUrlCache = {}; 
     function fixImageUrl(path) {
         if (!path || !path.trim()) return ''; 
         if (path.startsWith('http')) return path;
         return `${API_BASE}/${path}`;
     }
 
-    // دالة جلب الصور وتحويلها لـ Blob مع نظام تخزين مؤقت فائق السرعة
     async function getSecureUrl(url) {
         if (!url) return '';
-        if (imageUrlCache[url]) return imageUrlCache[url]; // إرجاع الصورة فوراً إذا تم تحميلها مسبقاً
-        
+        if (imageUrlCache[url]) return imageUrlCache[url]; 
         try {
             const resp = await fetch(url, { headers: ngrokHeaders });
             if (!resp.ok) throw new Error('Network response was not ok');
             const blob = await resp.blob();
             const objectUrl = URL.createObjectURL(blob);
-            imageUrlCache[url] = objectUrl; // حفظ في الذاكرة المؤقتة
+            imageUrlCache[url] = objectUrl; 
             return objectUrl;
-        } catch (e) {
-            console.error('Failed to fetch image:', url, e);
-            return '';
-        }
+        } catch (e) { return ''; }
     }
 
-    // دالة وضع الخلفيات
     async function applyBgImage(element, url) {
         if (!url) { element.classList.add('no-bg'); return; }
         const objectUrl = await getSecureUrl(url);
-        if (objectUrl) {
-            element.style.backgroundImage = `url('${objectUrl}')`;
-            element.classList.remove('no-bg');
-        } else {
-            element.classList.add('no-bg');
-        }
+        if (objectUrl) { element.style.backgroundImage = `url('${objectUrl}')`; element.classList.remove('no-bg'); }
+        else { element.classList.add('no-bg'); }
     }
 
-    // دالة معالجة صور وسوم img
     async function applyImageSrc(imgElement) {
         const url = imgElement.getAttribute('data-src');
         if (!url) return;
         const objectUrl = await getSecureUrl(url);
-        if (objectUrl) {
-            imgElement.src = objectUrl;
-        } else {
-            imgElement.src = 'https://via.placeholder.com/800x400/0b0c15/00f2ff?text=Error';
-        }
+        if (objectUrl) imgElement.src = objectUrl;
     }
 
     function showPage(pageId) {
@@ -196,9 +194,40 @@
             let html = '';
             if (data.whatsapp) html += `<a href="https://wa.me/${data.whatsapp}"><i class="fab fa-whatsapp" style="color:#25D366"></i> واتساب</a>`;
             if (data.telegram) html += `<a href="https://t.me/${data.telegram}"><i class="fab fa-telegram" style="color:#0088cc"></i> تلغرام</a>`;
+            // إضافة زر طلباتي
+            html += `<a href="#" onclick="showMyOrders(); return false;"><i class="fas fa-box" style="color:var(--success)"></i> طلباتي</a>`;
             document.getElementById('contactBar').innerHTML = html || '';
             if (data.bot_background) { applyBgImage(document.getElementById('siteBgOverlay'), fixImageUrl(data.bot_background)); }
         } catch(e) {}
+    }
+
+    async function showMyOrders() {
+        try {
+            const resp = await fetch(`${API_BASE}/api/my_orders?buyer_id=${BUYER_ID}`, { headers: ngrokHeaders });
+            const orders = await resp.json();
+            let htmlContent = '';
+            if (orders.length === 0) {
+                htmlContent = '<p style="text-align:center; color:var(--text-muted);">لا توجد طلبات سابقة لك.</p>';
+            } else {
+                orders.forEach(o => {
+                    let statusText = ''; let statusClass = '';
+                    if(o.status === 'pending') { statusText = '⏳ قيد المراجعة'; statusClass = 'status-pending'; }
+                    else if(o.status === 'verified') { statusText = '✅ مكتمل'; statusClass = 'status-verified'; }
+                    else if(o.status === 'rejected') { statusText = '❌ مرفوض'; statusClass = 'status-rejected'; }
+                    
+                    htmlContent += `
+                        <div class="order-card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                <span style="font-weight:900; color:var(--primary);">#${o.id}</span>
+                                <span class="${statusClass}">${statusText}</span>
+                            </div>
+                            <p style="margin:0; font-weight:700;">${o.product_name} - ${o.variant_name}</p>
+                            <p style="margin:0; color:var(--text-muted); font-size:0.9rem;">السعر: ${o.paid_price} ل.س | التاريخ: ${new Date(o.created_at).toLocaleDateString('ar-EG')}</p>
+                        </div>`;
+                });
+            }
+            Swal.fire({ title: '📦 طلباتي', html: htmlContent, showConfirmButton: false, showCloseButton: true, width: '500px', background: 'rgba(11,12,21,0.9)', color: '#fff' });
+        } catch(e) { Swal.fire('خطأ', 'فشل تحميل الطلبات', 'error'); }
     }
 
     async function loadAds() {
@@ -208,42 +237,26 @@
             const ads = await resp.json();
             const container = document.getElementById('adsContainer');
             if (!ads || ads.length === 0) { container.innerHTML = ''; return; }
-            
             let slidesHtml = [];
             for (let ad of ads) {
-                const link = ad.link || '#';
-                const imgStr = ad.images || '';
-                const content = ad.content || '';
-                
+                const link = ad.link || '#'; const imgStr = ad.images || ''; const content = ad.content || '';
                 if (ad.type === 'text_animated' && content) {
                     slidesHtml.push(`<div><a href="${link}" style="text-decoration:none;"><div class="text-ad-banner animated-text"><span>${content}</span></div></a></div>`);
                 } else if (ad.type === 'text_static' && content) {
                     slidesHtml.push(`<div><a href="${link}" style="text-decoration:none;"><div class="text-ad-banner"><span>${content}</span></div></a></div>`);
                 } else if (ad.type === 'animated' && imgStr) {
                     const images = imgStr.split(',');
-                    for (let img of images) {
-                        if (!img.trim()) continue;
-                        const url = fixImageUrl(img.trim());
-                        slidesHtml.push(`<div><a href="${link}"><img data-src="${url}" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="إعلان"></a></div>`);
-                    }
+                    for (let img of images) { if (!img.trim()) continue; const url = fixImageUrl(img.trim()); slidesHtml.push(`<div><a href="${link}"><img data-src="${url}" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="إعلان"></a></div>`); }
                 } else if (ad.type === 'static' && imgStr) {
-                    const url = fixImageUrl(imgStr);
-                    slidesHtml.push(`<div><a href="${link}"><img data-src="${url}" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="إعلان"></a></div>`);
+                    const url = fixImageUrl(imgStr); slidesHtml.push(`<div><a href="${link}"><img data-src="${url}" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="إعلان"></a></div>`);
                 }
             }
-            
             if (slidesHtml.length > 0) {
                 container.innerHTML = `<div class="ads-slider">${slidesHtml.join('')}</div>`;
-                if ($('.ads-slider').hasClass('slick-initialized')) {
-                    $('.ads-slider').slick('unslick');
-                }
+                if ($('.ads-slider').hasClass('slick-initialized')) $('.ads-slider').slick('unslick');
                 $('.ads-slider').slick({ rtl: true, autoplay: true, autoplaySpeed: 3000, dots: true, fade: true, arrows: false });
-                
-                // تحميل الصور عبر النظام الآمن
                 document.querySelectorAll('.ads-slider img[data-src]').forEach(img => applyImageSrc(img));
-            } else {
-                container.innerHTML = '';
-            }
+            } else { container.innerHTML = ''; }
         } catch(e) { console.error("Ad load error:", e); }
     }
 
@@ -273,25 +286,11 @@
             let hasItems = false;
             if (data.subs && data.subs.length > 0) {
                 hasItems = true;
-                data.subs.forEach((sub, index) => {
-                    content += `<div class="col-lg-3 col-md-4 col-sm-6 stagger-item" style="animation-delay: ${index * 0.1}s">
-                                    <div class="section-card no-bg" id="sub_${sub.id}" onclick="showSection(${sub.id})">
-                                        <div class="card-bg-overlay"></div>
-                                        <div class="card-content"><h3>${sub.name}</h3></div>
-                                    </div></div>`;
-                });
+                data.subs.forEach((sub, index) => { content += `<div class="col-lg-3 col-md-4 col-sm-6 stagger-item" style="animation-delay: ${index * 0.1}s"><div class="section-card no-bg" id="sub_${sub.id}" onclick="showSection(${sub.id})"><div class="card-bg-overlay"></div><div class="card-content"><h3>${sub.name}</h3></div></div></div>`; });
             }
             if (data.products && data.products.length) {
                 hasItems = true;
-                data.products.forEach((prod, index) => {
-                    content += `<div class="col-lg-3 col-md-4 col-sm-6 stagger-item" style="animation-delay: ${index * 0.1}s">
-                                    <div class="product-card no-bg" id="prod_${prod.id}" onclick="openDirectCheckout(${prod.id})">
-                                        <div class="card-bg-overlay"></div>
-                                        <div class="card-content">
-                                            <h3>${prod.name}</h3>
-                                            <button class="btn-buy" onclick="event.stopPropagation(); openDirectCheckout(${prod.id})"><i class="fas fa-bolt"></i> شراء</button>
-                                        </div></div></div>`;
-                });
+                data.products.forEach((prod, index) => { content += `<div class="col-lg-3 col-md-4 col-sm-6 stagger-item" style="animation-delay: ${index * 0.1}s"><div class="product-card no-bg" id="prod_${prod.id}" onclick="openDirectCheckout(${prod.id})"><div class="card-bg-overlay"></div><div class="card-content"><h3>${prod.name}</h3><button class="btn-buy" onclick="event.stopPropagation(); openDirectCheckout(${prod.id})"><i class="fas fa-bolt"></i> شراء</button></div></div></div>`; });
             } 
             if (!hasItems) { content += `<div class="col-12"><p class="text-center text-muted">لا توجد منتجات بعد.</p></div>`; }
             content += `</div>`;
@@ -308,7 +307,6 @@
             if (!resp.ok) throw new Error();
             const product = await resp.json();
             currentProductData = product; selectedVariantId = null; selectedVariantPrice = 0;
-            
             const shippingResp = await fetch(`${API_BASE}/api/shipping`, { headers: ngrokHeaders });
             const shippingMethods = await shippingResp.json();
 
@@ -316,42 +314,22 @@
             if (product.variants && product.variants.length > 0) {
                 product.variants.forEach(v => { 
                     const isDisabled = v.price <= 0;
-                    variantsHtml += `<div class="variant-card ${isDisabled ? 'disabled-card' : ''}" onclick="selectVariant(this, ${v.id}, ${v.price})">
-                                        <div style="font-weight:700;"><i class="fas fa-gem" style="color:var(--primary);"></i> ${v.name}</div>
-                                        <div class="variant-price">${v.price > 0 ? v.price + ' ل.س' : '<span style="color:var(--secondary);">غير متوفر</span>'}</div>
-                                    </div>`; 
+                    variantsHtml += `<div class="variant-card ${isDisabled ? 'disabled-card' : ''}" onclick="selectVariant(this, ${v.id}, ${v.price})"><div style="font-weight:700;"><i class="fas fa-gem" style="color:var(--primary);"></i> ${v.name}</div><div class="variant-price">${v.price > 0 ? v.price + ' ل.س' : '<span style="color:var(--secondary);">غير متوفر</span>'}</div></div>`; 
                 });
             } else { variantsHtml = `<div class="alert alert-warning text-center">غير متوفر</div>`; }
 
             let shippingHtml = '';
             for (let m of shippingMethods) {
-                const walletLink = m.wallet_link || '';
-                let walletBtnHtml = '';
-                if (walletLink) { 
-                    walletBtnHtml = `<button type="button" class="wallet-link-btn" onclick="copyWalletLink(this, '${walletLink}')"><i class="fas fa-copy"></i> نسخ الرابط</button>`; 
-                }
+                const walletLink = m.wallet_link || ''; let walletBtnHtml = '';
+                if (walletLink) { walletBtnHtml = `<button type="button" class="wallet-link-btn" onclick="copyWalletLink(this, '${walletLink}')"><i class="fas fa-copy"></i> نسخ الرابط</button>`; }
                 let qrHtml = '';
-                if (m.qr_image) {
-                    const qrUrl = fixImageUrl(m.qr_image);
-                    qrHtml = `<img data-src="${qrUrl}" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="qr-code-img" alt="QR Code">`;
-                }
-
-                shippingHtml += `<div class="payment-method-item" onclick="selectPaymentMethod(this, ${m.id})">
-                                    <div><i class="fas fa-wallet" style="color:var(--primary);"></i> <strong>${m.name}</strong>
-                                        ${m.note ? `<br><small style="color:var(--text-muted);">${m.note}</small>` : ''}
-                                    </div>
-                                    <div style="display:flex; align-items:center; gap:10px;">
-                                        ${qrHtml}
-                                        ${walletBtnHtml}
-                                    </div>
-                                 </div>`;
+                if (m.qr_image) { const qrUrl = fixImageUrl(m.qr_image); qrHtml = `<img data-src="${qrUrl}" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="qr-code-img" alt="QR Code">`; }
+                shippingHtml += `<div class="payment-method-item" onclick="selectPaymentMethod(this, ${m.id})"><div><i class="fas fa-wallet" style="color:var(--primary);"></i> <strong>${m.name}</strong>${m.note ? `<br><small style="color:var(--text-muted);">${m.note}</small>` : ''}</div><div style="display:flex; align-items:center; gap:10px;">${qrHtml}${walletBtnHtml}</div></div>`;
             }
 
             const pBgUrl = fixImageUrl(product.background_image || product.images);
             const html = `
-                <div class="checkout-product-header no-bg" id="checkout_header_img">
-                    <div class="overlay"></div><div class="content"><h2>${product.name}</h2><p style="opacity:0.8;">${product.description || ''}</p></div>
-                </div>
+                <div class="checkout-product-header no-bg" id="checkout_header_img"><div class="overlay"></div><div class="content"><h2>${product.name}</h2><p style="opacity:0.8;">${product.description || ''}</p></div></div>
                 <h4 class="mb-3" style="border-right:4px solid var(--primary); padding-right:15px; font-weight:900;">1. اختر الكمية:</h4>
                 ${variantsHtml}
                 <div id="checkoutFormSection" style="display:none; opacity:0; transition: opacity 0.5s;">
@@ -361,31 +339,23 @@
                     <form id="paymentForm">
                         <label class="form-label" style="font-weight:700;">الاسم الكامل *</label>
                         <input type="text" id="buyerName" class="form-control mb-3" required placeholder="أدخل اسمك الكامل">
-                        
                         <label class="form-label" style="font-weight:700;">معلومات الحساب / الآي دي *</label>
                         <textarea id="buyerPhone" class="form-control mb-3" required placeholder="أدخل المعلومات المطلوبة مثل: رقم الحساب، آي دي اللعبة، رقم الهاتف..." rows="3"></textarea>
-                        
                         <label class="form-label" style="font-weight:700;">رقم العملية (رقم التحويل) *</label>
                         <input type="text" id="transactionNumber" class="form-control" required placeholder="رقم التحويل البنكي">
                         <button type="submit" class="btn-submit-payment"><i class="fas fa-paper-plane"></i> تأكيد الدفع</button>
                     </form>
                 </div>`;
             document.getElementById('checkoutContent').innerHTML = html;
-            
-            // تحميل جميع الصور في صفحة الدفع عبر النظام الآمن والسريع
             if (pBgUrl) applyBgImage(document.getElementById('checkout_header_img'), pBgUrl);
             document.querySelectorAll('#checkoutContent img[data-src]').forEach(img => applyImageSrc(img));
-            
             showPage('checkoutPage');
             document.getElementById('paymentForm').addEventListener('submit', submitPayment);
         } catch(e) { Swal.fire('خطأ', 'فشل تحميل المنتج', 'error'); }
     }
 
     window.selectVariant = function(element, vId, vPrice) {
-        if (vPrice <= 0) {
-            Swal.fire('غير متوفر', 'هذه الكمية غير متوفرة حالياً، يرجى اختيار كمية أخرى', 'warning');
-            return;
-        }
+        if (vPrice <= 0) { Swal.fire('غير متوفر', 'هذه الكمية غير متوفرة حالياً', 'warning'); return; }
         selectedVariantId = vId; selectedVariantPrice = vPrice;
         document.querySelectorAll('.variant-card').forEach(el => el.classList.remove('selected'));
         element.classList.add('selected');
@@ -409,7 +379,8 @@
             buyer_name: document.getElementById('buyerName').value.trim(), 
             buyer_phone: document.getElementById('buyerPhone').value.trim(), 
             transaction_number: document.getElementById('transactionNumber').value.trim(), 
-            paid_price: selectedVariantPrice 
+            paid_price: selectedVariantPrice,
+            buyer_id: BUYER_ID // إرسال معرف المستخدم مع الطلب
         };
         const submitBtn = e.target.querySelector('button[type="submit"]'); 
         submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري المعالجة...';
