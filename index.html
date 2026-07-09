@@ -152,7 +152,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 </head>
 <body>
 <div class="app" id="app">
-<!-- صفحة تسجيل الدخول -->
 <div class="page active" id="page-auth">
 <div style="padding-top:40px;text-align:center">
 <div style="font-size:56px;margin-bottom:8px;animation:float 3s ease-in-out infinite">🛒</div>
@@ -192,7 +191,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 </div>
 </div>
 
-<!-- الصفحة الرئيسية -->
 <div class="page" id="page-home">
 <div class="header"><h1 class="pulsing-name" style="font-size:16px">متجر الليث للشحن</h1><div class="header-actions">
 <button class="header-btn" onclick="navigate('search')" title="بحث"><i class="fas fa-search"></i></button>
@@ -207,20 +205,17 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 <div class="grid" id="categories-grid"><div class="loading"><div class="spinner"></div><br>جاري التحميل...</div></div>
 </div>
 
-<!-- صفحة المنتجات -->
 <div class="page" id="page-category">
 <div class="header"><button class="header-btn" onclick="navigate('home')"><i class="fas fa-arrow-right"></i></button><h1 id="cat-title">المنتجات</h1><div></div></div>
 <div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="ابحث في هذا القسم..." id="cat-search" oninput="filterCatProducts(this.value)"></div>
 <div class="grid" id="products-grid"><div class="loading"><div class="spinner"></div></div></div>
 </div>
 
-<!-- صفحة تفاصيل المنتج -->
 <div class="page" id="page-product">
 <div class="header"><button class="header-btn" onclick="goBack()"><i class="fas fa-arrow-right"></i></button><h1 id="prod-title">المنتج</h1><button class="header-btn" id="prod-fav-btn" onclick="toggleFav()"><i class="far fa-heart"></i></button></div>
 <div id="product-detail"></div>
 </div>
 
-<!-- صفحة الطلبات -->
 <div class="page" id="page-orders">
 <div class="header"><h1>طلباتي</h1><div class="header-actions"></div></div>
 <div class="tabs" id="order-tabs">
@@ -233,32 +228,27 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 <div id="orders-list"><div class="loading"><div class="spinner"></div></div></div>
 </div>
 
-<!-- المفضلة -->
 <div class="page" id="page-favorites">
 <div class="header"><h1>المفضلة</h1></div>
 <div id="favorites-list"><div class="loading"><div class="spinner"></div></div></div>
 </div>
 
-<!-- الملف الشخصي -->
 <div class="page" id="page-profile">
 <div class="header"><h1>حسابي</h1></div>
 <div id="profile-content"></div>
 </div>
 
-<!-- البحث -->
 <div class="page" id="page-search">
 <div class="header"><button class="header-btn" onclick="navigate('home')"><i class="fas fa-arrow-right"></i></button><div style="flex:1;margin:0 12px"><input type="text" id="search-input" placeholder="ابحث عن منتج..." style="width:100%;padding:10px 14px;border-radius:12px;border:1px solid var(--bg4);background:var(--bg2);color:var(--text);font-family:inherit;font-size:14px;outline:none" oninput="doSearch(this.value)"></div></div>
 <div id="search-history-section"></div>
 <div id="search-results-list"></div>
 </div>
 
-<!-- الإشعارات -->
 <div class="page" id="page-notifications">
 <div class="header"><button class="header-btn" onclick="goBack()"><i class="fas fa-arrow-right"></i></button><h1>الإشعارات</h1><button class="header-btn" onclick="clearNotifs()"><i class="fas fa-trash"></i></button></div>
 <div id="notifs-list"><div class="loading"><div class="spinner"></div></div></div>
 </div>
 
-<!-- الشحن -->
 <div class="page" id="page-topup">
 <div class="header"><button class="header-btn" onclick="navigate('profile')"><i class="fas fa-arrow-right"></i></button><h1>شحن الرصيد</h1></div>
 <div class="card"><p style="font-size:13px;color:var(--text2);margin-bottom:12px">أدخل مبلغ الشحن وسيتم مراجعة طلبك</p>
@@ -270,32 +260,27 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 <div style="margin-top:16px"><h3 style="font-size:15px;font-weight:700;margin-bottom:12px">سجل الطلبات</h3><div id="topup-history"></div></div>
 </div>
 
-<!-- الإحالة -->
 <div class="page" id="page-referral">
 <div class="header"><button class="header-btn" onclick="navigate('profile')"><i class="fas fa-arrow-right"></i></button><h1>الإحالة</h1></div>
 <div id="referral-content"></div>
 </div>
 
-<!-- الدعم -->
 <div class="page" id="page-support">
 <div class="header"><button class="header-btn" onclick="navigate('profile')"><i class="fas fa-arrow-right"></i></button><h1>الدعم الفني</h1><button class="header-btn" onclick="showNewTicket()"><i class="fas fa-plus"></i></button></div>
 <div id="tickets-list"><div class="loading"><div class="spinner"></div></div></div>
 </div>
 
-<!-- التذكرة -->
 <div class="page" id="page-ticket">
 <div class="header"><button class="header-btn" onclick="navigate('support')"><i class="fas fa-arrow-right"></i></button><h1 id="ticket-title">التذكرة</h1><button class="header-btn" onclick="closeTicket()"><i class="fas fa-times"></i></button></div>
 <div id="ticket-messages" style="padding-bottom:70px"></div>
 <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;padding:12px 16px;background:rgba(17,24,39,.95);backdrop-filter:blur(20px);display:flex;gap:8px"><input type="text" id="ticket-reply-input" placeholder="اكتب ردك..." style="flex:1;padding:10px 14px;border-radius:12px;border:1px solid var(--bg4);background:var(--bg2);color:var(--text);font-family:inherit;font-size:14px;outline:none" onkeypress="if(event.key==='Enter')replyTicket()"><button class="btn btn-primary btn-sm" onclick="replyTicket()"><i class="fas fa-paper-plane"></i></button></div>
 </div>
 
-<!-- لوحة التحكم -->
 <div class="page" id="page-admin">
 <div class="header"><button class="header-btn" onclick="navigate('home')"><i class="fas fa-arrow-right"></i></button><h1>لوحة التحكم</h1></div>
 <div id="admin-content"></div>
 </div>
 
-<!-- شريط التنقل -->
 <div class="bottom-nav" id="bottom-nav" style="display:none">
 <button class="nav-item active" onclick="navigate('home')" data-page="home"><i class="fas fa-home"></i>الرئيسية</button>
 <button class="nav-item" onclick="navigate('orders')" data-page="orders"><i class="fas fa-box"></i>طلباتي</button>
@@ -305,16 +290,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 
 <button class="sound-toggle" id="sound-toggle" onclick="toggleSound()" title="الصوت"><i class="fas fa-volume-up"></i></button>
 
-<!-- النافذة المنبثقة -->
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
 <div class="modal" id="modal-content"></div>
 </div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════
-// نظام الأصوات
-// ═══════════════════════════════════════════════════════════════
 const Sound = {
     ctx: null, enabled: true,
     init() { if (!this.ctx) { try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {} } },
@@ -343,9 +324,6 @@ function toggleSound() {
     if (Sound.enabled) Sound.click();
 }
 
-// ═══════════════════════════════════════════════════════════════
-// المتغيرات العامة
-// ═══════════════════════════════════════════════════════════════
 const API_BASE = window.location.hostname.includes('ngrok-free.dev') ? '' : 'https://unbegrudged-direfully-nu.ngrok-free.dev';
 let token = localStorage.getItem('laith_token') || '';
 let currentUser = null;
@@ -364,7 +342,7 @@ Sound.enabled = soundEnabled;
 if (!soundEnabled) document.getElementById('sound-toggle').innerHTML = '<i class="fas fa-volume-mute"></i>';
 
 function api(url, opts = {}) {
-    const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+    const headers = { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true', ...(opts.headers || {}) };
     if (token) headers['Authorization'] = 'Bearer ' + token;
     return fetch(API_BASE + url, { ...opts, headers }).then(r => r.json()).catch(e => ({ ok: false, error: 'خطأ في الاتصال: ' + e.message }));
 }
@@ -404,9 +382,6 @@ function timeAgo(dt) {
 function saveToken(t) { token = t; localStorage.setItem('laith_token', t); }
 function clearToken() { token = ''; currentUser = null; localStorage.removeItem('laith_token'); }
 
-// ═══════════════════════════════════════════════════════════════
-// النماذج
-// ═══════════════════════════════════════════════════════════════
 function showForm(id) { document.querySelectorAll('#auth-forms > div').forEach(d => d.style.display = 'none'); document.getElementById(id).style.display = 'block'; }
 function showLoginForm() { showForm('form-login'); Sound.tap(); }
 function showRegForm() { showForm('form-register'); Sound.tap(); }
@@ -448,9 +423,6 @@ async function doForgot() {
     else showError('forgot-error', res.error);
 }
 
-// ═══════════════════════════════════════════════════════════════
-// تسجيل الدخول عبر جوجل
-// ═══════════════════════════════════════════════════════════════
 function initGoogleLogin() {
     if (!settings.googleClientId) return;
     try {
@@ -481,9 +453,6 @@ async function handleGoogleCredential(response) {
     else toast(res.error || 'فشل تسجيل الدخول عبر جوجل', 'error');
 }
 
-// ═══════════════════════════════════════════════════════════════
-// التهيئة
-// ═══════════════════════════════════════════════════════════════
 async function checkAuth() {
     if (!token) return false;
     const res = await api('/api/me');
@@ -538,9 +507,6 @@ function navigate(page, data) {
 
 function goBack() { Sound.tap(); navHistory.pop(); navigate(navHistory[navHistory.length - 1] || 'home'); }
 
-// ═══════════════════════════════════════════════════════════════
-// الصفحة الرئيسية
-// ═══════════════════════════════════════════════════════════════
 async function loadHome() {
     const welcome = document.getElementById('home-welcome');
     if (currentUser) {
@@ -576,9 +542,6 @@ async function loadAds() {
     }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// المنتجات
-// ═══════════════════════════════════════════════════════════════
 async function loadCategory(catId) {
     currentCategory = catId;
     const cat = allCategories.find(c => c.id === catId);
@@ -607,9 +570,6 @@ function renderProducts(el, products) {
     Sound.pop();
 }
 
-// ═══════════════════════════════════════════════════════════════
-// تفاصيل المنتج
-// ═══════════════════════════════════════════════════════════════
 async function loadProduct(pid) {
     currentProduct = pid;
     selectedPlan = null;
@@ -728,9 +688,6 @@ async function toggleFav() {
     }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// الطلبات
-// ═══════════════════════════════════════════════════════════════
 async function loadOrders() {
     const el = document.getElementById('orders-list');
     el.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
@@ -748,9 +705,6 @@ async function loadOrders() {
 
 function filterOrders(s) { Sound.tap(); orderStatusFilter = s; document.querySelectorAll('#order-tabs .tab').forEach(t => t.classList.remove('active')); event.target.classList.add('active'); loadOrders(); }
 
-// ═══════════════════════════════════════════════════════════════
-// المفضلة
-// ═══════════════════════════════════════════════════════════════
 async function loadFavorites() {
     const el = document.getElementById('favorites-list');
     el.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
@@ -762,9 +716,6 @@ async function loadFavorites() {
     }).join('') + '</div>';
 }
 
-// ═══════════════════════════════════════════════════════════════
-// الملف الشخصي
-// ═══════════════════════════════════════════════════════════════
 async function loadProfile() {
     const el = document.getElementById('profile-content');
     el.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
@@ -784,7 +735,7 @@ async function loadProfile() {
         '<button class="menu-item" onclick="showChangePassword()"><i class="fas fa-lock" style="background:rgba(251,191,36,.15);color:var(--warn)"></i>تغيير كلمة المرور<span class="arrow"><i class="fas fa-chevron-left"></i></span></button></div>' +
         (isAdmin ? '<div class="card"><button class="menu-item" onclick="navigate(\'admin\')"><i class="fas fa-shield-halved" style="background:rgba(168,85,247,.15);color:var(--purple)"></i>لوحة تحكم المدير<span class="arrow"><i class="fas fa-chevron-left"></i></span></button></div>' : '') +
         '<div class="card"><button class="menu-item" onclick="doLogout()" style="color:var(--danger)"><i class="fas fa-sign-out-alt" style="background:rgba(239,68,68,.15);color:var(--danger)"></i>تسجيل الخروج</button></div>' +
-        '<p style="text-align:center;font-size:11px;color:var(--text2);margin-top:16px">متجر الليث للشحن v6.0</p>';
+        '<p style="text-align:center;font-size:11px;color:var(--text2);margin-top:16px">متجر الليث للشحن v6.2</p>';
 }
 
 function showEditProfile() {
@@ -826,9 +777,6 @@ async function doLogout() {
 function closeModal() { document.getElementById('modal-overlay').classList.remove('active'); }
 function showModal(html) { document.getElementById('modal-content').innerHTML = html; document.getElementById('modal-overlay').classList.add('active'); }
 
-// ═══════════════════════════════════════════════════════════════
-// الإشعارات
-// ═══════════════════════════════════════════════════════════════
 async function loadNotifications() {
     const el = document.getElementById('notifs-list');
     el.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
@@ -846,9 +794,6 @@ async function clearNotifs() {
     toast('تم مسح الإشعارات', 'success');
 }
 
-// ═══════════════════════════════════════════════════════════════
-// البحث
-// ═══════════════════════════════════════════════════════════════
 async function loadSearchPage() {
     const el = document.getElementById('search-history-section');
     const res = await api('/api/search/history');
@@ -885,9 +830,6 @@ async function homeSearch(q) {
     }).join('') + '</div>';
 }
 
-// ═══════════════════════════════════════════════════════════════
-// الشحن
-// ═══════════════════════════════════════════════════════════════
 async function loadTopup() {
     const rate = settings.exchangeRate || 15000;
     document.getElementById('topup-syp-hint').textContent = 'سعر الصرف: 1$ = ' + rate.toLocaleString() + ' ل.س';
@@ -913,9 +855,6 @@ async function doTopup() {
     else toast(res.error || 'فشل', 'error');
 }
 
-// ═══════════════════════════════════════════════════════════════
-// الإحالة
-// ═══════════════════════════════════════════════════════════════
 async function loadReferral() {
     const el = document.getElementById('referral-content');
     el.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
@@ -926,9 +865,6 @@ async function loadReferral() {
 
 function copyRefLink(link) { navigator.clipboard.writeText(link).then(() => { toast('تم نسخ الرابط! 📋', 'success'); Sound.success(); }).catch(() => toast('فشل النسخ', 'error')); }
 
-// ═══════════════════════════════════════════════════════════════
-// الدعم
-// ═══════════════════════════════════════════════════════════════
 async function loadSupport() {
     const el = document.getElementById('tickets-list');
     el.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
@@ -984,9 +920,6 @@ async function closeTicket() {
     if (res.ok) { toast('تم إغلاق التذكرة', 'success'); navigate('support'); document.getElementById('bottom-nav').style.display = 'flex'; }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// لوحة تحكم المدير
-// ═══════════════════════════════════════════════════════════════
 let adminTab = 'dashboard';
 
 async function loadAdmin() {
@@ -1266,12 +1199,8 @@ async function doBroadcast() {
     else toast(res.error || 'فشل', 'error');
 }
 
-// ═══════════════════════════════════════════════════════════════
-// التهيئة
-// ═══════════════════════════════════════════════════════════════
 (async function init() {
     try {
-        // فحص Telegram WebApp
         const tg = window.Telegram && window.Telegram.WebApp;
         if (tg) {
             tg.ready(); tg.expand();
@@ -1280,13 +1209,11 @@ async function doBroadcast() {
                 if (res.ok) { saveToken(res.token); currentUser = res.user; await initApp(); return; }
             }
         }
-        // فحص التوكن المحفوظ
         const authed = await checkAuth();
         if (authed) await initApp();
     } catch(e) { console.error('Init error:', e); }
 })();
 
-// ربط الأصوات بكل الأزرار
 document.addEventListener('click', function(e) {
     if (e.target.closest('.btn, .tab, .nav-item, .header-btn, .menu-item, .category-card, .product-card')) {
         Sound.click();
