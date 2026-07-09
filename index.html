@@ -358,7 +358,10 @@ function toast(msg, type = 'info') {
     setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .3s'; setTimeout(() => t.remove(), 300); }, 3000);
 }
 
-function formatPrice(usd) {
+function formatPrice(usd, syp) {
+    if (syp !== undefined && syp !== null) {
+        return '<span class="usd">$' + usd.toFixed(2) + '</span> <span class="syp">(' + syp.toLocaleString() + ' ل.س)</span>';
+    }
     const rate = settings.exchangeRate || 15000;
     return '<span class="usd">$' + usd.toFixed(2) + '</span> <span class="syp">(' + Math.round(usd * rate).toLocaleString() + ' ل.س)</span>';
 }
@@ -507,6 +510,26 @@ function navigate(page, data) {
 
 function goBack() { Sound.tap(); navHistory.pop(); navigate(navHistory[navHistory.length - 1] || 'home'); }
 
+function getProductImageHtml(p, size, font_size) {
+    const grad = p.gradient || '#00e68a,#00c8ff';
+    const icon = p.icon || 'fas fa-gamepad';
+    const url = p.image_url || p.image || '';
+    if (url) {
+        return `<div style="width:${size}px;height:${size}px;border-radius:10px;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,${grad})"><img src="${url}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div style="width:100%;height:100%;display:none;align-items:center;justify-content:center;font-size:${font_size}px;color:#fff"><i class="${icon}"></i></div></div>`;
+    }
+    return `<div style="width:${size}px;height:${size}px;border-radius:10px;background:linear-gradient(135deg,${grad});display:flex;align-items:center;justify-content:center;font-size:${font_size}px;color:#fff;flex-shrink:0"><i class="${icon}"></i></div>`;
+}
+
+function getCategoryImageHtml(c, size, font_size) {
+    const grad = c.gradient || '#00e68a,#00c8ff';
+    const icon = c.icon || 'fas fa-gamepad';
+    const url = c.image || '';
+    if (url) {
+        return `<div style="width:${size}px;height:${size}px;border-radius:14px;overflow:hidden;margin:0 auto 8px;background:linear-gradient(135deg,${grad})"><img src="${url}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div style="width:100%;height:100%;display:none;align-items:center;justify-content:center;font-size:${font_size}px;color:#fff"><i class="${icon}"></i></div></div>`;
+    }
+    return `<div style="width:${size}px;height:${size}px;border-radius:14px;margin:0 auto 8px;background:linear-gradient(135deg,${grad});display:flex;align-items:center;justify-content:center;font-size:${font_size}px;color:#fff"><i class="${icon}"></i></div>`;
+}
+
 async function loadHome() {
     const welcome = document.getElementById('home-welcome');
     if (currentUser) {
@@ -528,9 +551,7 @@ async function loadHome() {
     document.getElementById('products-count').textContent = res.total_products + ' منتج';
     if (!res.categories.length) { grid.innerHTML = '<div class="empty"><i class="fas fa-folder-open"></i><p>لا توجد أقسام</p></div>'; return; }
     grid.innerHTML = res.categories.map(c => {
-        const grad = c.gradient || '#00e68a,#00c8ff';
-        const iconHtml = c.image ? '<img src="' + c.image + '" style="width:56px;height:56px;border-radius:14px;object-fit:cover" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="cat-icon" style="background:linear-gradient(135deg,' + grad + ');display:none"><i class="' + (c.icon || 'fas fa-gamepad') + '"></i></div>' : '<div class="cat-icon" style="background:linear-gradient(135deg,' + grad + ')"><i class="' + (c.icon || 'fas fa-gamepad') + '"></i></div>';
-        return '<div class="category-card" onclick="navigate(\'category\',' + c.id + ')">' + iconHtml + '<div class="name">' + c.name + '</div><div class="count">' + c.product_count + ' منتج</div></div>';
+        return '<div class="category-card" onclick="navigate(\'category\',' + c.id + ')">' + getCategoryImageHtml(c, 56, 24) + '<div class="name">' + c.name + '</div><div class="count">' + c.product_count + ' منتج</div></div>';
     }).join('');
     Sound.pop();
 }
@@ -564,8 +585,7 @@ function filterCatProducts(q) {
 function renderProducts(el, products) {
     if (!products.length) { el.innerHTML = '<div class="empty"><i class="fas fa-box-open"></i><p>لا توجد منتجات</p></div>'; return; }
     el.innerHTML = products.map(p => {
-        const grad = p.gradient || '#00e68a,#00c8ff';
-        return '<div class="product-card" onclick="navigate(\'product\',' + p.product_id + ')"><div style="display:flex;gap:10px;align-items:center"><div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,' + grad + ');display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0"><i class="' + (p.icon || 'fas fa-gamepad') + '"></i></div><div style="flex:1"><div class="pname">' + p.name + '</div><div class="pprice">' + formatPrice(p.price_usd) + '</div></div></div></div>';
+        return '<div class="product-card" onclick="navigate(\'product\',' + p.product_id + ')"><div style="display:flex;gap:10px;align-items:center">' + getProductImageHtml(p, 44, 18) + '<div style="flex:1"><div class="pname">' + p.name + '</div><div class="pprice">' + formatPrice(p.price_usd, p.price_syp) + '</div></div></div></div>';
     }).join('');
     Sound.pop();
 }
@@ -593,8 +613,7 @@ async function loadProduct(pid) {
     if (res.related && res.related.length) {
         relatedHtml = '<h3 style="font-size:15px;font-weight:700;margin:20px 0 12px">منتجات مشابهة</h3><div class="grid">' + res.related.map(r => '<div class="product-card" onclick="navigate(\'product\',' + r.id + ')"><div style="display:flex;gap:8px;align-items:center"><div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,' + (r.gradient||'#00e68a,#00c8ff') + ');display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff"><i class="' + (r.icon||'fas fa-gamepad') + '"></i></div><div class="pname" style="font-size:13px">' + r.name + '</div></div></div>').join('') + '</div>';
     }
-    const grad = p.gradient || '#00e68a,#00c8ff';
-    el.innerHTML = '<div class="card" style="text-align:center;padding:24px"><div style="width:80px;height:80px;border-radius:20px;background:linear-gradient(135deg,' + grad + ');margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:36px;color:#fff;animation:float 3s ease-in-out infinite">' + (p.image_url ? '<img src="' + p.image_url + '" style="width:80px;height:80px;border-radius:20px;object-fit:cover" onerror="this.style.display=\'none\'">' : '<i class="' + (p.icon||'fas fa-gamepad') + '"></i>') + '</div><h2 style="font-size:18px;font-weight:800;margin-bottom:4px">' + p.name + '</h2></div>' +
+    el.innerHTML = '<div class="card" style="text-align:center;padding:24px"><div style="width:80px;height:80px;border-radius:20px;overflow:hidden;margin:0 auto 12px;background:linear-gradient(135deg,' + (p.gradient||'#00e68a,#00c8ff') + ')">' + (p.image_url ? '<img src="' + p.image_url + '" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div style="width:100%;height:100%;display:none;align-items:center;justify-content:center;font-size:36px;color:#fff"><i class="' + (p.icon||'fas fa-gamepad') + '"></i></div>' : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;color:#fff"><i class="' + (p.icon||'fas fa-gamepad') + '"></i></div>') + '</div><h2 style="font-size:18px;font-weight:800;margin-bottom:4px">' + p.name + '</h2></div>' +
         '<div class="card">' + plansHtml + argsHtml +
         '<div class="input-group" style="margin-top:16px"><label>كوبون خصم (اختياري)</label><div class="coupon-input"><input type="text" id="coupon-code" placeholder="أدخل الكوبون"><button class="btn btn-secondary btn-sm" onclick="applyCoupon()">تطبيق</button></div><div id="coupon-result" style="margin-top:6px;font-size:12px"></div></div>' +
         '<div id="order-total" style="text-align:center;padding:14px;background:var(--bg3);border-radius:12px;margin-bottom:16px"><span style="font-size:13px;color:var(--text2)">الإجمالي: </span><span style="font-size:20px;font-weight:900;color:var(--accent)" id="total-price">اختر خطة</span></div>' +
@@ -618,7 +637,6 @@ function updateOrderTotal() {
     if (!planEl) return;
     const priceText = planEl.querySelector('.plan-price').textContent;
     const price = parseFloat(priceText.replace('$', ''));
-    const sypText = planEl.querySelector('.plan-syp').textContent;
     let total = price;
     if (appliedCoupon && appliedCoupon.discount_amount) {
         total = price - appliedCoupon.discount_amount;
@@ -698,7 +716,7 @@ async function loadOrders() {
     el.innerHTML = res.orders.map(o => {
         let codeHtml = '';
         if (o.code) codeHtml = '<div class="code-display" style="margin-top:8px;padding:8px"><div class="code-text" style="font-size:14px">' + o.code + '</div></div>';
-        return '<div class="order-card"><div class="order-header"><span class="order-id">#' + o.id + '</span>' + statusBadge(o.status) + '</div><div style="font-size:13px;color:var(--text2)"><strong>' + (o.product_name || '') + '</strong> - ' + (o.plan_name || '') + '<br>' + formatPrice(o.total_usd) + (o.code ? '<br>الكود: <code>' + o.code.substring(0,30) + (o.code.length > 30 ? '...' : '') + '</code>' : '') + '</div>' + codeHtml + '<div style="font-size:11px;color:var(--text2);margin-top:6px">' + timeAgo(o.created_at) + '</div></div>';
+        return '<div class="order-card"><div class="order-header"><span class="order-id">#' + o.id + '</span>' + statusBadge(o.status) + '</div><div style="font-size:13px;color:var(--text2)"><strong>' + (o.product_name || '') + '</strong> - ' + (o.plan_name || '') + '<br>' + formatPrice(o.total_usd, o.total_syp) + (o.code ? '<br>الكود: <code>' + o.code.substring(0,30) + (o.code.length > 30 ? '...' : '') + '</code>' : '') + '</div>' + codeHtml + '<div style="font-size:11px;color:var(--text2);margin-top:6px">' + timeAgo(o.created_at) + '</div></div>';
     }).join('');
     Sound.pop();
 }
@@ -711,8 +729,7 @@ async function loadFavorites() {
     const res = await api('/api/favorites');
     if (!res.ok || !res.favorites.length) { el.innerHTML = '<div class="empty"><i class="far fa-heart"></i><p>لا توجد منتجات مفضلة</p></div>'; return; }
     el.innerHTML = '<div class="grid">' + res.favorites.map(p => {
-        const grad = p.gradient || '#00e68a,#00c8ff';
-        return '<div class="product-card" onclick="navigate(\'product\',' + p.product_id + ')"><div style="display:flex;gap:10px;align-items:center"><div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,' + grad + ');display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff"><i class="' + (p.icon||'fas fa-gamepad') + '"></i></div><div style="flex:1"><div class="pname">' + p.name + '</div><div class="pprice">' + formatPrice(p.price_usd) + '</div></div></div></div>';
+        return '<div class="product-card" onclick="navigate(\'product\',' + p.product_id + ')"><div style="display:flex;gap:10px;align-items:center">' + getProductImageHtml(p, 40, 16) + '<div style="flex:1"><div class="pname">' + p.name + '</div><div class="pprice">' + formatPrice(p.price_usd, p.price_syp) + '</div></div></div></div>';
     }).join('') + '</div>';
 }
 
@@ -735,7 +752,7 @@ async function loadProfile() {
         '<button class="menu-item" onclick="showChangePassword()"><i class="fas fa-lock" style="background:rgba(251,191,36,.15);color:var(--warn)"></i>تغيير كلمة المرور<span class="arrow"><i class="fas fa-chevron-left"></i></span></button></div>' +
         (isAdmin ? '<div class="card"><button class="menu-item" onclick="navigate(\'admin\')"><i class="fas fa-shield-halved" style="background:rgba(168,85,247,.15);color:var(--purple)"></i>لوحة تحكم المدير<span class="arrow"><i class="fas fa-chevron-left"></i></span></button></div>' : '') +
         '<div class="card"><button class="menu-item" onclick="doLogout()" style="color:var(--danger)"><i class="fas fa-sign-out-alt" style="background:rgba(239,68,68,.15);color:var(--danger)"></i>تسجيل الخروج</button></div>' +
-        '<p style="text-align:center;font-size:11px;color:var(--text2);margin-top:16px">متجر الليث للشحن v6.2</p>';
+        '<p style="text-align:center;font-size:11px;color:var(--text2);margin-top:16px">متجر الليث للشحن v6.3</p>';
 }
 
 function showEditProfile() {
@@ -810,8 +827,7 @@ async function doSearch(q) {
     const res = await api('/api/products/search?q=' + encodeURIComponent(q));
     if (!res.ok || !res.products.length) { el.innerHTML = '<div class="empty"><i class="fas fa-search"></i><p>لا توجد نتائج</p></div>'; return; }
     el.innerHTML = '<div class="grid">' + res.products.map(p => {
-        const grad = p.gradient || '#00e68a,#00c8ff';
-        return '<div class="product-card" onclick="navigate(\'product\',' + p.product_id + ')"><div style="display:flex;gap:10px;align-items:center"><div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,' + grad + ');display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff"><i class="' + (p.icon||'fas fa-gamepad') + '"></i></div><div style="flex:1"><div class="pname">' + p.name + '</div><div class="pprice">' + formatPrice(p.price_usd) + '</div></div></div></div>';
+        return '<div class="product-card" onclick="navigate(\'product\',' + p.product_id + ')"><div style="display:flex;gap:10px;align-items:center">' + getProductImageHtml(p, 40, 16) + '<div style="flex:1"><div class="pname">' + p.name + '</div><div class="pprice">' + formatPrice(p.price_usd, p.price_syp) + '</div></div></div></div>';
     }).join('') + '</div>';
 }
 
@@ -825,8 +841,7 @@ async function homeSearch(q) {
     const res = await api('/api/products/search?q=' + encodeURIComponent(q));
     if (!res.ok || !res.products.length) { el.innerHTML = '<div class="empty" style="padding:20px"><p>لا توجد نتائج</p></div>'; return; }
     el.innerHTML = '<div class="grid">' + res.products.map(p => {
-        const grad = p.gradient || '#00e68a,#00c8ff';
-        return '<div class="product-card" onclick="navigate(\'product\',' + p.product_id + ')"><div style="display:flex;gap:8px;align-items:center"><div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,' + grad + ');display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff"><i class="' + (p.icon||'fas fa-gamepad') + '"></i></div><div style="flex:1"><div class="pname" style="font-size:13px">' + p.name + '</div><div class="pprice">' + formatPrice(p.price_usd) + '</div></div></div></div>';
+        return '<div class="product-card" onclick="navigate(\'product\',' + p.product_id + ')"><div style="display:flex;gap:8px;align-items:center">' + getProductImageHtml(p, 36, 14) + '<div style="flex:1"><div class="pname" style="font-size:13px">' + p.name + '</div><div class="pprice">' + formatPrice(p.price_usd, p.price_syp) + '</div></div></div></div>';
     }).join('') + '</div>';
 }
 
